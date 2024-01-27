@@ -17,8 +17,7 @@ class Slots extends Model<InferAttributes<Slots>, InferCreationAttributes<Slots>
     return this.getDataValue("end");
   }
   public set day(value: string) {
-    this.setDataValue("day", value);
-    this.save();
+    this.update("day", value);
   }
 }
 

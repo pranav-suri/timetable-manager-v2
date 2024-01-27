@@ -176,3 +176,6 @@ dist
 
 # Bun (https://bun.red) package manager cache
 bun.lockb
+
+# VSCode workspace settings
+/.vscode
