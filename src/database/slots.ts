@@ -4,21 +4,10 @@ import sequelize from "./sequelize";
 class Slots extends Model<InferAttributes<Slots>, InferCreationAttributes<Slots>> {
   public declare createdAt: CreationOptional<Date>;
   public declare updatedAt: CreationOptional<Date>;
-  public get id(): CreationOptional<number> {
-    return this.getDataValue("id");
-  }
-  public get day(): string {
-    return this.getDataValue("day");
-  }
-  public get start(): string {
-    return this.getDataValue("start");
-  }
-  public get end(): string {
-    return this.getDataValue("end");
-  }
-  public set day(value: string) {
-    this.update("day", value);
-  }
+  public declare id: CreationOptional<number>;
+  public declare day: string;
+  public declare start: string;
+  public declare end: string;
 }
 
 Slots.init(

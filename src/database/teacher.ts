@@ -4,27 +4,10 @@ import { CreationOptional, DataTypes, InferAttributes, InferCreationAttributes, 
 class Teachers extends Model<InferAttributes<Teachers>, InferCreationAttributes<Teachers>> {
   public declare createdAt: CreationOptional<Date>;
   public declare updatedAt: CreationOptional<Date>;
-  public get id(): CreationOptional<number> {
-    return this.getDataValue("id");
-  }
-  public get name() {
-    return this.getDataValue("name");
-  }
-  public set name(value: string) {
-    this.update("name", value);
-  }
-  public get email() {
-    return this.getDataValue("email");
-  }
-  public set email(value: string) {
-    this.update("email", value);
-  }
-  public get password() {
-    return this.getDataValue("password");
-  }
-  public set password(value: string) {
-    this.update("password", value);
-  }
+  public declare id: CreationOptional<number>;
+  public declare name: string;
+  public declare email: string;
+  public declare password: string;
 }
 
 Teachers.init(
