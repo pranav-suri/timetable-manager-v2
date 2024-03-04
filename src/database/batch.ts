@@ -1,3 +1,4 @@
+import department from "./department";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -43,7 +44,7 @@ batch.init(
         tableName: "batch",
     }
 );
-
+batch.hasMany(department);
 await batch.sync();
 
 export default batch;

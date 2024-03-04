@@ -6,17 +6,18 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
+import Slot from "./slot";
 
-class teacher extends Model<
-    InferAttributes<teacher>,
-    InferCreationAttributes<teacher>
+class Teacher extends Model<
+    InferAttributes<Teacher>,
+    InferCreationAttributes<Teacher>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare teacherId: CreationOptional<number>;
 }
 
-teacher.init(
+Teacher.init(
     {
         teacherId: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -28,10 +29,10 @@ teacher.init(
     },
     {
         sequelize,
-        tableName: "teacher",
+        tableName: "Teacher",
     }
 );
+Teacher.hasMany(Slot);
+await Teacher.sync();
 
-await teacher.sync();
-
-export default teacher;
+export default Teacher;
