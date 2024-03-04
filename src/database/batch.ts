@@ -15,7 +15,7 @@ class batch extends Model<
     public declare updatedAt: CreationOptional<Date>;
     public declare batchId: CreationOptional<number>;
     public declare batchName: string;
-    public declare issOdd: boolean;
+    public declare isOdd: boolean;
     public declare year: number;
 }
 
@@ -44,6 +44,6 @@ batch.init(
     }
 );
 
-await teacher.sync();
+await batch.sync();
 
-export default teacher;
+export default batch;
