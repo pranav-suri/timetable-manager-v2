@@ -7,35 +7,35 @@ import {
     Model,
 } from "sequelize";
 
-class classroom extends Model<
-    InferAttributes<classroom>,
-    InferCreationAttributes<classroom>
+class group extends Model<
+    InferAttributes<group>,
+    InferCreationAttributes<group>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare classroomId: CreationOptional<number>;
-    public declare isLab: boolean;
+    public declare groupId: CreationOptional<number>;
+    public declare groupName: string;
 }
 
-classroom.init(
+group.init(
     {
-        classroomId: {
+        groupId: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
-        isLab: {
-            type: DataTypes.BOOLEAN,
+        groupName: {
+            type: DataTypes.STRING,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
-        tableName: "classroom",
+        tableName: "group",
     }
 );
 
-await classroom.sync();
+await group.sync();
 
-export default classroom;
+export default group;
