@@ -7,6 +7,7 @@ import {
     Model,
 } from "sequelize";
 import Slot from "./slot";
+import Teach from "./teach";
 
 class Teacher extends Model<
     InferAttributes<Teacher>,
@@ -33,6 +34,7 @@ Teacher.init(
     }
 );
 Teacher.hasMany(Slot);
+Teacher.hasMany(Teach);
 await Teacher.sync();
 
 export default Teacher;

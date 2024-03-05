@@ -6,10 +6,11 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
+import Subject from "./subject";
 
-class group extends Model<
-    InferAttributes<group>,
-    InferCreationAttributes<group>
+class Group extends Model<
+    InferAttributes<Group>,
+    InferCreationAttributes<Group>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
@@ -17,7 +18,7 @@ class group extends Model<
     public declare groupName: string;
 }
 
-group.init(
+Group.init(
     {
         groupId: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -32,10 +33,11 @@ group.init(
     },
     {
         sequelize,
-        tableName: "group",
+        tableName: "Group",
     }
 );
 
-await group.sync();
+Group.hasMany(Subject);
+await Group.sync();
 
-export default group;
+export default Group;

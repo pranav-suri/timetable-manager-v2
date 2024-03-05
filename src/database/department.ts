@@ -1,4 +1,5 @@
 import Division from "./division";
+import Group from "./group";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -7,6 +8,7 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
+import Subject from "./subject";
 
 class department extends Model<
     InferAttributes<department>,
@@ -34,6 +36,8 @@ department.init(
 );
 
 department.hasMany(Division);
+department.hasMany(Group);
+department.hasMany(Subject);
 
 await department.sync();
 
