@@ -1,0 +1,47 @@
+academic_year(acad_year_id (PK), year, name (string))
+batch(batch_id(PK), batch_name, acad_year_id(FK))
+department(department_id(PK),department_name, batch_id(FK))
+division(division_id, division_name, department_id(FK))
+subdivision(subdivision_id(PK), subdivision_name, division_id(FK))
+group(group_id(PK), group_type, acad_year_id(FK))
+teacher(teacher_id(PK), teacher_name, email, acad_year_id(FK)) 
+classroom(classroom_id(PK), classroom_name, is_lab, acad_year_id(FK))  
+subject(subject_id(PK), subject_name, is_lab, department_id(FK), group_id(FK) (maybe null))
+teach(teacher_id(FK), subject_id(FK)) 
+slot(slot_id(PK), day, number)
+timetable(timetable_id(PK), subdivision_id(FK), teacher_id(FK), subject_id(FK))
+timetable_class(timetable_id(FK), classroom_id(FK))
+
+CSV FILE TEMPLATE
+Data about department - batch, department, division, subdivision
+Data about classroom - classroom_name, is_lab
+Data about subject - subject_name, deparment, is_lab
+Data about teachers - teacher_name, teacher_email, subject_name, department
+Data about group - group_type, department, subject_name
+
+-- Clicking on a slot 
+-- (Get request contains subdivision_id, slot_id)
+SELECT subject_name
+FROM subject
+WHERE (department_id = $dept_id);
+-- extract department_id from subdivision_id
+-- After selecting subject, clicking a teacher
+-- (Get request contains subject_id, slot_id)
+SELECT teacher_id
+FROM teach
+WHERE subject_id = $subject_id;
+-- After subject, clicking a classroom
+-- (Get request contains subject_id, slot_id)
+SELECT *
+FROM classroom
+WHERE type =(
+        SELECT type
+        FROM subject
+        WHERE subject_id = $subject_id
+    );
+-- Handling elective collision
+-- Entire deparment must be free, multiple elective maybe at the same time
+-- (Get request contains subdivision_id)
+SELECT *
+FROM slot
+WHERE slot_id

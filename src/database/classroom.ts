@@ -7,9 +7,9 @@ import {
     Model,
 } from "sequelize";
 
-class classroom extends Model<
-    InferAttributes<classroom>,
-    InferCreationAttributes<classroom>
+class Classroom extends Model<
+    InferAttributes<Classroom>,
+    InferCreationAttributes<Classroom>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
@@ -17,7 +17,7 @@ class classroom extends Model<
     public declare isLab: boolean;
 }
 
-classroom.init(
+Classroom.init(
     {
         classroomId: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -36,6 +36,6 @@ classroom.init(
     }
 );
 
-await classroom.sync();
+await Classroom.sync();
 
-export default classroom;
+export default Classroom;

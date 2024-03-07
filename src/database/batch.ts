@@ -1,4 +1,4 @@
-import department from "./department";
+import Department from "./department";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -8,9 +8,9 @@ import {
     Model,
 } from "sequelize";
 
-class batch extends Model<
-    InferAttributes<batch>,
-    InferCreationAttributes<batch>
+class Batch extends Model<
+    InferAttributes<Batch>,
+    InferCreationAttributes<Batch>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
@@ -20,7 +20,7 @@ class batch extends Model<
     public declare year: number;
 }
 
-batch.init(
+Batch.init(
     {
         batchId: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -44,7 +44,7 @@ batch.init(
         tableName: "batch",
     }
 );
-batch.hasMany(department);
-await batch.sync();
+Batch.hasMany(Department);
+await Batch.sync();
 
-export default batch;
+export default Batch;

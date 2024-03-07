@@ -1,0 +1,41 @@
+academic_year(year(PK))
+batch(batch_id(PK), batch_name, is_odd, year)
+department(department_id(PK), batch_id(FK))
+division(division_id, department_id(FK))
+subdivision(subdivision_id, division_id)
+student(student_id(PK), subdivision_id(FK))
+timetable(timetable_id, subdivision_id)
+slot(slot_id(PK), timetable_id(FK), teacher_id(FK))
+slot_subject(slot_id(FK), subject_id(FK))
+slot_classroom(slot_id(FK), classroom_id(FK))
+teacher(teacher_id(PK))
+classroom(classroom_id(PK), is_lab)
+subject(subject_id(PK), subject_name, is_lab, type (core/elective), department_id(FK))
+teach(teacher_id(FK), subject_id(FK))
+elective(student_id(FK), subject_id(FK))
+
+-- Clicking on a slot 
+-- (Get request contains subdivision_id, slot_id)
+SELECT subject_name 
+FROM subject WHERE 
+(department_id=$dept_id); 
+-- extract department_id from subdivision_id
+
+-- After selecting subject, clicking a teacher
+-- (Get request contains subject_id, slot_id)
+SELECT teacher_id
+FROM teach
+WHERE subject_id=$subject_id;
+
+-- After subject, clicking a classroom
+-- (Get request contains subject_id, slot_id)
+SELECT * FROM classroom
+WHERE type=(
+    SELECT type 
+    FROM subject WHERE
+    subject_id=$subject_id
+);
+
+-- Handling elective collision
+-- Entire deparment must be free, multiple elective maybe at the same time
+-- (Get request contains subdivision_id)

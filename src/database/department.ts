@@ -10,16 +10,16 @@ import {
 } from "sequelize";
 import Subject from "./subject";
 
-class department extends Model<
-    InferAttributes<department>,
-    InferCreationAttributes<department>
+class Department extends Model<
+    InferAttributes<Department>,
+    InferCreationAttributes<Department>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare departmentId: CreationOptional<number>;
 }
 
-department.init(
+Department.init(
     {
         departmentId: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -35,10 +35,10 @@ department.init(
     }
 );
 
-department.hasMany(Division);
-department.hasMany(Group);
-department.hasMany(Subject);
+Department.hasMany(Division);
+Department.hasMany(Group);
+Department.hasMany(Subject);
 
-await department.sync();
+await Department.sync();
 
-export default department;
+export default Department;

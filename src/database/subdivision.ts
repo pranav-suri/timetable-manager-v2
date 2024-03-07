@@ -6,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Student from "./student";
 import Timetable from "./timetable";
 
 class Subdivision extends Model<
@@ -34,7 +33,6 @@ Subdivision.init(
     }
 );
 
-Subdivision.hasMany(Student);
 Subdivision.hasMany(Timetable);
 
 

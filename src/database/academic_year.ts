@@ -7,20 +7,19 @@ import {
     Model,
 } from "sequelize";
 
-class Student extends Model<
-    InferAttributes<Student>,
-    InferCreationAttributes<Student>
+class AcademicYear extends Model<
+    InferAttributes<AcademicYear>,
+    InferCreationAttributes<AcademicYear>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare studentId: CreationOptional<number>;
+    public declare year: number;
 }
 
-Student.init(
+AcademicYear.init(
     {
-        studentId: {
+        year: {
             type: DataTypes.INTEGER.UNSIGNED,
-            autoIncrement: true,
             primaryKey: true,
         },
         createdAt: DataTypes.DATE,
@@ -28,10 +27,10 @@ Student.init(
     },
     {
         sequelize,
-        tableName: "Student",
+        tableName: "academic_year",
     }
 );
 
-await Student.sync();
+await AcademicYear.sync();
 
-export default Student;
+export default AcademicYear;

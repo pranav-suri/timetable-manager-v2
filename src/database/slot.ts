@@ -6,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import SlotSubject from "./slot_subject";
 
 class Slot extends Model<
     InferAttributes<Slot>,
@@ -34,7 +33,6 @@ Slot.init(
 );
 
 
-Slot.hasMany(SlotSubject);
 await Slot.sync();
 
 export default Slot;
