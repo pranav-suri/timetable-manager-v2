@@ -7,31 +7,31 @@ import {
     Model,
 } from "sequelize";
 
-class TeacherUnavailable extends Model<
-    InferAttributes<TeacherUnavailable>,
-    InferCreationAttributes<TeacherUnavailable>
+class TimetableClass extends Model<
+    InferAttributes<TimetableClass>,
+    InferCreationAttributes<TimetableClass>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare teacherUnavailableId: CreationOptional<number>;
+    public declare timetableClassId: CreationOptional<number>;
 }
 
-TeacherUnavailable.init(
+TimetableClass.init(
     {
-        teacherUnavailableId: {
+        timetableClassId: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
-
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
-        tableName: "TeacherUnavailable",
+        tableName: "TimetableClass",
     }
 );
-await TeacherUnavailable.sync();
 
-export default TeacherUnavailable;
+await TimetableClass.sync();
+
+export default TimetableClass;
