@@ -6,8 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Slot from "./slot";
-import Teach from "./teach";
 
 class Teacher extends Model<
     InferAttributes<Teacher>,
@@ -16,6 +14,8 @@ class Teacher extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare teacherId: CreationOptional<number>;
+    public declare teacherName: string;
+    public declare teacherEmail: string;
 }
 
 Teacher.init(
@@ -25,6 +25,13 @@ Teacher.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        teacherName: {
+            type: DataTypes.STRING,
+        },
+        teacherEmail: {
+            type: DataTypes.STRING,
+        },
+
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -33,8 +40,6 @@ Teacher.init(
         tableName: "Teacher",
     }
 );
-Teacher.hasMany(Slot);
-Teacher.hasMany(Teach);
 await Teacher.sync();
 
 export default Teacher;

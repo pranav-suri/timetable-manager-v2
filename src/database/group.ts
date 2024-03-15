@@ -6,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Subject from "./subject";
 
 class Group extends Model<
     InferAttributes<Group>,
@@ -15,7 +14,7 @@ class Group extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare groupId: CreationOptional<number>;
-    public declare groupName: string;
+    public declare groupType: string;
 }
 
 Group.init(
@@ -25,7 +24,7 @@ Group.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        groupName: {
+        groupType: {
             type: DataTypes.STRING,
         },
         createdAt: DataTypes.DATE,
@@ -37,7 +36,6 @@ Group.init(
     }
 );
 
-Group.hasMany(Subject);
 await Group.sync();
 
 export default Group;

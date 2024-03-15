@@ -7,35 +7,39 @@ import {
     Model,
 } from "sequelize";
 
-class Division extends Model<
-    InferAttributes<Division>,
-    InferCreationAttributes<Division>
+class TeacherUnavailable extends Model<
+    InferAttributes<TeacherUnavailable>,
+    InferCreationAttributes<TeacherUnavailable>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare divisionId: CreationOptional<number>;
-    public declare divisionName: string;
+    public declare teacherId: CreationOptional<number>;
+    public declare teacherName: string;
+    public declare teacherEmail: string;
 }
 
-Division.init(
+TeacherUnavailable.init(
     {
-        divisionId: {
+        teacherId: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
         },
-        divisionName: {
+        teacherName: {
             type: DataTypes.STRING,
         },
+        teacherEmail: {
+            type: DataTypes.STRING,
+        },
+
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
-        tableName: "Division",
+        tableName: "Teacher",
     }
 );
+await Teacher.sync();
 
-await Division.sync();
-
-export default Division;
+export default Teacher;

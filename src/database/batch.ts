@@ -1,4 +1,3 @@
-import Department from "./department";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -16,8 +15,6 @@ class Batch extends Model<
     public declare updatedAt: CreationOptional<Date>;
     public declare batchId: CreationOptional<number>;
     public declare batchName: string;
-    public declare isOdd: boolean;
-    public declare year: number;
 }
 
 Batch.init(
@@ -30,12 +27,6 @@ Batch.init(
         batchName: {
             type: DataTypes.STRING,
         },
-        isOdd: {
-            type: DataTypes.BOOLEAN,
-        },
-        year: {
-            type: DataTypes.INTEGER.UNSIGNED,
-        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -44,7 +35,7 @@ Batch.init(
         tableName: "batch",
     }
 );
-Batch.hasMany(Department);
+
 await Batch.sync();
 
 export default Batch;

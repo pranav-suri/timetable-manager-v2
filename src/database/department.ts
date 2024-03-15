@@ -1,5 +1,3 @@
-import Division from "./division";
-import Group from "./group";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -8,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Subject from "./subject";
 
 class Department extends Model<
     InferAttributes<Department>,
@@ -17,6 +14,7 @@ class Department extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare departmentId: CreationOptional<number>;
+    public declare departmentName: string;
 }
 
 Department.init(
@@ -26,6 +24,9 @@ Department.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        departmentName: {
+            type: DataTypes.STRING,
+        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -34,10 +35,6 @@ Department.init(
         tableName: "department",
     }
 );
-
-Department.hasMany(Division);
-Department.hasMany(Group);
-Department.hasMany(Subject);
 
 await Department.sync();
 

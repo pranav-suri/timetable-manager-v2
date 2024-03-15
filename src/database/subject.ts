@@ -1,5 +1,3 @@
-import Division from "./division";
-import Group from "./group";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -8,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Teach from "./teach";
 
 class Subject extends Model<
     InferAttributes<Subject>,
@@ -43,10 +40,6 @@ Subject.init(
         tableName: "Subject",
     }
 );
-
-Subject.hasMany(Division);
-Subject.hasMany(Group);
-Subject.hasMany(Teach);
 
 await Subject.sync();
 

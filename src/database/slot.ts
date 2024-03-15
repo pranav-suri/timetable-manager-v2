@@ -7,13 +7,12 @@ import {
     Model,
 } from "sequelize";
 
-class Slot extends Model<
-    InferAttributes<Slot>,
-    InferCreationAttributes<Slot>
-> {
+class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare slotId: CreationOptional<number>;
+    public declare day: string;
+    public declare number: number;
 }
 
 Slot.init(
@@ -23,6 +22,12 @@ Slot.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        day: {
+            type: DataTypes.STRING,
+        },
+        number: {
+            type: DataTypes.INTEGER.UNSIGNED,
+        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -31,7 +36,6 @@ Slot.init(
         tableName: "Slot",
     }
 );
-
 
 await Slot.sync();
 

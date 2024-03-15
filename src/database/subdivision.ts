@@ -6,7 +6,6 @@ import {
     InferCreationAttributes,
     Model,
 } from "sequelize";
-import Timetable from "./timetable";
 
 class Subdivision extends Model<
     InferAttributes<Subdivision>,
@@ -15,6 +14,7 @@ class Subdivision extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare subDivisionId: CreationOptional<number>;
+    public declare subDivisionName: String;
 }
 
 Subdivision.init(
@@ -24,6 +24,9 @@ Subdivision.init(
             autoIncrement: true,
             primaryKey: true,
         },
+        subDivisionName: {
+            type: DataTypes.STRING,
+        },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
@@ -32,9 +35,6 @@ Subdivision.init(
         tableName: "Subdivision",
     }
 );
-
-Subdivision.hasMany(Timetable);
-
 
 await Subdivision.sync();
 
