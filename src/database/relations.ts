@@ -16,33 +16,49 @@ import TimetableClass from "./timetableClass";
 // Hoping to define all relationships in this file
 
 AcademicYear.hasMany(Batch);
+Batch.belongsTo(AcademicYear);
 
 Batch.hasMany(Department);
+Department.belongsTo(Batch);
 
 Department.hasMany(Division);
-
-Division.hasMany(Subdivision);
-
-AcademicYear.hasMany(Slot);
-
-AcademicYear.hasMany(Group);
+Division.belongsTo(Department);
 
 Department.hasMany(Subject);
+Subject.belongsTo(Department);
+
+Division.hasMany(Subdivision);
+Subdivision.belongsTo(Division);
+
+AcademicYear.hasMany(Slot);
+Slot.belongsTo(Slot);
+
+AcademicYear.hasMany(Group);
+Group.belongsTo(AcademicYear);
+
+
 Group.hasMany(Subject);
+Subject.belongsTo(Group);
 
 AcademicYear.hasMany(Teacher);
+Teacher.belongsTo(AcademicYear);
 
-Teacher.hasMany(TeacherUnavailable); // has many or has one?
-Slot.hasMany(TeacherUnavailable); // ^
 
-Teacher.hasMany(Teach); // how is it linked?
-
-Teacher.hasMany(Subject); // ^
-
-Subdivision.hasMany(Timetable); // has one?
-Teacher.hasMany(Timetable); //
-Subject.hasMany(Timetable); //
-Slot.hasMany(Timetable); //
+Subdivision.belongsToMany(Slot, { through: Timetable });
+Slot.belongsToMany(Subdivision, { through: Slot });
+Teach.hasOne(Timetable);
+Timetable.belongsTo(Teach);
 
 Timetable.hasMany(TimetableClass);
-Classroom.hasMany(TimetableClass);
+TimetableClass.belongsTo(Timetable);
+
+Classroom.belongsToMany(Timetable, { through: TimetableClass });
+Timetable.belongsToMany(Classroom, { through: TimetableClass });
+
+// N-N relationships
+
+Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
+Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
+
+Teacher.belongsToMany(Subject, { through: Teach });
+Subject.belongsToMany(Teacher, { through: Teach });
