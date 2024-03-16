@@ -18,6 +18,9 @@ import TimetableClass from "./timetableClass";
 AcademicYear.hasMany(Batch);
 Batch.belongsTo(AcademicYear);
 
+AcademicYear.hasMany(Classroom);
+Classroom.belongsTo(AcademicYear);
+
 Batch.hasMany(Department);
 Department.belongsTo(Batch);
 
@@ -31,11 +34,10 @@ Division.hasMany(Subdivision);
 Subdivision.belongsTo(Division);
 
 AcademicYear.hasMany(Slot);
-Slot.belongsTo(Slot);
+Slot.belongsTo(AcademicYear);
 
 AcademicYear.hasMany(Group);
 Group.belongsTo(AcademicYear);
-
 
 Group.hasMany(Subject);
 Subject.belongsTo(Group);
@@ -43,9 +45,8 @@ Subject.belongsTo(Group);
 AcademicYear.hasMany(Teacher);
 Teacher.belongsTo(AcademicYear);
 
-
 Subdivision.belongsToMany(Slot, { through: Timetable });
-Slot.belongsToMany(Subdivision, { through: Slot });
+Slot.belongsToMany(Subdivision, { through: Timetable });
 Teach.hasOne(Timetable);
 Timetable.belongsTo(Teach);
 
@@ -64,16 +65,18 @@ Teacher.belongsToMany(Subject, { through: Teach });
 Subject.belongsToMany(Teacher, { through: Teach });
 
 await AcademicYear.sync();
-await Batch.sync();
+await Group.sync();
+await Teacher.sync();
 await Classroom.sync();
+await Slot.sync();
+await Batch.sync();
+
 await Department.sync();
 await Division.sync();
-await Group.sync();
-await Slot.sync();
 await Subdivision.sync();
 await Subject.sync();
+
 await Teach.sync();
-await Teacher.sync();
 await TeacherUnavailable.sync();
 await Timetable.sync();
 await TimetableClass.sync();

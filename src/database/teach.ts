@@ -13,12 +13,12 @@ class Teach extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare teachId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
 }
 
 Teach.init(
     {
-        teachId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

@@ -13,13 +13,13 @@ class Group extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare groupId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare groupType: string;
 }
 
 Group.init(
     {
-        groupId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

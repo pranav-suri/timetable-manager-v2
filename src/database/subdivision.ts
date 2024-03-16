@@ -13,13 +13,13 @@ class Subdivision extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare subDivisionId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare subDivisionName: String;
 }
 
 Subdivision.init(
     {
-        subDivisionId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

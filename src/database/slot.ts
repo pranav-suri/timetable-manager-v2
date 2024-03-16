@@ -10,14 +10,14 @@ import {
 class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare slotId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare day: string;
     public declare number: number;
 }
 
 Slot.init(
     {
-        slotId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

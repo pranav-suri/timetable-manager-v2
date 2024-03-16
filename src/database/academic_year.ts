@@ -13,14 +13,14 @@ class AcademicYear extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare acadYearId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare year: number;
     public declare name: String;
 }
 
 AcademicYear.init(
     {
-        acadYearId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             primaryKey: true,
             autoIncrement: true,

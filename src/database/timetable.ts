@@ -13,12 +13,12 @@ class Timetable extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare timetableId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
 }
 
 Timetable.init(
     {
-        timetableId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

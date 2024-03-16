@@ -13,14 +13,14 @@ class Classroom extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare classroomId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare classroomName: string;
     public declare isLab: boolean;
 }
 
 Classroom.init(
     {
-        classroomId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

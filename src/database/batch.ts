@@ -13,13 +13,13 @@ class Batch extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare batchId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare batchName: string;
 }
 
 Batch.init(
     {
-        batchId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

@@ -13,13 +13,13 @@ class Department extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare departmentId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare departmentName: string;
 }
 
 Department.init(
     {
-        departmentId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

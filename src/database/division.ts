@@ -13,13 +13,13 @@ class Division extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare divisionId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare divisionName: string;
 }
 
 Division.init(
     {
-        divisionId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

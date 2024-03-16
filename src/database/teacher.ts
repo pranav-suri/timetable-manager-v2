@@ -13,14 +13,14 @@ class Teacher extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare teacherId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
     public declare teacherName: string;
     public declare teacherEmail: string;
 }
 
 Teacher.init(
     {
-        teacherId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,

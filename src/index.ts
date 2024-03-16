@@ -25,6 +25,10 @@ app.get("/", (request) => {
     return { message: `${Date.now()}` };
 });
 
+app.get("/db-test", async () => {
+    return await Classroom.findAll();
+});
+
 app.listen(3000);
 
 console.log("Listening on port 3000");

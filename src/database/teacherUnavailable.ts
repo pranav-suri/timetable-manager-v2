@@ -13,12 +13,12 @@ class TeacherUnavailable extends Model<
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
-    public declare teacherUnavailableId: CreationOptional<number>;
+    public declare id: CreationOptional<number>;
 }
 
 TeacherUnavailable.init(
     {
-        teacherUnavailableId: {
+        id: {
             type: DataTypes.INTEGER.UNSIGNED,
             autoIncrement: true,
             primaryKey: true,
