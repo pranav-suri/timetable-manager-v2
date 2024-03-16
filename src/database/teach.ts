@@ -33,6 +33,6 @@ Teach.init(
     }
 );
 
-await Teach.sync();
+
 
 export default Teach;

@@ -40,6 +40,6 @@ AcademicYear.init(
     }
 );
 
-await AcademicYear.sync();
+
 
 export default AcademicYear;

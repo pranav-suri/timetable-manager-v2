@@ -32,6 +32,5 @@ TimetableClass.init(
     }
 );
 
-await TimetableClass.sync();
 
 export default TimetableClass;

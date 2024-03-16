@@ -36,6 +36,5 @@ Department.init(
     }
 );
 
-await Department.sync();
 
 export default Department;

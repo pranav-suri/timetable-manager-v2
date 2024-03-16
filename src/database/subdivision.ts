@@ -36,6 +36,6 @@ Subdivision.init(
     }
 );
 
-await Subdivision.sync();
+
 
 export default Subdivision;

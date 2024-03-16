@@ -36,6 +36,6 @@ Batch.init(
     }
 );
 
-await Batch.sync();
+
 
 export default Batch;

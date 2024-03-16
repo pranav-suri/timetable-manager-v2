@@ -36,6 +36,6 @@ Division.init(
     }
 );
 
-await Division.sync();
+
 
 export default Division;

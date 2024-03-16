@@ -40,6 +40,6 @@ Teacher.init(
         tableName: "Teacher",
     }
 );
-await Teacher.sync();
+
 
 export default Teacher;

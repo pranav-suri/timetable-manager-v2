@@ -37,6 +37,6 @@ Slot.init(
     }
 );
 
-await Slot.sync();
+
 
 export default Slot;

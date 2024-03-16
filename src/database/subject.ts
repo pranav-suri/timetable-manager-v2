@@ -41,6 +41,6 @@ Subject.init(
     }
 );
 
-await Subject.sync();
+
 
 export default Subject;

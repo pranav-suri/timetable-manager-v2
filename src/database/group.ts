@@ -36,6 +36,5 @@ Group.init(
     }
 );
 
-await Group.sync();
 
 export default Group;

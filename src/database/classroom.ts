@@ -40,6 +40,6 @@ Classroom.init(
     }
 );
 
-await Classroom.sync();
+
 
 export default Classroom;

@@ -32,6 +32,6 @@ TeacherUnavailable.init(
         tableName: "TeacherUnavailable",
     }
 );
-await TeacherUnavailable.sync();
+
 
 export default TeacherUnavailable;

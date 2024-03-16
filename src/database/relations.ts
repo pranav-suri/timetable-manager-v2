@@ -62,3 +62,18 @@ Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
 
 Teacher.belongsToMany(Subject, { through: Teach });
 Subject.belongsToMany(Teacher, { through: Teach });
+
+await AcademicYear.sync();
+await Batch.sync();
+await Classroom.sync();
+await Department.sync();
+await Division.sync();
+await Group.sync();
+await Slot.sync();
+await Subdivision.sync();
+await Subject.sync();
+await Teach.sync();
+await Teacher.sync();
+await TeacherUnavailable.sync();
+await Timetable.sync();
+await TimetableClass.sync();
