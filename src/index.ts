@@ -16,7 +16,7 @@ import {
     Timetable,
     TimetableClass,
 } from "./database";
-
+import sampleDataUpload from "./api/upload/sampleUpload";
 const app = new Elysia();
 
 app.use(cors({ methods: ["GET"] }));
@@ -32,6 +32,9 @@ app.get("/db-test", async () => {
 app.listen(3000);
 
 console.log("Listening on port 3000");
+
+// This function will upload the sample data to the database, uncomment to run.
+// sampleDataUpload();
 
 /**
  * Try visiting http://localhost:3000/slots: you should see an empty array.
