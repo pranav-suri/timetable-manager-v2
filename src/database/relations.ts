@@ -33,13 +33,13 @@ Subject.belongsTo(Department);
 Division.hasMany(Subdivision, { foreignKey: { allowNull: false } });
 Subdivision.belongsTo(Division);
 
-AcademicYear.hasMany(Slot), { foreignKey: { allowNull: false } };
+AcademicYear.hasMany(Slot, { foreignKey: { allowNull: false } });
 Slot.belongsTo(AcademicYear);
 
 AcademicYear.hasMany(Group, { foreignKey: { allowNull: false } });
 Group.belongsTo(AcademicYear);
 
-Group.hasMany(Subject, { foreignKey: { allowNull: true } });
+Group.hasMany(Subject, { foreignKey: { allowNull: false } });
 Subject.belongsTo(Group);
 
 AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false } });
