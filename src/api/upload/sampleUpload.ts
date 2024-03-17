@@ -1,7 +1,7 @@
 import {
     uploadBatchAndSubdivsionData,
     uploadClassroomData,
-    uploadSlotData,
+    uploadTestSlotData,
     uploadSubjectAndTeacherData,
     uploadUnavailabilityData,
 } from "./dataUpload";
@@ -15,7 +15,7 @@ async function sampleDataUpload() {
 
     const [academicYear2, isCreatedAcademicYear2] =
         await AcademicYear.findOrCreate({
-            where: { year: 2024, name: "ODD" },
+            where: { year: 2024, name: "EVEN" },
         });
 
     let batchAndSubdivisionData = await Bun.file(
@@ -39,10 +39,10 @@ async function sampleDataUpload() {
     }
 
     let slotData = await Bun.file("./src/sampleData/slot.csv").text();
-    if (await uploadSlotData(slotData, academicYear1.id)) {
+    if (await uploadTestSlotData(slotData, academicYear1.id)) {
         console.log("Slot data 1 uploaded successfully");
     }
-    if (await uploadSlotData(slotData, academicYear2.id)) {
+    if (await uploadTestSlotData(slotData, academicYear2.id)) {
         console.log("Slot data 2 uploaded successfully");
     }
 
@@ -75,6 +75,5 @@ async function sampleDataUpload() {
     }
     console.log("All data uploaded");
 }
-
 
 export default sampleDataUpload;

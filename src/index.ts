@@ -16,6 +16,12 @@ import {
     Timetable,
     TimetableClass,
 } from "./database";
+import {
+    uploadBatchAndSubdivsionData,
+    uploadClassroomData,
+    uploadSubjectAndTeacherData,
+    uploadUnavailabilityData,
+} from "./api/upload/dataUpload";
 import sampleDataUpload from "./api/upload/sampleUpload";
 const app = new Elysia();
 
@@ -25,13 +31,24 @@ app.get("/", (request) => {
     return { message: `${Date.now()}` };
 });
 
-app.get("/db-test", async () => {
-    return await Classroom.findAll();
+app.post("/upload/:type", async (ctx) => {
+    const { type } = ctx.params;
+    const body = ctx.body;
+
+    if (!body) {
+        ctx.set.status = 400;
+        return { message: "Invalid body" };
+    }
+
+    if (type === "timetable") {
+        return;
+    }
+    return { message: "Invalid type" };
 });
 
 app.listen(3000);
 
-console.log("Listening on port 3000");
+console.log("Listening on port 3000\nhttp://localhost:3000/");
 
 // This function will upload the sample data to the database, uncomment to run.
 // sampleDataUpload();

@@ -192,7 +192,7 @@ async function uploadClassroomData(
     return true;
 }
 
-async function uploadSlotData(
+async function uploadTestSlotData(
     csvData: string,
     acad_year_id: AcademicYear["id"]
 ) {
@@ -327,6 +327,6 @@ export {
     uploadBatchAndSubdivsionData,
     uploadClassroomData,
     uploadSubjectAndTeacherData,
-    uploadSlotData,
+    uploadTestSlotData,
     uploadUnavailabilityData,
 };
