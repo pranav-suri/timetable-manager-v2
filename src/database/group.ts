@@ -15,8 +15,9 @@ class Group extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare groupType: string;
+    public declare groupName: string;
     public declare AcademicYearId: ForeignKey<number>;
+    public declare allowSimultaneous: boolean;
 }
 
 Group.init(
@@ -26,8 +27,11 @@ Group.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        groupType: {
+        groupName: {
             type: DataTypes.STRING,
+        },
+        allowSimultaneous: {
+            type: DataTypes.BOOLEAN,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,

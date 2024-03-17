@@ -18,61 +18,53 @@ async function sampleDataUpload() {
             where: { year: 2024, name: "EVEN" },
         });
 
-    let batchAndSubdivisionData = await Bun.file(
+    /**
+     * Batch and subdivision data
+     */
+    let batchAndSubData = await Bun.file(
         "./src/sampleData/batch_and_subdivision.csv"
     ).text();
-    if (
-        await uploadBatchAndSubdivsionData(
-            batchAndSubdivisionData,
-            academicYear1.id
-        )
-    ) {
-        console.log("Batch and subdivision data 1 uploaded successfully");
-    }
-    if (
-        await uploadBatchAndSubdivsionData(
-            batchAndSubdivisionData,
-            academicYear2.id
-        )
-    ) {
-        console.log("Batch and subdivision data 2 uploaded successfully");
-    }
 
+    await uploadBatchAndSubdivsionData(batchAndSubData, academicYear1.id);
+    console.log("Batch and subdivision data 1 uploaded successfully");
+
+    await uploadBatchAndSubdivsionData(batchAndSubData, academicYear2.id);
+    console.log("Batch and subdivision data 2 uploaded successfully");
+
+    /**
+     * Slot data
+     */
     let slotData = await Bun.file("./src/sampleData/slot.csv").text();
-    if (await uploadTestSlotData(slotData, academicYear1.id)) {
-        console.log("Slot data 1 uploaded successfully");
-    }
-    if (await uploadTestSlotData(slotData, academicYear2.id)) {
-        console.log("Slot data 2 uploaded successfully");
-    }
 
+    await uploadTestSlotData(slotData, academicYear1.id);
+    console.log("Slot data 1 uploaded successfully");
+
+    await uploadTestSlotData(slotData, academicYear2.id);
+    console.log("Slot data 2 uploaded successfully");
+
+    /**
+     * Classroom data
+     */
     let classroomData = await Bun.file("./src/sampleData/classroom.csv").text();
-    if (await uploadClassroomData(classroomData, academicYear1.id)) {
-        console.log("Classroom data 1 uploaded successfully");
-    }
-    if (await uploadClassroomData(classroomData, academicYear2.id)) {
-        console.log("Classroom data 2 uploaded successfully");
-    }
 
-    let subjectAndTeacherData = await Bun.file(
+    await uploadClassroomData(classroomData, academicYear1.id);
+    console.log("Classroom data 1 uploaded successfully");
+
+    await uploadClassroomData(classroomData, academicYear2.id);
+    console.log("Classroom data 2 uploaded successfully");
+
+    /**
+     * Subject and teacher data
+     */
+    let subAndTeacherData = await Bun.file(
         "./src/sampleData/subject_and_teacher.csv"
     ).text();
-    if (
-        await uploadSubjectAndTeacherData(
-            subjectAndTeacherData,
-            academicYear1.id
-        )
-    ) {
-        console.log("Subject and teacher 1 data uploaded successfully");
-    }
-    if (
-        await uploadSubjectAndTeacherData(
-            subjectAndTeacherData,
-            academicYear2.id
-        )
-    ) {
-        console.log("Subject and teacher data 2 uploaded successfully");
-    }
+
+    await uploadSubjectAndTeacherData(subAndTeacherData, academicYear1.id);
+    console.log("Subject and teacher 1 data uploaded successfully");
+
+    await uploadSubjectAndTeacherData(subAndTeacherData, academicYear2.id);
+    console.log("Subject and teacher data 2 uploaded successfully");
     console.log("All data uploaded");
 }
 

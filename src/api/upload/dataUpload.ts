@@ -38,7 +38,8 @@ const subjectAndTeacherData = {
     department_name: "",
     batch_name: "",
     is_lab: "",
-    group_type: "",
+    group_name: "",
+    group_allow_simultaneous: "",
     teacher_name: "",
     teacher_email: "",
 };
@@ -174,7 +175,9 @@ async function uploadClassroomData(
     csvData: string,
     acad_year_id: AcademicYear["id"]
 ) {
-    const parsedCsv = Papa.parse<ClassroomData>(csvData, { header: true });
+    const parsedCsv = Papa.parse<ClassroomData>(csvData, {
+        header: true,
+    });
     if (!validateCsvData(parsedCsv, "classroomData")) {
         return false;
     }
@@ -196,7 +199,9 @@ async function uploadTestSlotData(
     csvData: string,
     acad_year_id: AcademicYear["id"]
 ) {
-    const parsedCsv = Papa.parse<SlotData>(csvData, { header: true });
+    const parsedCsv = Papa.parse<SlotData>(csvData, {
+        header: true,
+    });
     if (!validateCsvData(parsedCsv, "slotData")) {
         console.log("Errors in CSV file");
         return false;
@@ -229,12 +234,14 @@ async function uploadSubjectAndTeacherData(
         const {
             batch_name,
             department_name,
-            group_type,
+            group_name,
+            group_allow_simultaneous,
             is_lab,
             subject_name,
             teacher_email,
             teacher_name,
         } = row;
+
         const [batch, isCreatedBatch] = await Batch.findOrCreate({
             where: { batchName: batch_name, AcademicYearId: acad_year_id },
         });
@@ -244,9 +251,12 @@ async function uploadSubjectAndTeacherData(
                 where: { departmentName: department_name, BatchId: batch.id },
             }
         );
-
         const [group, isCreatedGroup] = await Group.findOrCreate({
-            where: { groupType: group_type, AcademicYearId: acad_year_id },
+            where: {
+                groupName: group_name,
+                allowSimultaneous: group_allow_simultaneous,
+                AcademicYearId: acad_year_id,
+            },
         });
 
         const [subject, isCreatedSubject] = await Subject.findOrCreate({
@@ -273,6 +283,7 @@ async function uploadSubjectAndTeacherData(
             },
         });
     }
+
     return true;
 }
 

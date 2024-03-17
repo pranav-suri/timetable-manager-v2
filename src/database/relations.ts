@@ -45,11 +45,17 @@ Subject.belongsTo(Group);
 AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false } });
 Teacher.belongsTo(AcademicYear);
 
-Subdivision.belongsToMany(Slot, { through: Timetable });
-Slot.belongsToMany(Subdivision, { through: Timetable });
+Slot.hasMany(Timetable, { foreignKey: { allowNull: false } });
+Timetable.belongsTo(Slot);
 
-Teach.hasOne(Timetable);
-Timetable.belongsTo(Teach);
+Subdivision.hasMany(Timetable, { foreignKey: { allowNull: false } });
+Timetable.belongsTo(Subdivision);
+
+Teacher.hasMany(Timetable, { foreignKey: { allowNull: true } });
+Timetable.belongsTo(Teacher);
+
+Subject.hasMany(Timetable, { foreignKey: { allowNull: true } });
+Timetable.belongsTo(Subject);
 
 Classroom.belongsToMany(Timetable, { through: TimetableClass });
 Timetable.belongsToMany(Classroom, { through: TimetableClass });
