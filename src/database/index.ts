@@ -1,4 +1,4 @@
-import AcademicYear from "./academic_year";
+import AcademicYear from "./academicYear";
 import Batch from "./batch";
 import Classroom from "./classroom";
 import Department from "./department";
@@ -14,4 +14,19 @@ import Timetable from "./timetable";
 import TimetableClass from "./timetableClass";
 import "./relations";
 
-export { AcademicYear, Batch, Classroom, Department, Division, Group, Slot, Subdivision, Subject, Teach, Teacher, TeacherUnavailable,Timetable, TimetableClass};
+export {
+    AcademicYear,
+    Batch,
+    Classroom,
+    Department,
+    Division,
+    Group,
+    Slot,
+    Subdivision,
+    Subject,
+    Teach,
+    Teacher,
+    TeacherUnavailable,
+    Timetable,
+    TimetableClass,
+};

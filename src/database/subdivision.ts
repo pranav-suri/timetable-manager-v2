@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -14,7 +15,9 @@ class Subdivision extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare subDivisionName: String;
+    public declare subdivisionName: String;
+    public declare DivisionId: ForeignKey<number>;
+
 }
 
 Subdivision.init(
@@ -24,7 +27,7 @@ Subdivision.init(
             autoIncrement: true,
             primaryKey: true,
         },
-        subDivisionName: {
+        subdivisionName: {
             type: DataTypes.STRING,
         },
         createdAt: DataTypes.DATE,

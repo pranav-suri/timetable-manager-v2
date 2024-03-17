@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -15,6 +16,7 @@ class Batch extends Model<
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
     public declare batchName: string;
+    public declare AcademicYearId: ForeignKey<number>;
 }
 
 Batch.init(
@@ -32,10 +34,8 @@ Batch.init(
     },
     {
         sequelize,
-        tableName: "batch",
+        tableName: "Batch",
     }
 );
-
-
 
 export default Batch;

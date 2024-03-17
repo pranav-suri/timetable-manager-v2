@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -16,6 +17,7 @@ class Classroom extends Model<
     public declare id: CreationOptional<number>;
     public declare classroomName: string;
     public declare isLab: boolean;
+    public declare AcademicYearId: ForeignKey<number>;
 }
 
 Classroom.init(
@@ -36,7 +38,7 @@ Classroom.init(
     },
     {
         sequelize,
-        tableName: "classroom",
+        tableName: "Classroom",
     }
 );
 

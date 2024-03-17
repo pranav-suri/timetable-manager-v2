@@ -24,22 +24,23 @@ AcademicYear.init(
             type: DataTypes.INTEGER.UNSIGNED,
             primaryKey: true,
             autoIncrement: true,
+
         },
         year: {
             type: DataTypes.INTEGER.UNSIGNED,
+            allowNull: false,
         },
         name: {
             type: DataTypes.STRING,
+            allowNull: false,
         },
         createdAt: DataTypes.DATE,
         updatedAt: DataTypes.DATE,
     },
     {
         sequelize,
-        tableName: "academic_year",
+        tableName: "AcademicYear",
     }
 );
-
-
 
 export default AcademicYear;

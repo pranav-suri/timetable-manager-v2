@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -16,6 +17,7 @@ class Teacher extends Model<
     public declare id: CreationOptional<number>;
     public declare teacherName: string;
     public declare teacherEmail: string;
+    public declare AcademicYearId: ForeignKey<number>;
 }
 
 Teacher.init(

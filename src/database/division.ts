@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -15,6 +16,8 @@ class Division extends Model<
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
     public declare divisionName: string;
+    public declare DepartmentId: ForeignKey<number>;
+
 }
 
 Division.init(

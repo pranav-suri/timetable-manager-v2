@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -13,6 +14,7 @@ class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare id: CreationOptional<number>;
     public declare day: string;
     public declare number: number;
+    public declare AcademicYearId: ForeignKey<number>;
 }
 
 Slot.init(

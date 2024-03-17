@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -14,6 +15,9 @@ class TimetableClass extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
+    public declare TimetableId: ForeignKey<number>;
+    public declare ClassroomId: ForeignKey<number>;
+
 }
 
 TimetableClass.init(

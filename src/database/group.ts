@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -15,6 +16,7 @@ class Group extends Model<
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
     public declare groupType: string;
+    public declare AcademicYearId: ForeignKey<number>;
 }
 
 Group.init(
@@ -35,6 +37,5 @@ Group.init(
         tableName: "Group",
     }
 );
-
 
 export default Group;

@@ -2,6 +2,7 @@ import sequelize from "./sequelize";
 import {
     CreationOptional,
     DataTypes,
+    ForeignKey,
     InferAttributes,
     InferCreationAttributes,
     Model,
@@ -16,6 +17,9 @@ class Subject extends Model<
     public declare id: CreationOptional<number>;
     public declare subjectName: string;
     public declare isLab: boolean;
+    public declare DepartmentId: ForeignKey<number>;
+    public declare GroupId:  ForeignKey<number>;
+
 }
 
 Subject.init(

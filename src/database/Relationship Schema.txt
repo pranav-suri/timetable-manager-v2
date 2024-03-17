@@ -14,11 +14,13 @@ timetable(timetable_id(PK), subdivision_id(FK), teacher_id(FK), subject_id(FK), 
 timetable_class(timetable_class_id(PK), timetable_id(FK), classroom_id(FK)) done
 
 CSV FILE TEMPLATE
-Data about subdivision - batch_name, department_name, division_name, subdivision_name
+Data about batchAndSubdivision - batch_name, department_name, division_name, subdivision_name
 Data about classroom - classroom_name, is_lab
-Data about subject - subject_name, deparment_name, is_lab, group_type, teacher_name, teacher_email
-Data about unavailabilty - teacher_email, day, number
-Data about teachers - teacher_name, teacher_email, subject_name, department
+Data about subjectAndTeacher - subject_name, deparment_name, batch_name, is_lab, group_type, teacher_name, teacher_email
+Data about Unavailabilty - teacher_name, teacher_email, day, slot_number
+
+// Not needed as data being uploaded with subject
+// Data about teachers - teacher_name, teacher_email, subject_name, department, batch_name
 
 -- Clicking on a slot 
 -- (Get request contains subdivision_id, slot_id)
