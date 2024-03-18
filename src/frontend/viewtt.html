@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Timetable</title>
+    <style>
+        /* Add your CSS styles here */
+        .dropdown {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>View Timetable</h1>
+
+    <!-- Division Button -->
+    <button onclick="showDivisionDropdowns()">Division</button>
+
+    <!-- Teacher Button -->
+    <button onclick="showTeacherDropdown()">Teacher</button>
+
+    <!-- Class/Lab Button -->
+    <button onclick="showClassLabDropdowns()">Class/Lab</button>
+
+    <!-- Division Dropdowns -->
+    <div id="divisionDropdowns" class="dropdown" style="display: none;">
+        <select id="departmentDropdown">
+            <option value="">Select Department</option>
+            <!-- Add department options here -->
+        </select>
+        <select id="batchDropdown">
+            <option value="">Select Batch</option>
+            <!-- Add batch options here -->
+        </select>
+        <select id="divisionDropdown">
+            <option value="">Select Division</option>
+            <!-- Add division options here -->
+        </select>
+    </div>
+
+    <!-- Teacher Dropdown -->
+    <div id="teacherDropdown" class="dropdown" style="display: none;">
+        <select id="teacherNameDropdown">
+            <option value="">Select Teacher Name</option>
+            <!-- Add teacher name options here -->
+        </select>
+    </div>
+
+    <!-- Class/Lab Dropdowns -->
+    <div id="classLabDropdowns" class="dropdown" style="display: none;">
+        <select id="classroomDropdown">
+            <option value="">Select Classroom</option>
+            <!-- Add classroom options here -->
+        </select>
+        <select id="labDropdown">
+            <option value="">Select Lab</option>
+            <!-- Add lab options here -->
+        </select>
+    </div>
+
+    <script>
+        function showDivisionDropdowns() {
+            // Hide other dropdowns
+            document.getElementById('teacherDropdown').style.display = 'none';
+            document.getElementById('classLabDropdowns').style.display = 'none';
+
+            // Show division dropdowns
+            document.getElementById('divisionDropdowns').style.display = 'block';
+        }
+
+        function showTeacherDropdown() {
+            // Hide other dropdowns
+            document.getElementById('divisionDropdowns').style.display = 'none';
+            document.getElementById('classLabDropdowns').style.display = 'none';
+
+            // Show teacher dropdown
+            document.getElementById('teacherDropdown').style.display = 'block';
+        }
+
+        function showClassLabDropdowns() {
+            // Hide other dropdowns
+            document.getElementById('divisionDropdowns').style.display = 'none';
+            document.getElementById('teacherDropdown').style.display = 'none';
+
+            // Show class/lab dropdowns
+            document.getElementById('classLabDropdowns').style.display = 'block';
+        }
+    </script>
+</body>
+
+</html>
