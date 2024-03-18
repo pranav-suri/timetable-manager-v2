@@ -13,8 +13,8 @@ import {
     Teach,
     Teacher,
     TeacherUnavailable,
-    Timetable,
-    TimetableClass,
+    SlotData,
+    SlotDataClass,
 } from "./database";
 import {
     uploadBatchAndSubdivsionData,
@@ -28,6 +28,7 @@ const app = new Elysia();
 app.use(cors({ methods: ["GET"] }));
 
 app.get("/", (request) => {
+    Classroom;
     return { message: `${Date.now()}` };
 });
 
@@ -51,7 +52,7 @@ app.listen(3000);
 console.log("Listening on port 3000\nhttp://localhost:3000/");
 
 // This function will upload the sample data to the database, uncomment to run.
-// sampleDataUpload();
+sampleDataUpload();
 
 /**
  * Try visiting http://localhost:3000/slots: you should see an empty array.

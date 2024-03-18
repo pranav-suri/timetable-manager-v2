@@ -11,8 +11,8 @@ import {
     Teach,
     Teacher,
     TeacherUnavailable,
-    Timetable,
-    TimetableClass,
+    SlotData as SlotInfo,
+    SlotDataClass,
 } from "../../database";
 import Papa from "papaparse";
 import sequelize from "../../database/sequelize";

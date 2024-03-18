@@ -8,20 +8,18 @@ import {
     Model,
 } from "sequelize";
 
-class Timetable extends Model<
-    InferAttributes<Timetable>,
-    InferCreationAttributes<Timetable>
+class SlotDataClass extends Model<
+    InferAttributes<SlotDataClass>,
+    InferCreationAttributes<SlotDataClass>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare TeacherId: ForeignKey<number>;
-    public declare SubjectId: ForeignKey<number>;
-    public declare SubdivionId: ForeignKey<number>;
-    public declare SlotId: ForeignKey<number>;
+    public declare TimetableId: ForeignKey<number>;
+    public declare ClassroomId: ForeignKey<number>;
 }
 
-Timetable.init(
+SlotDataClass.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -33,10 +31,8 @@ Timetable.init(
     },
     {
         sequelize,
-        tableName: "Timetable",
+        tableName: "SlotDataClass",
     }
 );
 
-
-
-export default Timetable;
+export default SlotDataClass;

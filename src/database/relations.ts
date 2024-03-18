@@ -10,8 +10,8 @@ import Subject from "./subject";
 import Teach from "./teach";
 import Teacher from "./teacher";
 import TeacherUnavailable from "./teacherUnavailable";
-import Timetable from "./timetable";
-import TimetableClass from "./timetableClass";
+import SlotData from "./slotData";
+import SlotDataClass from "./slotDataClass";
 
 // Hoping to define all relationships in this file
 
@@ -45,20 +45,20 @@ Subject.belongsTo(Group);
 AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false } });
 Teacher.belongsTo(AcademicYear);
 
-Slot.hasMany(Timetable, { foreignKey: { allowNull: false } });
-Timetable.belongsTo(Slot);
+Slot.hasMany(SlotData, { foreignKey: { allowNull: false } });
+SlotData.belongsTo(Slot);
 
-Subdivision.hasMany(Timetable, { foreignKey: { allowNull: false } });
-Timetable.belongsTo(Subdivision);
+Subdivision.hasMany(SlotData, { foreignKey: { allowNull: false } });
+SlotData.belongsTo(Subdivision);
 
-Teacher.hasMany(Timetable, { foreignKey: { allowNull: true } });
-Timetable.belongsTo(Teacher);
+Teacher.hasMany(SlotData, { foreignKey: { allowNull: true } });
+SlotData.belongsTo(Teacher);
 
-Subject.hasMany(Timetable, { foreignKey: { allowNull: true } });
-Timetable.belongsTo(Subject);
+Subject.hasMany(SlotData, { foreignKey: { allowNull: true } });
+SlotData.belongsTo(Subject);
 
-Classroom.belongsToMany(Timetable, { through: TimetableClass });
-Timetable.belongsToMany(Classroom, { through: TimetableClass });
+Classroom.belongsToMany(SlotData, { through: SlotDataClass });
+SlotData.belongsToMany(Classroom, { through: SlotDataClass });
 
 Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
 Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
@@ -80,5 +80,5 @@ await Subject.sync();
 
 await Teach.sync();
 await TeacherUnavailable.sync();
-await Timetable.sync();
-await TimetableClass.sync();
+await SlotData.sync();
+await SlotDataClass.sync();

@@ -10,8 +10,8 @@ import Subject from "./subject";
 import Teach from "./teach";
 import Teacher from "./teacher";
 import TeacherUnavailable from "./teacherUnavailable";
-import Timetable from "./timetable";
-import TimetableClass from "./timetableClass";
+import SlotData from "./slotData";
+import SlotDataClass from "./slotDataClass";
 import "./relations";
 
 export {
@@ -27,6 +27,6 @@ export {
     Teach,
     Teacher,
     TeacherUnavailable,
-    Timetable,
-    TimetableClass,
+    SlotData,
+    SlotDataClass
 };
