@@ -6,9 +6,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Timetable</title>
     <style>
-        /* Add your CSS styles here */
-        .dropdown {
-            margin-bottom: 20px;
+        /* CSS styles using the provided color palette */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #001D3D;
+            color: #FFC300;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #FFC300;
+        }
+
+        button {
+            background-color: #003566;
+            color: #FFC300;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        select {
+            width: 200px;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            font-size: 16px;
+            background-color: #003566;
+            color: #FFC300;
         }
     </style>
 </head>
@@ -26,7 +56,7 @@
     <button onclick="showClassLabDropdowns()">Class/Lab</button>
 
     <!-- Division Dropdowns -->
-    <div id="divisionDropdowns" class="dropdown" style="display: none;">
+    <div id="divisionDropdowns" style="display: none;">
         <select id="departmentDropdown">
             <option value="">Select Department</option>
             <!-- Add department options here -->
@@ -42,7 +72,7 @@
     </div>
 
     <!-- Teacher Dropdown -->
-    <div id="teacherDropdown" class="dropdown" style="display: none;">
+    <div id="teacherDropdown" style="display: none;">
         <select id="teacherNameDropdown">
             <option value="">Select Teacher Name</option>
             <!-- Add teacher name options here -->
@@ -50,7 +80,7 @@
     </div>
 
     <!-- Class/Lab Dropdowns -->
-    <div id="classLabDropdowns" class="dropdown" style="display: none;">
+    <div id="classLabDropdowns" style="display: none;">
         <select id="classroomDropdown">
             <option value="">Select Classroom</option>
             <!-- Add classroom options here -->
