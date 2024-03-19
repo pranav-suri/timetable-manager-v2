@@ -30,10 +30,16 @@
         }
 
         table {
+            margin-top: 2rem;
             width: 100%;
             border-collapse: collapse;
             transition: width 0.3s ease;
             /* Added transition for smooth resize */
+        }
+
+        .timetable {
+            min-width: 800px;
+            overflow-x: scroll;
         }
 
         th,
@@ -71,6 +77,27 @@
             /* Sidebar width is 300px */
             transition: width 0.3s ease;
             /* Added transition for smooth resize */
+        }
+
+        button {
+            background-color: #003566;
+            /* Change background color */
+            color: #F7BD33;
+            font-weight: 100;
+            font-size: large;
+            /* Change text color */
+            border: 2px;
+            border-radius: 5px;
+            padding: 10px 20px;
+            cursor: pointer;
+            /* Change cursor to pointer on hover */
+            transition: background-color 0.3s ease;
+            /* Add hover effect */
+        }
+
+        button:hover {
+            background-color: #F7BD33;
+            /* Change background color on hover */
         }
     </style>
 </head>
