@@ -111,8 +111,11 @@ function validateCsvData(
     for (const error of parsedCsv.errors) {
         // This works for now but need to handle this better
         // This runs in case of missing headings (missing commas at the last row of the csv file)
-        if (error.row !== undefined) {
-            // Above if statement just to calm down TS compiler
+        if (error.type === "Delimiter") {
+            console.log("Empty file uploaded");
+            return false;
+        }
+        if (error.row) {
             // console.log("Deleting row: ", error.row + 2); // +2 because top row is header and data starts from index 0
             // console.log("Row data: ", parsedCsv.data[error.row])
             parsedCsv.data.splice(error.row, 1);
@@ -142,6 +145,7 @@ async function uploadBatchAndSubdivsionData(
 ) {
     const parsedCsv = Papa.parse<BatchAndSubdivisionData>(csvData, {
         header: true,
+        skipEmptyLines: true,
     });
 
     if (!validateCsvData(parsedCsv, "batchAndSubdivisionData")) return false;
@@ -177,6 +181,7 @@ async function uploadClassroomData(
 ) {
     const parsedCsv = Papa.parse<ClassroomData>(csvData, {
         header: true,
+        skipEmptyLines: true,
     });
     if (!validateCsvData(parsedCsv, "classroomData")) {
         return false;
@@ -201,6 +206,7 @@ async function uploadTestSlotData(
 ) {
     const parsedCsv = Papa.parse<SlotData>(csvData, {
         header: true,
+        skipEmptyLines: true,
     });
     if (!validateCsvData(parsedCsv, "slotData")) {
         console.log("Errors in CSV file");
@@ -226,6 +232,7 @@ async function uploadSubjectAndTeacherData(
 ) {
     const parsedCsv = Papa.parse<SubjectAndTeacherData>(csvData, {
         header: true,
+        skipEmptyLines: true,
     });
     if (!validateCsvData(parsedCsv, "subjectAndTeacherData")) {
         return false;
@@ -291,7 +298,10 @@ async function uploadUnavailabilityData(
     csvData: string,
     acad_year_id: AcademicYear["id"]
 ) {
-    const parsedCsv = Papa.parse<UnavailabilityData>(csvData, { header: true });
+    const parsedCsv = Papa.parse<UnavailabilityData>(csvData, {
+        header: true,
+        skipEmptyLines: true,
+    });
 
     if (!validateCsvData(parsedCsv, "unavailabilityData")) {
         console.log("Errors in CSV file");
