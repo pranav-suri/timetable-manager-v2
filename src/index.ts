@@ -48,78 +48,77 @@ app.get("/create/:academicYearId", async (req) => {
         classroomId,
     } = req.query;
     if (departmentId && divisionId && batchId && slotId) {
-        
     }
-        if (departmentId && divisionId && batchId) {
-            const subdivisions = await Subdivision.findAll({
-                where: { DivisionId: divisionId },
-            });
-            const subdivisionIds = subdivisions.map(
-                (subdivision) => subdivision.id
-            );
-            const slots = await Slot.findAll({
-                where: {
-                    AcademicYearId: academicYearId,
+    if (departmentId && divisionId && batchId) {
+        const subdivisions = await Subdivision.findAll({
+            where: { DivisionId: divisionId },
+        });
+        const subdivisionIds = subdivisions.map(
+            (subdivision) => subdivision.id
+        );
+        const slots = await Slot.findAll({
+            where: {
+                AcademicYearId: academicYearId,
+            },
+        });
+        const slotDatas = await SlotData.findAll({
+            where: {
+                SubdivisionId: {
+                    [Op.in]: subdivisionIds,
                 },
-            });
-            const slotDatas = await SlotData.findAll({
-                where: {
-                    SubdivisionId: {
-                        [Op.in]: subdivisionIds,
-                    },
-                },
-            });
+            },
+        });
 
-            const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
-            const teachers = await Teacher.findAll({
-                where: {
-                    id: {
-                        [Op.in]: teacherIds,
-                    },
+        const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+        const teachers = await Teacher.findAll({
+            where: {
+                id: {
+                    [Op.in]: teacherIds,
                 },
-            });
-            const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
-            const subjects = await Subject.findAll({
-                where: {
-                    id: {
-                        [Op.in]: subjectIds,
-                    },
+            },
+        });
+        const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+        const subjects = await Subject.findAll({
+            where: {
+                id: {
+                    [Op.in]: subjectIds,
                 },
-            });
+            },
+        });
 
-            const slotDataIds = slotDatas.map((slotData) => slotData.id);
-            const slotDataClasses = await SlotDataClass.findAll({
-                where: {
-                    SlotDataId: {
-                        [Op.in]: slotDataIds,
-                    },
+        const slotDataIds = slotDatas.map((slotData) => slotData.id);
+        const slotDataClasses = await SlotDataClass.findAll({
+            where: {
+                SlotDataId: {
+                    [Op.in]: slotDataIds,
                 },
-            });
-            const classIds = slotDataClasses.map(
-                (slotDataClass) => slotDataClass.ClassroomId
-            );
+            },
+        });
+        const classIds = slotDataClasses.map(
+            (slotDataClass) => slotDataClass.ClassroomId
+        );
 
-            const classrooms = await Classroom.findAll({
-                where: {
-                    id: {
-                        [Op.in]: classIds,
-                    },
+        const classrooms = await Classroom.findAll({
+            where: {
+                id: {
+                    [Op.in]: classIds,
                 },
-            });
+            },
+        });
 
-            return {
-                // Slots formation data
-                slots: slots,
-                // Slot content data
-                slotDatas: slotDatas,
-                // Retreival data
-                teachers: teachers,
-                subjects: subjects,
-                subdivisions: subdivisions,
-                slotDataClasses: slotDataClasses,
-                classrooms: classrooms,
-            };
-        }
+        return {
+            // Slots formation data
+            slots: slots,
+            // Slot content data
+            slotDatas: slotDatas,
+            // Retreival data
+            teachers: teachers,
+            subjects: subjects,
+            subdivisions: subdivisions,
+            slotDataClasses: slotDataClasses,
+            classrooms: classrooms,
+        };
+    }
     if (batchId && departmentId) {
         return {
             divisions: await Division.findAll({
@@ -142,9 +141,34 @@ app.get("/create/:academicYearId", async (req) => {
     };
 });
 
-app.put("/create/:", async (req) => {
-    
-})
+app.put("/addSlot/:slotId", async (req) => {
+    const slotId = req.params.slotId;
+    interface SlotUpdateRequestBody {
+        subjectId: string;
+        teacherId: string;
+        subdivisionIds: string[]; // Assuming subdivisionId is an array of numbers
+        classroomIds: string[]; // Assuming classroomId is an array of numbers
+    }
+    const { subjectId, teacherId, subdivisionIds, classroomIds } =
+        req.body as SlotUpdateRequestBody;
+    for (const classroomId of classroomIds) {
+        for (const subdivisionId of subdivisionIds){
+            const [slotData, isCreatedSlotData] = await SlotData.findOrCreate({
+                where: {
+                    SubjectId: subjectId,
+                    TeacherId: teacherId,
+                    SubdivisionId: subdivisionId,
+                    SlotId: slotId
+                },
+            });
+            const [slotDataClass, isCreatedSlotDataClass] = await SlotDataClass.findOrCreate({
+                where: {
+                    SlotDataId: slotData.id,
+                    ClassroomId: classroomId
+                }
+            })
+    }}
+});
 
 app.post("/upload/:type", async (ctx) => {
     const { type } = ctx.params;
