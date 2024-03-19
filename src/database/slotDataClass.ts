@@ -15,7 +15,7 @@ class SlotDataClass extends Model<
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare TimetableId: ForeignKey<number>;
+    public declare SlotDataId: ForeignKey<number>;
     public declare ClassroomId: ForeignKey<number>;
 }
 

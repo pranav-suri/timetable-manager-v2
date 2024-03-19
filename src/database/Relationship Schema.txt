@@ -10,8 +10,8 @@ subject(subject_id(PK), subject_name, is_lab, department_id(FK), group_id(FK) (m
 teacher(teacher_id(PK), teacher_name, teacher_email, acad_year_id(FK)) done
 teacher_unavailable(teacher_unavailable_id(PK), teacher_id(FK), slot_id(FK)) done
 teach(teacher_id(FK), subject_id(FK)) done
-slotData(timetable_id(PK), subdivision_id(FK), teacher_id(FK), subject_id(FK), slot_id(FK)) done
-slotDataClass(timetable_class_id(PK), timetable_id(FK), classroom_id(FK)) done
+slotData(slotDataId(PK), subdivision_id(FK), teacher_id(FK), subject_id(FK), slot_id(FK)) done
+slotDataClass(slotDataClassId(PK), slotDataId(FK), classroom_id(FK)) done
 
 CSV FILE TEMPLATE
 Data about batchAndSubdivision - batch_name, department_name, division_name, subdivision_name

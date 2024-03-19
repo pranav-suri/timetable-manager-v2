@@ -57,8 +57,14 @@ SlotData.belongsTo(Teacher);
 Subject.hasMany(SlotData, { foreignKey: { allowNull: true } });
 SlotData.belongsTo(Subject);
 
-Classroom.belongsToMany(SlotData, { through: SlotDataClass });
-SlotData.belongsToMany(Classroom, { through: SlotDataClass });
+Classroom.belongsToMany(SlotData, {
+    through: SlotDataClass,
+    foreignKey: "SlotDataId",
+});
+SlotData.belongsToMany(Classroom, {
+    through: SlotDataClass,
+    foreignKey: "ClassroomId",
+});
 
 Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
 Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
