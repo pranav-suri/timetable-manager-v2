@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "bun",
+            "script": "bun lint && tsc && vite build",
+            "problemMatcher": [],
+            "label": "bun: build",
+            "detail": "bun run bun lint && tsc && vite build - package.json",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "bun",
+            "script": "bun run dev:frontend & bun run dev:backend",
+            "problemMatcher": [],
+            "label": "bun: dev",
+            "detail": "bun run dev:frontend & bun run dev:backend - package.json"
+        }
+    ]
+}

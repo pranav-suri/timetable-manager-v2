@@ -2,11 +2,11 @@
 
 ## Pre-requisites
 
-- Bunjs https://bun.sh/
-- Sanity
-- Common Sense
-- A good sense of humour
-- A brain
+-   Bunjs https://bun.sh/
+-   Sanity
+-   Common Sense
+-   A good sense of humour
+-   A brain
 
 ## Installation
 

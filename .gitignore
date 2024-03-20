@@ -178,4 +178,4 @@ dist
 bun.lockb
 
 # VSCode workspace settings
-/.vscode
+.vscode/settings.json

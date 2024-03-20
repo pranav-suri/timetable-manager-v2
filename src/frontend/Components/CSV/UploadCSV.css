@@ -1,0 +1,41 @@
+.upload-container {
+    display: inline-block;
+    width: calc(25% - 20px);
+    /* Adjust the width as needed */
+    margin-right: 20px;
+    /* Adjust the spacing between components as needed */
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #003566;
+    color: #ccc;
+    height: 20rem;
+    border-radius: 2rem;
+    vertical-align: top;
+    /* Align components at the top */
+}
+
+.upload-container:last-child {
+    margin-right: 0;
+    /* Remove margin from the last component */
+}
+
+.upload-container.drag-over {
+    border-color: #007bff;
+}
+
+.file-box {
+    border: 2px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    color: #333;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.file-box:hover {
+    background-color: #eaeaea;
+}
