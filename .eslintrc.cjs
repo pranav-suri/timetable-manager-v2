@@ -2,7 +2,14 @@ module.exports = {
     env: {
         browser: true,
         es2021: true,
+        node: true,
     },
+    parser: "@typescript-eslint/parser",
+    parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+    },
+    plugins: ["@typescript-eslint", "react", "react-refresh"],
     extends: [
         "eslint:recommended",
         "plugin:@typescript-eslint/recommended",
@@ -26,25 +33,12 @@ module.exports = {
             },
         },
     ],
-    parser: "@typescript-eslint/parser",
-    parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-    },
-    plugins: ["@typescript-eslint", "react", "react-refresh"],
     rules: {
-        indent: ["error", 4],
         "linebreak-style": ["error", "unix"],
         quotes: ["warn", "double"],
         semi: ["error", "always"],
         "@typescript-eslint/naming-convention": [
-            "error",
-            {
-                selector: "default",
-                format: ["camelCase", "PascalCase", "UPPER_CASE"],
-                leadingUnderscore: "allow",
-                trailingUnderscore: "allow",
-            },
+            "warn",
             {
                 selector: "variable",
                 format: ["camelCase", "UPPER_CASE", "PascalCase"],
@@ -68,11 +62,8 @@ module.exports = {
                 selector: "import",
                 format: ["PascalCase", "camelCase"],
             },
-            {
-                selector: "properties",
-                format: null,
-            },
         ],
+        "quote-props": ["warn", "as-needed"],
         "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
         "@typescript-eslint/no-unused-vars": "warn",
         "@typescript-eslint/no-empty-function": "warn",
