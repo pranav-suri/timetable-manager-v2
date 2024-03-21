@@ -1,9 +1,7 @@
 ﻿classroom_name,is_lab
-D-401,1
-D-402,1
-D-403,1
-A-404,1
-A-405,1
-A-406,1
-CL 01: Programming Paradigm Lab,0
-CL 02: Data Structure Lab,0
+401,0
+402,0
+403,0
+DBMS Lab,1
+OS Lab,1
+Tut Room,0

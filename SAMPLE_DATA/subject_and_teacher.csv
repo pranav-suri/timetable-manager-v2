@@ -1,6 +1,6 @@
 teacher_name,teacher_email,subject_name,batch_name,department_name,group_name,is_lab,group_allow_simultaneous
 Dr Chandan Kumar Choubey CKC,chandan.choubey@sitpune.edu.in,Basic Electrical and Electronics Engineering,fy,ra,core,0,0
-Prof Jayshree PandeJP,jayshree.pande@sitpune.edu.in,Basic Electrical and Electronics Engineering,fy,mech,core,0,0
+Prof Jayshree PandeJP,jayshree.pande@sitpune.edu.in,Basic Electrical and Electronics Engineering                         ,fy,mech,core,0,0
 Dr Chandan Kumar Choubey CKC,chandan.choubey@sitpune.edu.in,Basic Electrical and Electronics Engineering lab,fy,ra,core,1,0
 Prof Jayshree PandeJP,jayshree.pande@sitpune.edu.in,Basic Electrical and Electronics Engineering lab,fy,mech,core,1,0
 Dr Harikrishan R HKR,harikrishnan.r@sitpune.edu.in,Basic of Sensors and Microcontrollers,fy,civil,core,0,0

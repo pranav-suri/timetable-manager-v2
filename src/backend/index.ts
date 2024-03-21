@@ -16,38 +16,44 @@ import {
     SlotData,
     SlotDataClass,
 } from "./database";
-import {
-    uploadBatchAndSubdivsionData,
-    uploadClassroomData,
-    uploadSubjectAndTeacherData,
-    uploadUnavailabilityData,
-} from "./api/upload/dataUpload";
+import { getTimetable } from "./controllers";
 import sampleDataUpload from "./api/upload/sampleUpload";
-import { where, Sequelize, Op } from "sequelize";
 const app = new Elysia();
 
 app.use(cors({ methods: ["GET"] }));
 
-app.get("/", (request) => {
-    console.log("Hello!");
-    return { message: "Hello!" };
+app.get("/", () => {
+    return { message: `${Date.now()}` };
 });
 
-app.get("/create", async (req) => {
+app.get("/create", async () => {
     return { academicYears: await AcademicYear.findAll() };
 });
 
 app.get("/create/:academicYearId", async (req) => {
     const { academicYearId } = req.params;
-    const { departmentId, divisionId, batchId, slotId, subjectId, teacherId, classroomId } =
-        req.query;
+    const {
+        departmentId,
+        divisionId,
+        batchId,
+        slotId,
+        subjectId,
+        teacherId,
+        classroomId,
+    } = req.query;
     if (departmentId && divisionId && batchId && slotId) {
+        // Enter logic here
     }
     if (departmentId && divisionId && batchId) {
         const subdivisions = await Subdivision.findAll({
             where: { DivisionId: divisionId },
         });
-        const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+
+        /*      
+        const subdivisionIds = subdivisions.map(
+            (subdivision) => subdivision.id
+        );
+
         const slots = await Slot.findAll({
             where: {
                 AcademicYearId: academicYearId,
@@ -86,7 +92,9 @@ app.get("/create/:academicYearId", async (req) => {
                 },
             },
         });
-        const classIds = slotDataClasses.map((slotDataClass) => slotDataClass.ClassroomId);
+        const classIds = slotDataClasses.map(
+            (slotDataClass) => slotDataClass.ClassroomId
+        );
 
         const classrooms = await Classroom.findAll({
             where: {
@@ -95,20 +103,20 @@ app.get("/create/:academicYearId", async (req) => {
                 },
             },
         });
+        */
 
-        return {
-            // Slots formation data
-            slots: slots,
-            // Slot content data
-            slotDatas: slotDatas,
-            // Retreival data
-            teachers: teachers,
-            subjects: subjects,
-            subdivisions: subdivisions,
-            slotDataClasses: slotDataClasses,
-            classrooms: classrooms,
-        };
+        const timetables = [];
+        for (const subdivision of subdivisions) {
+            const timetable = await getTimetable(
+                academicYearId,
+                subdivision.id,
+                "subdivision"
+            );
+            timetables.push(timetable);
+        }
+        return { Timetables: timetables };
     }
+
     if (batchId && departmentId) {
         return {
             divisions: await Division.findAll({
@@ -130,8 +138,6 @@ app.get("/create/:academicYearId", async (req) => {
         }),
     };
 });
-
-app.put("/create/:", async (req) => {});
 
 app.post("/upload/:type", async (ctx) => {
     const { type } = ctx.params;

@@ -124,7 +124,7 @@ function renderHeaders(
     const headers = (
         <>
             <th>Days</th>
-            {Array.from(slotNumbers).sort().map((slotNumber) => (
+            {Array.from(slotNumbers).map((slotNumber) => (
                 <th>{slotNumber}</th>
             ))}
         </>
@@ -148,7 +148,7 @@ function renderTimetable(data: TimetableStructure) {
         <table>
             <thead>{renderHeaders(slotNumbers)}</thead>
             <tbody>
-                {Array.from(slotDays).sort().map((day) =>
+                {Array.from(slotDays).map((day) =>
                     renderRow(data.Timetables, day)
                 )}
             </tbody>

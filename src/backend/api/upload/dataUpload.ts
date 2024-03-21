@@ -16,6 +16,7 @@ import {
 } from "../../database";
 import Papa from "papaparse";
 import sequelize from "../../database/sequelize";
+import { Association } from "sequelize";
 
 const batchAndSubdivisionData = {
     batch_name: "",
@@ -60,12 +61,27 @@ const slotData = {
 };
 type SlotData = typeof slotData;
 
+const timetableData = {
+    day: "",
+    slot_number: "",
+    batch_name: "",
+    department_name: "",
+    subdivision_name: "",
+    subject_name: "",
+    group_name: "",
+    teacher_email: "",
+    classroom_name: "",
+};
+
+type TimetableData = typeof timetableData;
+
 type CsvType =
     | "batchAndSubdivisionData"
     | "classroomData"
     | "subjectAndTeacherData"
     | "unavailabilityData"
-    | "slotData";
+    | "slotData"
+    | "timetableData";
 
 function validateCsvData(
     parsedCsv: Papa.ParseResult<
@@ -74,8 +90,9 @@ function validateCsvData(
         | SubjectAndTeacherData
         | UnavailabilityData
         | SlotData
+        | TimetableData
     >,
-    csvType: CsvType,
+    csvType: CsvType
 ) {
     // This function will parse csv data handle errors with missing headings
     // This does not validate missing data in each row
@@ -101,6 +118,10 @@ function validateCsvData(
             break;
         case "slotData":
             expectedKeys = Object.keys(slotData);
+            dataKeys = Object.keys(parsedCsv.data[0]);
+            break;
+        case "timetableData":
+            expectedKeys = Object.keys(timetableData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
         default:
@@ -134,45 +155,58 @@ function validateCsvData(
     return true;
 }
 
-function validateRowData() {
-    // This function will check for null values in the csv data
-    return true;
-}
-
-async function uploadBatchAndSubdivsionData(csvData: string, acad_year_id: AcademicYear["id"]) {
-    const parsedCsv = Papa.parse<BatchAndSubdivisionData>(csvData, {
+async function parseCsvData<T>(csvData: string) {
+    const csvParsingOptions = {
         header: true,
         skipEmptyLines: true,
-    });
+        transform: (value: string, header: string) => {
+            if (header) {
+                return value.trim();
+            }
+            return value;
+        },
+    };
+    return Papa.parse<T>(csvData, csvParsingOptions);
+}
+
+async function uploadBatchAndSubdivsionData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<BatchAndSubdivisionData>(csvData);
 
     if (!validateCsvData(parsedCsv, "batchAndSubdivisionData")) return false;
 
     for (const row of parsedCsv.data) {
-        const { batch_name, department_name, division_name, subdivision_name } = row;
+        const { batch_name, department_name, division_name, subdivision_name } =
+            row;
         const [batch, isCreatedBatch] = await Batch.findOrCreate({
             where: { batchName: batch_name, AcademicYearId: acad_year_id },
         });
-        const [department, isCreatedDepartment] = await Department.findOrCreate({
-            where: { departmentName: department_name, BatchId: batch.id },
-        });
+        const [department, isCreatedDepartment] = await Department.findOrCreate(
+            {
+                where: { departmentName: department_name, BatchId: batch.id },
+            }
+        );
         const [division, isCreatedDivision] = await Division.findOrCreate({
             where: { divisionName: division_name, DepartmentId: department.id },
         });
-        const [subdivision, isCreatedSubdivision] = await Subdivision.findOrCreate({
-            where: {
-                subdivisionName: subdivision_name,
-                DivisionId: division.id,
-            },
-        });
+        const [subdivision, isCreatedSubdivision] =
+            await Subdivision.findOrCreate({
+                where: {
+                    subdivisionName: subdivision_name,
+                    DivisionId: division.id,
+                },
+            });
     }
     return true;
 }
 
-async function uploadClassroomData(csvData: string, acad_year_id: AcademicYear["id"]) {
-    const parsedCsv = Papa.parse<ClassroomData>(csvData, {
-        header: true,
-        skipEmptyLines: true,
-    });
+async function uploadClassroomData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<ClassroomData>(csvData);
     if (!validateCsvData(parsedCsv, "classroomData")) {
         return false;
     }
@@ -190,11 +224,11 @@ async function uploadClassroomData(csvData: string, acad_year_id: AcademicYear["
     return true;
 }
 
-async function uploadTestSlotData(csvData: string, acad_year_id: AcademicYear["id"]) {
-    const parsedCsv = Papa.parse<SlotData>(csvData, {
-        header: true,
-        skipEmptyLines: true,
-    });
+async function uploadTestSlotData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<SlotData>(csvData);
     if (!validateCsvData(parsedCsv, "slotData")) {
         console.log("Errors in CSV file");
         return false;
@@ -213,11 +247,11 @@ async function uploadTestSlotData(csvData: string, acad_year_id: AcademicYear["i
     return true;
 }
 
-async function uploadSubjectAndTeacherData(csvData: string, acad_year_id: AcademicYear["id"]) {
-    const parsedCsv = Papa.parse<SubjectAndTeacherData>(csvData, {
-        header: true,
-        skipEmptyLines: true,
-    });
+async function uploadSubjectAndTeacherData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<SubjectAndTeacherData>(csvData);
     if (!validateCsvData(parsedCsv, "subjectAndTeacherData")) {
         return false;
     }
@@ -233,13 +267,23 @@ async function uploadSubjectAndTeacherData(csvData: string, acad_year_id: Academ
             teacher_name,
         } = row;
 
-        const [batch, isCreatedBatch] = await Batch.findOrCreate({
+        const batch = await Batch.findOne({
             where: { batchName: batch_name, AcademicYearId: acad_year_id },
         });
-
-        const [department, isCreatedDepartment] = await Department.findOrCreate({
+        if (!batch) {
+            console.log(row);
+            console.log("Batch not found");
+            return false;
+        }
+        const department = await Department.findOne({
             where: { departmentName: department_name, BatchId: batch.id },
         });
+        if (!department) {
+            console.log(row);
+            console.log("Department not found");
+            return false;
+        }
+
         const [group, isCreatedGroup] = await Group.findOrCreate({
             where: {
                 groupName: group_name,
@@ -276,11 +320,11 @@ async function uploadSubjectAndTeacherData(csvData: string, acad_year_id: Academ
     return true;
 }
 
-async function uploadUnavailabilityData(csvData: string, acad_year_id: AcademicYear["id"]) {
-    const parsedCsv = Papa.parse<UnavailabilityData>(csvData, {
-        header: true,
-        skipEmptyLines: true,
-    });
+async function uploadUnavailabilityData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<UnavailabilityData>(csvData);
 
     if (!validateCsvData(parsedCsv, "unavailabilityData")) {
         console.log("Errors in CSV file");
@@ -312,14 +356,206 @@ async function uploadUnavailabilityData(csvData: string, acad_year_id: AcademicY
             return false;
         }
 
-        const [unavailability, isCreatedUnavailability] = await TeacherUnavailable.findOrCreate({
+        const [unavailability, isCreatedUnavailability] =
+            await TeacherUnavailable.findOrCreate({
+                where: {
+                    TeacherId: teacher.id,
+                    SlotId: slot.id,
+                },
+            });
+    }
+    return true;
+}
+
+async function uploadTimetableData(
+    csvData: string,
+    acad_year_id: AcademicYear["id"]
+) {
+    const parsedCsv = await parseCsvData<TimetableData>(csvData);
+
+    if (!validateCsvData(parsedCsv, "timetableData")) {
+        console.log("Errors in CSV file");
+        return false;
+    }
+
+    for (const row of parsedCsv.data) {
+        const {
+            day,
+            slot_number,
+            department_name,
+            batch_name,
+            subdivision_name,
+            subject_name,
+            group_name,
+            teacher_email,
+            classroom_name,
+        } = row;
+        /*
+        Alternative approach with errors at each step -----------
+
+        const batch = await Batch.findOne({
             where: {
+                batchName: batch_name,
+                AcademicYearId: acad_year_id,
+            },
+        });
+
+        const department = await Department.findOne({
+            where: {
+                departmentName: department_name,
+                BatchId: batch.id,
+            },
+        });
+
+        const division = await Division.findOne({
+            where: {
+                divisionName: division_name,
+                DepartmentId: department.id,
+            },
+        });
+
+        const subdivision = await Subdivision.findOne({
+            where: {
+                subdivisionName: subdivision_name,
+                DivisionId: division.id,
+            },
+        });
+        */
+
+        const subdivision = await Subdivision.findOne({
+            where: {
+                subdivisionName: subdivision_name,
+            },
+            include: [
+                {
+                    association: "Division",
+                    required: true,
+
+                    include: [
+                        {
+                            association: "Department",
+                            required: true,
+                            where: {
+                                departmentName: department_name,
+                            },
+                            include: [
+                                {
+                                    association: "Batch",
+                                    required: true,
+                                    where: {
+                                        batchName: batch_name,
+                                        AcademicYearId: acad_year_id,
+                                    },
+                                },
+                            ],
+                        },
+                    ],
+                },
+            ],
+        });
+
+        if (!subdivision) {
+            console.log("Subdivision not found");
+            console.log({
+                batch_name,
+                department_name,
+                subdivision_name,
+            });
+            return false;
+        }
+        const subject = await Subject.findOne({
+            where: {
+                subjectName: subject_name,
+            },
+            include: [
+                {
+                    association: "Department",
+                    required: true,
+                    where: {
+                        departmentName: department_name,
+                    },
+                },
+                {
+                    association: "Group",
+                    required: true,
+                    where: {
+                        groupName: group_name,
+                        academicYearId: acad_year_id,
+                    },
+                },
+            ],
+        });
+        if (!subject) {
+            console.log("Subject not found");
+            console.log({
+                subject_name,
+                department_name,
+                group_name,
+            });
+            return false;
+        }
+        const teacher = await Teacher.findOne({
+            where: {
+                teacherEmail: teacher_email,
+                AcademicYearId: acad_year_id,
+            },
+        });
+
+        if (!teacher) {
+            console.log("Teacher not found");
+            console.log({
+                teacher_email,
+            });
+            return false;
+        }
+
+        const classroom = await Classroom.findOne({
+            where: {
+                classroomName: classroom_name,
+                AcademicYearId: acad_year_id,
+            },
+        });
+        if (!classroom) {
+            console.log("Classroom not found");
+            console.log({
+                classroom_name,
+            });
+            return false;
+        }
+
+        const slot = await Slot.findOne({
+            where: {
+                day: day,
+                number: slot_number,
+                AcademicYearId: acad_year_id,
+            },
+        });
+        if (!slot) {
+            console.log("Slot not found");
+            console.log({
+                day,
+                slot_number,
+            });
+            return false;
+        }
+
+        const [slotData, isCreatedSlotData] = await SlotInfo.findOrCreate({
+            where: {
+                SubdivisionId: subdivision.id,
+                SubjectId: subject.id,
                 TeacherId: teacher.id,
                 SlotId: slot.id,
             },
         });
+
+        const [slotDataClass, isCreatedSlotDataClass] =
+            await SlotDataClass.findOrCreate({
+                where: {
+                    SlotDataId: slotData.id,
+                    ClassroomId: classroom.id,
+                },
+            });
     }
-    return true;
 }
 
 export {
@@ -328,4 +564,5 @@ export {
     uploadSubjectAndTeacherData,
     uploadTestSlotData,
     uploadUnavailabilityData,
+    uploadTimetableData,
 };

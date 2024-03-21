@@ -1,19 +1,19 @@
-import AcademicYear from "./academicYear";
-import Batch from "./batch";
-import Classroom from "./classroom";
-import Department from "./department";
-import Division from "./division";
-import Group from "./group";
-import Slot from "./slot";
-import Subdivision from "./subdivision";
-import Subject from "./subject";
-import Teach from "./teach";
-import Teacher from "./teacher";
-import TeacherUnavailable from "./teacherUnavailable";
-import SlotData from "./slotData";
-import SlotDataClass from "./slotDataClass";
-
-// Hoping to define all relationships in this file
+import {
+    AcademicYear,
+    Batch,
+    Classroom,
+    Department,
+    Division,
+    Group,
+    Slot,
+    Subdivision,
+    Subject,
+    Teach,
+    Teacher,
+    TeacherUnavailable,
+    SlotData,
+    SlotDataClass,
+} from ".";
 
 AcademicYear.hasMany(Batch, { foreignKey: { allowNull: false } });
 Batch.belongsTo(AcademicYear);
@@ -48,7 +48,7 @@ Teacher.belongsTo(AcademicYear);
 Slot.hasMany(SlotData, { foreignKey: { allowNull: false } });
 SlotData.belongsTo(Slot);
 
-Subdivision.hasMany(SlotData, { foreignKey: { allowNull: false } });
+Subdivision.hasMany(SlotData, { foreignKey: { allowNull: true } });
 SlotData.belongsTo(Subdivision);
 
 Teacher.hasMany(SlotData, { foreignKey: { allowNull: true } });
@@ -57,20 +57,48 @@ SlotData.belongsTo(Teacher);
 Subject.hasMany(SlotData, { foreignKey: { allowNull: true } });
 SlotData.belongsTo(Subject);
 
-Classroom.belongsToMany(SlotData, {
-    through: SlotDataClass,
-    foreignKey: "SlotDataId",
+SlotData.hasMany(SlotDataClass, {
+    foreignKey: { name: "SlotDataId", allowNull: false },
+    as: "SlotDataClass",
 });
-SlotData.belongsToMany(Classroom, {
-    through: SlotDataClass,
-    foreignKey: "ClassroomId",
+SlotDataClass.belongsTo(SlotData, {
+    foreignKey: { name: "SlotDataId", allowNull: false },
 });
+Classroom.hasMany(SlotDataClass, {
+    foreignKey: { name: "ClassroomId", allowNull: false },
+});
+SlotDataClass.belongsTo(Classroom, {
+    foreignKey: { name: "ClassroomId", allowNull: false },
+});
+
+// Classroom.belongsToMany(SlotData, {
+//     through: SlotDataClass,
+//     foreignKey: {
+//         name: "SlotDataId",
+//         allowNull: false,
+//     },
+// });
+// SlotData.belongsToMany(Classroom, {
+//     through: SlotDataClass,
+//     foreignKey: {
+//         name: "ClassroomId",
+//         allowNull: false,
+//     },
+// });
 
 Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
 Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
+Slot.hasMany(TeacherUnavailable);
+TeacherUnavailable.belongsTo(Slot);
+Teacher.hasMany(TeacherUnavailable);
+TeacherUnavailable.belongsTo(Teacher);
 
-Teacher.belongsToMany(Subject, { through: Teach });
-Subject.belongsToMany(Teacher, { through: Teach });
+// Teacher.belongsToMany(Subject, { through: Teach });
+// Subject.belongsToMany(Teacher, { through: Teach });
+Teacher.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
+Teach.belongsTo(Teacher);
+Subject.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
+Teach.belongsTo(Subject);
 
 await AcademicYear.sync();
 await Batch.sync();
