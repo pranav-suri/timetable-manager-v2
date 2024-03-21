@@ -1,3 +1,4 @@
+import React from 'react'; // Import the 'React' module
 import "./App.css";
 import Timetable from "./Pages/Timetable";
 
