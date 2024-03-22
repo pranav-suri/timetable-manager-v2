@@ -1,14 +1,7 @@
 import Elysia from "elysia";
 import cors from "@elysiajs/cors";
-import {
-    AcademicYear,
-    Batch,
-    Department,
-    Division,
-    Subdivision,
-} from "./database";
+import { AcademicYear, Batch, Department, Division, Subdivision } from "./database";
 import { getTimetable } from "./controllers";
-import sampleDataUpload from "./api/upload/sampleUpload";
 const app = new Elysia();
 
 app.use(cors({ methods: ["GET"] }));
@@ -23,15 +16,8 @@ app.get("/create", async () => {
 
 app.get("/create/:academicYearId", async (req) => {
     const { academicYearId } = req.params;
-    const {
-        departmentId,
-        divisionId,
-        batchId,
-        slotId,
-        subjectId,
-        teacherId,
-        classroomId,
-    } = req.query;
+    const { departmentId, divisionId, batchId, slotId, subjectId, teacherId, classroomId } =
+        req.query;
     if (departmentId && divisionId && batchId && slotId) {
         // Enter logic here
     }
@@ -98,11 +84,7 @@ app.get("/create/:academicYearId", async (req) => {
 
         const timetables = [];
         for (const subdivision of subdivisions) {
-            const timetable = await getTimetable(
-                academicYearId,
-                subdivision.id,
-                "subdivision"
-            );
+            const timetable = await getTimetable(academicYearId, subdivision.id, "subdivision");
             timetables.push(timetable);
         }
         return { Timetables: timetables };
@@ -150,7 +132,7 @@ app.listen(3000);
 console.log("Listening on port 3000\nhttp://localhost:3000/");
 
 // This function will upload the sample data to the database, uncomment to run.
-sampleDataUpload();
+// sampleDataUpload();
 
 /**
  * Try visiting http://localhost:3000/slots: you should see an empty array.
