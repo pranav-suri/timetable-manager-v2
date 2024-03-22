@@ -3,18 +3,9 @@ import cors from "@elysiajs/cors";
 import {
     AcademicYear,
     Batch,
-    Classroom,
     Department,
     Division,
-    Group,
-    Slot,
     Subdivision,
-    Subject,
-    Teach,
-    Teacher,
-    TeacherUnavailable,
-    SlotData,
-    SlotDataClass,
 } from "./database";
 import { getTimetable } from "./controllers";
 import sampleDataUpload from "./api/upload/sampleUpload";
@@ -85,7 +76,7 @@ app.get("/create/:academicYearId", async (req) => {
         });
 
         const slotDataIds = slotDatas.map((slotData) => slotData.id);
-        const slotDataClasses = await SlotDataClass.findAll({
+        const slotDataClasses = await SlotDataClasses.findAll({
             where: {
                 SlotDataId: {
                     [Op.in]: slotDataIds,
@@ -159,7 +150,7 @@ app.listen(3000);
 console.log("Listening on port 3000\nhttp://localhost:3000/");
 
 // This function will upload the sample data to the database, uncomment to run.
-// sampleDataUpload();
+sampleDataUpload();
 
 /**
  * Try visiting http://localhost:3000/slots: you should see an empty array.

@@ -59,8 +59,8 @@ async function sampleDataUpload() {
      * Timetable data
      */
     const timetableData = await Bun.file("./SAMPLE_DATA/timetable.csv").text();
-    await uploadSubjectAndTeacherData(timetableData, academicYear1.id);
-    await uploadSubjectAndTeacherData(timetableData, academicYear2.id);
+    await uploadTimetableData(timetableData, academicYear1.id);
+    await uploadTimetableData(timetableData, academicYear2.id);
     console.log("Timetable data uploaded successfully");
     console.log("All data uploaded");
 }

@@ -1,3 +1,10 @@
+table{
+  overflow-x: scroll;
+  overflow-y: scroll;
+}
+th, td {
+  min-width: 200px;
+}
 table, th, td, tr {
     border: 1px solid black;
   border-collapse: collapse;

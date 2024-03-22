@@ -25,11 +25,16 @@ interface TimetableStructure {
                                 id: number;
                                 subdivisionName: string;
                             };
-                            SlotDataClass: [
+                            SlotDataClasses: [
                                 {
                                     id: number;
-                                    name: string;
-                                    isLab: boolean;
+                                    ClassroomId: number;
+                                    SlotDataId: number;
+                                    Classroom: {
+                                        id: number;
+                                        classroomName: string;
+                                        isLab: boolean;
+                                    };
                                 }
                             ];
                         }
@@ -39,24 +44,27 @@ interface TimetableStructure {
         }
     ];
 }
+type Timetables = TimetableStructure["Timetables"];
+type Slots = Timetables[0]["Slots"];
+type SlotData = Slots[0]["SlotData"];
+type SlotDataClasses = SlotData[0]["SlotDataClasses"];
+type SlotDataClass = SlotDataClasses[0];
+type Classroom = SlotDataClass["Classroom"];
 function printClasses(
-    slotDataClass: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"][0]["SlotDataClass"]
+    slotDataClasses: SlotDataClasses
 ) {
-    return slotDataClass.map((slotDataClass, slotDataClassIndex) => (
-        <React.Fragment key={slotDataClassIndex}>
-            {slotDataClass.name}
-        </React.Fragment>
+    console.log(slotDataClasses);
+    return slotDataClasses.map((slotDataClass, slotDataClassIndex) => (
+        <React.Fragment key={slotDataClassIndex}> {slotDataClass.Classroom.classroomName} </React.Fragment>
     ));
 }
-function renderCell(
-    slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"][0]
-) {
+function renderCell(slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"][0]) {
     return (
         <td>
             {slotDataItem.Teacher.teacherName} <br />
             {slotDataItem.Subject.subjectName} <br />
             {slotDataItem.Subdivision.subdivisionName} <br />
-            {printClasses(slotDataItem.SlotDataClass)}
+            {printClasses(slotDataItem.SlotDataClasses)}
         </td>
     );
 }
@@ -72,28 +80,13 @@ function renderSubdivisionSlot(
     );
 }
 
-// Find index of a slot in Timetables
-function findSlotIndex(
-    slots: TimetableStructure["Timetables"][0]["Slots"],
-    slotId: number
-) {
-    return slots.findIndex((slot) => slot.id == slotId);
-}
-
-function renderCompleteSlot(
-    timetables: TimetableStructure["Timetables"],
-    slotId: number
-) {
+function renderCompleteSlot(timetables: TimetableStructure["Timetables"], slotIndex: number) {
     return (
         <React.Fragment>
             <table>
                 {timetables.map((timetable) => (
                     <React.Fragment>
-                        {renderSubdivisionSlot(
-                            timetable.Slots[
-                                findSlotIndex(timetable.Slots, slotId)
-                            ].SlotData
-                        )}
+                        {renderSubdivisionSlot(timetable.Slots[slotIndex].SlotData)}
                     </React.Fragment>
                 ))}
             </table>
@@ -103,17 +96,20 @@ function renderCompleteSlot(
 
 function renderRow(
     timetables: TimetableStructure["Timetables"],
-    day: number | string
+    day: number | string,
+    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>
 ) {
     return (
         <tr>
             <th>{day}</th>
-            {timetables[0].Slots.map((slot) => {
-                if (slot.day == day) {
-                    return <td>{renderCompleteSlot(timetables, slot.id)}</td>;
-                }
-                return null;
-            })}
+            {Array.from(slotNumbers)
+                .sort()
+                .map((slotNumber) => {
+                    const slotIndex = timetables[0].Slots.findIndex(
+                        (slot) => slot.day == day && slot.number == slotNumber
+                    );
+                    return <td key={slotNumber}>{renderCompleteSlot(timetables, slotIndex)}</td>;
+                })}
         </tr>
     );
 }
@@ -123,22 +119,20 @@ function renderHeaders(
 ) {
     const headers = (
         <>
-            <th>Days</th>
-            {Array.from(slotNumbers).map((slotNumber) => (
-                <th>{slotNumber}</th>
-            ))}
+            <th>Days/Slots</th>
+            {Array.from(slotNumbers)
+                .sort()
+                .map((slotNumber) => (
+                    <th>{slotNumber}</th>
+                ))}
         </>
     );
     return headers;
 }
 
 function renderTimetable(data: TimetableStructure) {
-    const slotNumbers = new Set<
-        TimetableStructure["Timetables"][0]["Slots"][0]["number"]
-    >();
-    const slotDays = new Set<
-        TimetableStructure["Timetables"][0]["Slots"][0]["day"]
-    >();
+    const slotNumbers = new Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>();
+    const slotDays = new Set<TimetableStructure["Timetables"][0]["Slots"][0]["day"]>();
 
     data.Timetables[0].Slots.forEach((slot) => {
         slotNumbers.add(slot.number);
@@ -148,9 +142,9 @@ function renderTimetable(data: TimetableStructure) {
         <table>
             <thead>{renderHeaders(slotNumbers)}</thead>
             <tbody>
-                {Array.from(slotDays).map((day) =>
-                    renderRow(data.Timetables, day)
-                )}
+                {Array.from(slotDays)
+                    .sort()
+                    .map((day) => renderRow(data.Timetables, day, slotNumbers))}
             </tbody>
         </table>
     );
@@ -159,9 +153,7 @@ export default function Timetable() {
     const [data, setData] = useState<TimetableStructure | null>(null);
 
     useEffect(() => {
-        fetch(
-            "http://localhost:3000/create/1/?departmentId=1&divisionId=1&batchId=1"
-        )
+        fetch("http://localhost:3000/create/1/?departmentId=2&divisionId=2&batchId=2")
             .then((response) => response.json())
             .then((json: TimetableStructure) => setData(json))
             .catch((error) => console.error(error));

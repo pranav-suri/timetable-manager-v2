@@ -12,7 +12,7 @@ import {
     Teacher,
     TeacherUnavailable,
     SlotData,
-    SlotDataClass,
+    SlotDataClasses,
 } from ".";
 
 AcademicYear.hasMany(Batch, { foreignKey: { allowNull: false } });
@@ -57,29 +57,29 @@ SlotData.belongsTo(Teacher);
 Subject.hasMany(SlotData, { foreignKey: { allowNull: true } });
 SlotData.belongsTo(Subject);
 
-SlotData.hasMany(SlotDataClass, {
+SlotData.hasMany(SlotDataClasses, {
     foreignKey: { name: "SlotDataId", allowNull: false },
-    as: "SlotDataClass",
+    as: "SlotDataClasses",
 });
-SlotDataClass.belongsTo(SlotData, {
+SlotDataClasses.belongsTo(SlotData, {
     foreignKey: { name: "SlotDataId", allowNull: false },
 });
-Classroom.hasMany(SlotDataClass, {
+Classroom.hasMany(SlotDataClasses, {
     foreignKey: { name: "ClassroomId", allowNull: false },
 });
-SlotDataClass.belongsTo(Classroom, {
+SlotDataClasses.belongsTo(Classroom, {
     foreignKey: { name: "ClassroomId", allowNull: false },
 });
 
 // Classroom.belongsToMany(SlotData, {
-//     through: SlotDataClass,
+//     through: SlotDataClasses,
 //     foreignKey: {
 //         name: "SlotDataId",
 //         allowNull: false,
 //     },
 // });
 // SlotData.belongsToMany(Classroom, {
-//     through: SlotDataClass,
+//     through: SlotDataClasses,
 //     foreignKey: {
 //         name: "ClassroomId",
 //         allowNull: false,
@@ -115,4 +115,4 @@ await Subject.sync();
 await Teach.sync();
 await TeacherUnavailable.sync();
 await SlotData.sync();
-await SlotDataClass.sync();
+await SlotDataClasses.sync();

@@ -31,10 +31,10 @@ async function getTimetable(
                     },
                     {
                         association: "Subdivision",
-                        // include: ["Division"]
+                        include: ["Division"],
                     },
                     {
-                        association: "SlotDataClass",
+                        association: "SlotDataClasses",
                         include: [
                             {
                                 association: "Classroom",
@@ -45,7 +45,7 @@ async function getTimetable(
             },
         ],
     });
-    return {Slots: result};
+    return { Slots: result };
 }
 
 export default getTimetable;

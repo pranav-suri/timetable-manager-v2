@@ -12,7 +12,7 @@ import {
     Teacher,
     TeacherUnavailable,
     SlotData as SlotInfo,
-    SlotDataClass,
+    SlotDataClasses,
 } from "../../database";
 import Papa from "papaparse";
 import sequelize from "../../database/sequelize";
@@ -548,8 +548,8 @@ async function uploadTimetableData(
             },
         });
 
-        const [slotDataClass, isCreatedSlotDataClass] =
-            await SlotDataClass.findOrCreate({
+        const [slotDataClasses, isCreatedSlotDataClasses] =
+            await SlotDataClasses.findOrCreate({
                 where: {
                     SlotDataId: slotData.id,
                     ClassroomId: classroom.id,

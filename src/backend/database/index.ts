@@ -11,7 +11,7 @@ import Teach from "./teach";
 import Teacher from "./teacher";
 import TeacherUnavailable from "./teacherUnavailable";
 import SlotData from "./slotData";
-import SlotDataClass from "./slotDataClass";
+import SlotDataClasses from "./slotDataClasses";
 import "./relations";
 
 export {
@@ -28,5 +28,5 @@ export {
     Teacher,
     TeacherUnavailable,
     SlotData,
-    SlotDataClass,
+    SlotDataClasses,
 };

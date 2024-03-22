@@ -8,9 +8,9 @@ import {
     Model,
 } from "sequelize";
 
-class SlotDataClass extends Model<
-    InferAttributes<SlotDataClass>,
-    InferCreationAttributes<SlotDataClass>
+class SlotDataClasses extends Model<
+    InferAttributes<SlotDataClasses>,
+    InferCreationAttributes<SlotDataClasses>
 > {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
@@ -19,7 +19,7 @@ class SlotDataClass extends Model<
     public declare ClassroomId: ForeignKey<number>;
 }
 
-SlotDataClass.init(
+SlotDataClasses.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -31,8 +31,8 @@ SlotDataClass.init(
     },
     {
         sequelize,
-        tableName: "SlotDataClass",
-    },
+        tableName: "SlotDataClasses",
+    }
 );
 
-export default SlotDataClass;
+export default SlotDataClasses;
