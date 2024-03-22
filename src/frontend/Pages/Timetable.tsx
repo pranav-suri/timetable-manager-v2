@@ -35,13 +35,13 @@ interface TimetableStructure {
                                         classroomName: string;
                                         isLab: boolean;
                                     };
-                                }
+                                },
                             ];
-                        }
+                        },
                     ];
-                }
+                },
             ];
-        }
+        },
     ];
 }
 type Timetables = TimetableStructure["Timetables"];
@@ -50,12 +50,13 @@ type SlotData = Slots[0]["SlotData"];
 type SlotDataClasses = SlotData[0]["SlotDataClasses"];
 type SlotDataClass = SlotDataClasses[0];
 type Classroom = SlotDataClass["Classroom"];
-function printClasses(
-    slotDataClasses: SlotDataClasses
-) {
+function printClasses(slotDataClasses: SlotDataClasses) {
     console.log(slotDataClasses);
     return slotDataClasses.map((slotDataClass, slotDataClassIndex) => (
-        <React.Fragment key={slotDataClassIndex}> {slotDataClass.Classroom.classroomName} </React.Fragment>
+        <React.Fragment key={slotDataClassIndex}>
+            {" "}
+            {slotDataClass.Classroom.classroomName}{" "}
+        </React.Fragment>
     ));
 }
 function renderCell(slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"][0]) {
@@ -69,7 +70,7 @@ function renderCell(slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0
     );
 }
 function renderSubdivisionSlot(
-    slotData: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"]
+    slotData: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"],
 ) {
     return (
         <React.Fragment>
@@ -84,8 +85,8 @@ function renderCompleteSlot(timetables: TimetableStructure["Timetables"], slotIn
     return (
         <React.Fragment>
             <table>
-                {timetables.map((timetable) => (
-                    <React.Fragment>
+                {timetables.map((timetable, index) => (
+                    <React.Fragment key={index}>
                         {renderSubdivisionSlot(timetable.Slots[slotIndex].SlotData)}
                     </React.Fragment>
                 ))}
@@ -97,7 +98,7 @@ function renderCompleteSlot(timetables: TimetableStructure["Timetables"], slotIn
 function renderRow(
     timetables: TimetableStructure["Timetables"],
     day: number | string,
-    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>
+    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>,
 ) {
     return (
         <tr>
@@ -106,7 +107,7 @@ function renderRow(
                 .sort()
                 .map((slotNumber) => {
                     const slotIndex = timetables[0].Slots.findIndex(
-                        (slot) => slot.day == day && slot.number == slotNumber
+                        (slot) => slot.day == day && slot.number == slotNumber,
                     );
                     return <td key={slotNumber}>{renderCompleteSlot(timetables, slotIndex)}</td>;
                 })}
@@ -115,15 +116,15 @@ function renderRow(
 }
 
 function renderHeaders(
-    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>
+    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>,
 ) {
     const headers = (
         <>
-            <th>Days/Slots</th>
+            <th key="days-slots-header">Days/Slots</th>
             {Array.from(slotNumbers)
                 .sort()
                 .map((slotNumber) => (
-                    <th>{slotNumber}</th>
+                    <th key={slotNumber}>{slotNumber}</th>
                 ))}
         </>
     );
