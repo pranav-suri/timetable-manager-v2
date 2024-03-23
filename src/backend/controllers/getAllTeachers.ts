@@ -1,6 +1,6 @@
-import { Teacher, Teach } from "../database"; // Assuming you have defined Teacher and Teach models
+import { Teacher } from "../database"; // Assuming you have defined Teacher and Teach models
 
-async function getTeachers(subjectId: string | number) {
+async function getAllTeachers(subjectId: string | number) {
     const teachers = await Teacher.findAll({
         include: [
             {
@@ -12,4 +12,4 @@ async function getTeachers(subjectId: string | number) {
     return teachers;
 }
 
-export default getTeachers;
+export default getAllTeachers;
