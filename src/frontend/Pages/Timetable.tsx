@@ -59,7 +59,7 @@ function printClasses(slotDataClasses: SlotDataClasses) {
         </React.Fragment>
     ));
 }
-function renderCell(slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"][0]) {
+function renderCell(slotDataItem: SlotData[0]) {
     return (
         <td>
             {slotDataItem.Teacher.teacherName} <br />
@@ -69,9 +69,7 @@ function renderCell(slotDataItem: TimetableStructure["Timetables"][0]["Slots"][0
         </td>
     );
 }
-function renderSubdivisionSlot(
-    slotData: TimetableStructure["Timetables"][0]["Slots"][0]["SlotData"],
-) {
+function renderSubdivisionSlot(slotData: SlotData) {
     return (
         <React.Fragment>
             {slotData.map((dataItem, slotDataIndex: number) => (
@@ -81,7 +79,7 @@ function renderSubdivisionSlot(
     );
 }
 
-function renderCompleteSlot(timetables: TimetableStructure["Timetables"], slotIndex: number) {
+function renderCompleteSlot(timetables: Timetables, slotIndex: number) {
     return (
         <React.Fragment>
             <table>
@@ -96,9 +94,9 @@ function renderCompleteSlot(timetables: TimetableStructure["Timetables"], slotIn
 }
 
 function renderRow(
-    timetables: TimetableStructure["Timetables"],
+    timetables: Timetables,
     day: number | string,
-    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>,
+    slotNumbers: Set<Slots[0]["number"]>,
 ) {
     return (
         <tr>
@@ -116,7 +114,7 @@ function renderRow(
 }
 
 function renderHeaders(
-    slotNumbers: Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>,
+    slotNumbers: Set<Slots[0]["number"]>,
 ) {
     const headers = (
         <>
@@ -132,8 +130,8 @@ function renderHeaders(
 }
 
 function renderTimetable(data: TimetableStructure) {
-    const slotNumbers = new Set<TimetableStructure["Timetables"][0]["Slots"][0]["number"]>();
-    const slotDays = new Set<TimetableStructure["Timetables"][0]["Slots"][0]["day"]>();
+    const slotNumbers = new Set<Slots[0]["number"]>();
+    const slotDays = new Set<Slots[0]["day"]>();
 
     data.Timetables[0].Slots.forEach((slot) => {
         slotNumbers.add(slot.number);
