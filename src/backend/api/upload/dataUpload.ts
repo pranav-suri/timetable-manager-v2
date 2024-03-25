@@ -15,8 +15,6 @@ import {
     SlotDataClasses,
 } from "../../database";
 import Papa from "papaparse";
-import sequelize from "../../database/sequelize";
-import { Association } from "sequelize";
 
 const batchAndSubdivisionData = {
     batch_name: "",
@@ -92,7 +90,7 @@ function validateCsvData(
         | SlotData
         | TimetableData
     >,
-    csvType: CsvType
+    csvType: CsvType,
 ) {
     // This function will parse csv data handle errors with missing headings
     // This does not validate missing data in each row
@@ -169,65 +167,57 @@ async function parseCsvData<T>(csvData: string) {
     return Papa.parse<T>(csvData, csvParsingOptions);
 }
 
-async function uploadBatchAndSubdivsionData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
+async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<BatchAndSubdivisionData>(csvData);
 
     if (!validateCsvData(parsedCsv, "batchAndSubdivisionData")) return false;
 
     for (const row of parsedCsv.data) {
-        const { batch_name, department_name, division_name, subdivision_name } =
-            row;
+        const {
+            batch_name: batchName,
+            department_name: departmentName,
+            division_name: divisionName,
+            subdivision_name: subdivisionName,
+        } = row;
         const [batch, isCreatedBatch] = await Batch.findOrCreate({
-            where: { batchName: batch_name, AcademicYearId: acad_year_id },
+            where: { batchName, AcademicYearId: academicYearId },
         });
-        const [department, isCreatedDepartment] = await Department.findOrCreate(
-            {
-                where: { departmentName: department_name, BatchId: batch.id },
-            }
-        );
+        const [department, isCreatedDepartment] = await Department.findOrCreate({
+            where: { departmentName, BatchId: batch.id },
+        });
         const [division, isCreatedDivision] = await Division.findOrCreate({
-            where: { divisionName: division_name, DepartmentId: department.id },
+            where: { divisionName, DepartmentId: department.id },
         });
-        const [subdivision, isCreatedSubdivision] =
-            await Subdivision.findOrCreate({
-                where: {
-                    subdivisionName: subdivision_name,
-                    DivisionId: division.id,
-                },
-            });
-    }
-    return true;
-}
-
-async function uploadClassroomData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
-    const parsedCsv = await parseCsvData<ClassroomData>(csvData);
-    if (!validateCsvData(parsedCsv, "classroomData")) {
-        return false;
-    }
-    for (const row of parsedCsv.data) {
-        const { classroom_name, is_lab } = row;
-
-        const [classroom, isCreatedClassroom] = await Classroom.findOrCreate({
+        const [subdivision, isCreatedSubdivision] = await Subdivision.findOrCreate({
             where: {
-                classroomName: classroom_name,
-                isLab: is_lab,
-                AcademicYearId: acad_year_id,
+                subdivisionName,
+                DivisionId: division.id,
             },
         });
     }
     return true;
 }
 
-async function uploadTestSlotData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
+async function uploadClassroomData(csvData: string, academicYearId: AcademicYear["id"]) {
+    const parsedCsv = await parseCsvData<ClassroomData>(csvData);
+    if (!validateCsvData(parsedCsv, "classroomData")) {
+        return false;
+    }
+    for (const row of parsedCsv.data) {
+        const { classroom_name: classroomName, is_lab: isLab } = row;
+
+        const [classroom, isCreatedClassroom] = await Classroom.findOrCreate({
+            where: {
+                classroomName,
+                isLab,
+                AcademicYearId: academicYearId,
+            },
+        });
+    }
+    return true;
+}
+
+async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<SlotData>(csvData);
     if (!validateCsvData(parsedCsv, "slotData")) {
         console.log("Errors in CSV file");
@@ -240,35 +230,32 @@ async function uploadTestSlotData(
             where: {
                 day: day,
                 number: number,
-                AcademicYearId: acad_year_id,
+                AcademicYearId: academicYearId,
             },
         });
     }
     return true;
 }
 
-async function uploadSubjectAndTeacherData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
+async function uploadSubjectAndTeacherData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<SubjectAndTeacherData>(csvData);
     if (!validateCsvData(parsedCsv, "subjectAndTeacherData")) {
         return false;
     }
     for (const row of parsedCsv.data) {
         const {
-            batch_name,
-            department_name,
-            group_name,
-            group_allow_simultaneous,
-            is_lab,
-            subject_name,
-            teacher_email,
-            teacher_name,
+            batch_name: batchName,
+            department_name: departmentName,
+            group_name: groupName,
+            group_allow_simultaneous: groupAllowSimultaneous,
+            is_lab: isLab,
+            subject_name: subjectName,
+            teacher_email: teacherEmail,
+            teacher_name: teacherName,
         } = row;
 
         const batch = await Batch.findOne({
-            where: { batchName: batch_name, AcademicYearId: acad_year_id },
+            where: { batchName, AcademicYearId: academicYearId },
         });
         if (!batch) {
             console.log(row);
@@ -276,7 +263,7 @@ async function uploadSubjectAndTeacherData(
             return false;
         }
         const department = await Department.findOne({
-            where: { departmentName: department_name, BatchId: batch.id },
+            where: { departmentName, BatchId: batch.id },
         });
         if (!department) {
             console.log(row);
@@ -286,16 +273,16 @@ async function uploadSubjectAndTeacherData(
 
         const [group, isCreatedGroup] = await Group.findOrCreate({
             where: {
-                groupName: group_name,
-                allowSimultaneous: group_allow_simultaneous,
-                AcademicYearId: acad_year_id,
+                groupName,
+                allowSimultaneous: groupAllowSimultaneous,
+                AcademicYearId: academicYearId,
             },
         });
 
         const [subject, isCreatedSubject] = await Subject.findOrCreate({
             where: {
-                subjectName: subject_name,
-                isLab: is_lab,
+                subjectName,
+                isLab,
                 DepartmentId: department.id,
                 GroupId: group.id,
             },
@@ -303,9 +290,9 @@ async function uploadSubjectAndTeacherData(
 
         const [teacher, isCreatedTeacher] = await Teacher.findOrCreate({
             where: {
-                teacherName: teacher_name,
-                teacherEmail: teacher_email,
-                AcademicYearId: acad_year_id,
+                teacherName,
+                teacherEmail,
+                AcademicYearId: academicYearId,
             },
         });
 
@@ -320,10 +307,7 @@ async function uploadSubjectAndTeacherData(
     return true;
 }
 
-async function uploadUnavailabilityData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
+async function uploadUnavailabilityData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<UnavailabilityData>(csvData);
 
     if (!validateCsvData(parsedCsv, "unavailabilityData")) {
@@ -331,19 +315,19 @@ async function uploadUnavailabilityData(
         return false;
     }
     for (const row of parsedCsv.data) {
-        const { day, slot_number, teacher_email } = row;
+        const { day, slot_number: slotNumber, teacher_email: teacherEmail } = row;
 
         const teacher = await Teacher.findOne({
             where: {
-                teacherEmail: teacher_email,
-                AcademicYearId: acad_year_id,
+                teacherEmail,
+                AcademicYearId: academicYearId,
             },
         });
         const slot = await Slot.findOne({
             where: {
                 day: day,
-                number: slot_number,
-                AcademicYearId: acad_year_id,
+                number: slotNumber,
+                AcademicYearId: academicYearId,
             },
         });
 
@@ -356,21 +340,17 @@ async function uploadUnavailabilityData(
             return false;
         }
 
-        const [unavailability, isCreatedUnavailability] =
-            await TeacherUnavailable.findOrCreate({
-                where: {
-                    TeacherId: teacher.id,
-                    SlotId: slot.id,
-                },
-            });
+        const [unavailability, isCreatedUnavailability] = await TeacherUnavailable.findOrCreate({
+            where: {
+                TeacherId: teacher.id,
+                SlotId: slot.id,
+            },
+        });
     }
     return true;
 }
 
-async function uploadTimetableData(
-    csvData: string,
-    acad_year_id: AcademicYear["id"]
-) {
+async function uploadTimetableData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<TimetableData>(csvData);
 
     if (!validateCsvData(parsedCsv, "timetableData")) {
@@ -381,42 +361,42 @@ async function uploadTimetableData(
     for (const row of parsedCsv.data) {
         const {
             day,
-            slot_number,
-            department_name,
-            batch_name,
-            subdivision_name,
-            subject_name,
-            group_name,
-            teacher_email,
-            classroom_name,
+            slot_number: slotNumber,
+            department_name: departmentName,
+            batch_name: batchName,
+            subdivision_name: subdivisionName,
+            subject_name: subjectName,
+            group_name: groupName,
+            teacher_email: teacherEmail,
+            classroom_name: classroomName,
         } = row;
         /*
         Alternative approach with errors at each step -----------
 
         const batch = await Batch.findOne({
             where: {
-                batchName: batch_name,
-                AcademicYearId: acad_year_id,
+                batchName,
+                AcademicYearId: academicYearId,
             },
         });
 
         const department = await Department.findOne({
             where: {
-                departmentName: department_name,
+                departmentName,
                 BatchId: batch.id,
             },
         });
 
         const division = await Division.findOne({
             where: {
-                divisionName: division_name,
+                divisionName,
                 DepartmentId: department.id,
             },
         });
 
         const subdivision = await Subdivision.findOne({
             where: {
-                subdivisionName: subdivision_name,
+                subdivisionName,
                 DivisionId: division.id,
             },
         });
@@ -424,7 +404,7 @@ async function uploadTimetableData(
 
         const subdivision = await Subdivision.findOne({
             where: {
-                subdivisionName: subdivision_name,
+                subdivisionName,
             },
             include: [
                 {
@@ -436,15 +416,15 @@ async function uploadTimetableData(
                             association: "Department",
                             required: true,
                             where: {
-                                departmentName: department_name,
+                                departmentName,
                             },
                             include: [
                                 {
                                     association: "Batch",
                                     required: true,
                                     where: {
-                                        batchName: batch_name,
-                                        AcademicYearId: acad_year_id,
+                                        batchName,
+                                        AcademicYearId: academicYearId,
                                     },
                                 },
                             ],
@@ -457,30 +437,30 @@ async function uploadTimetableData(
         if (!subdivision) {
             console.log("Subdivision not found");
             console.log({
-                batch_name,
-                department_name,
-                subdivision_name,
+                batchName,
+                departmentName,
+                subdivisionName,
             });
             return false;
         }
         const subject = await Subject.findOne({
             where: {
-                subjectName: subject_name,
+                subjectName,
             },
             include: [
                 {
                     association: "Department",
                     required: true,
                     where: {
-                        departmentName: department_name,
+                        departmentName,
                     },
                 },
                 {
                     association: "Group",
                     required: true,
                     where: {
-                        groupName: group_name,
-                        academicYearId: acad_year_id,
+                        groupName,
+                        academicYearId: academicYearId,
                     },
                 },
             ],
@@ -488,37 +468,37 @@ async function uploadTimetableData(
         if (!subject) {
             console.log("Subject not found");
             console.log({
-                subject_name,
-                department_name,
-                group_name,
+                subjectName,
+                departmentName,
+                groupName,
             });
             return false;
         }
         const teacher = await Teacher.findOne({
             where: {
-                teacherEmail: teacher_email,
-                AcademicYearId: acad_year_id,
+                teacherEmail,
+                AcademicYearId: academicYearId,
             },
         });
 
         if (!teacher) {
             console.log("Teacher not found");
             console.log({
-                teacher_email,
+                teacherEmail,
             });
             return false;
         }
 
         const classroom = await Classroom.findOne({
             where: {
-                classroomName: classroom_name,
-                AcademicYearId: acad_year_id,
+                classroomName,
+                AcademicYearId: academicYearId,
             },
         });
         if (!classroom) {
             console.log("Classroom not found");
             console.log({
-                classroom_name,
+                classroomName,
             });
             return false;
         }
@@ -526,15 +506,15 @@ async function uploadTimetableData(
         const slot = await Slot.findOne({
             where: {
                 day: day,
-                number: slot_number,
-                AcademicYearId: acad_year_id,
+                number: slotNumber,
+                AcademicYearId: academicYearId,
             },
         });
         if (!slot) {
             console.log("Slot not found");
             console.log({
                 day,
-                slot_number,
+                slotNumber,
             });
             return false;
         }
@@ -548,13 +528,12 @@ async function uploadTimetableData(
             },
         });
 
-        const [slotDataClasses, isCreatedSlotDataClasses] =
-            await SlotDataClasses.findOrCreate({
-                where: {
-                    SlotDataId: slotData.id,
-                    ClassroomId: classroom.id,
-                },
-            });
+        const [slotDataClasses, isCreatedSlotDataClasses] = await SlotDataClasses.findOrCreate({
+            where: {
+                SlotDataId: slotData.id,
+                ClassroomId: classroom.id,
+            },
+        });
     }
 }
 
