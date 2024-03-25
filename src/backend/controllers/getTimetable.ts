@@ -9,9 +9,10 @@ async function getTimetable(
         teacher: "TeacherId",
         classroom: "ClassroomId",
     };
-    const column = searchByColumnMap[searchBy];
+    const searchColumn = searchByColumnMap[searchBy];
 
     const result = await Slot.findAll({
+        order: [["day", "ASC"], ["number", "ASC"]],
         where: {
             AcademicYearId: academicYearId,
         },
@@ -20,7 +21,7 @@ async function getTimetable(
                 association: "SlotData",
                 required: false,
                 where: {
-                    [column]: searchId,
+                    [searchColumn]: searchId,
                 },
                 include: [
                     {
