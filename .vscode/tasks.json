@@ -18,6 +18,13 @@
             "problemMatcher": [],
             "label": "bun: dev",
             "detail": "bun run dev:frontend & bun run dev:backend - package.json"
+        },
+        {
+            "type": "bun",
+            "script": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 100",
+            "problemMatcher": [],
+            "label": "bun: lint",
+            "detail": "bun run eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 100 - package.json"
         }
     ]
 }
