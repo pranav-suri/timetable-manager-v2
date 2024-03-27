@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Timetable Manager API specification
   description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
@@ -20,9 +20,43 @@ paths:
                 type: array
                 items: 
                   type: string
-  /create:
+  /academicYears: 
+    get: 
+      summary: Get all academic years by userId.
+  /subjects:
+    get:
+      summary: Get all subjects by department and all multi-disciplinary subjects.
+  /classrooms:
+    get:
+      summary: Get all classrooms by academicYearId.
+  /teachers:
+    get:
+      summary: Get all teachers by academicYearId.
+  /batches:
+    get:
+      summary: Get all batches by academicYearId.
+  /divisions:
+    get:
+      summary: Get all divisions by departmentId.
+  /departments:
+    get:
+      summary: Get all departments by batchId.
+  /divisionTimetable:
    get:
-    summary: Test
-    responses:
-      '200':
-        description: Test
+    summary: Get timetable information by divisionId.
+  /teacherTimetable:
+    get:
+      summary: Get timetable information by teacherId.
+  /classroomTimetable:
+    get:
+      summary: Get timetable information by classroomId.
+  /availableTeachers:
+    get:
+      summary: Get all available teachers by slotId.
+  /availableClassrooms:
+    get:
+      summary: Get all available classrooms by slotId.
+  /slotData:
+    patch:
+      summary: Needs previous slotId, classroomIds[] and new SlotData[slotId, subdivisionIds[], subjectId, teacherId, classroomIds[]].
+  
