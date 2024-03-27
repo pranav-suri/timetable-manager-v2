@@ -2,17 +2,19 @@ import Elysia from "elysia";
 import cors from "@elysiajs/cors";
 import { AcademicYear, Batch, Department, Division, Subdivision } from "./database";
 import { getTimetable } from "./controllers";
+import timetable from "./api/timetable";
 const app = new Elysia();
 
+app.use(timetable);
 app.use(cors({ methods: ["GET"] }));
 
 app.get("/", () => {
     return { message: `${Date.now()}` };
 });
 
-app.get("/create", async () => {
-    return { academicYears: await AcademicYear.findAll() };
-});
+// app.get("/create", async () => {
+//     return { academicYears: await AcademicYear.findAll() };
+// });
 
 app.get("/create/:academicYearId", async (req) => {
     const { academicYearId } = req.params;
