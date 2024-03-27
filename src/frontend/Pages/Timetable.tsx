@@ -1,51 +1,49 @@
 import React, { useState, useEffect } from "react";
 interface TimetableStructure {
-    Timetables: [
-        {
-            Slots: [
-                {
-                    id: number;
-                    day: number;
-                    number: number;
-                    AcademicYearId: number;
-                    SlotData: [
-                        {
+    Timetable: {
+        Slots: [
+            {
+                id: number;
+                day: number;
+                number: number;
+                AcademicYearId: number;
+                SlotData: [
+                    {
+                        id: number;
+                        Teacher: {
                             id: number;
-                            Teacher: {
+                            teacherName: string;
+                            teacherEmail: string;
+                        };
+                        Subject: {
+                            id: number;
+                            isLab: boolean;
+                            subjectName: string;
+                        };
+                        Subdivision: {
+                            id: number;
+                            subdivisionName: string;
+                        };
+                        SlotDataClasses: [
+                            {
                                 id: number;
-                                teacherName: string;
-                                teacherEmail: string;
-                            };
-                            Subject: {
-                                id: number;
-                                isLab: boolean;
-                                subjectName: string;
-                            };
-                            Subdivision: {
-                                id: number;
-                                subdivisionName: string;
-                            };
-                            SlotDataClasses: [
-                                {
+                                ClassroomId: number;
+                                SlotDataId: number;
+                                Classroom: {
                                     id: number;
-                                    ClassroomId: number;
-                                    SlotDataId: number;
-                                    Classroom: {
-                                        id: number;
-                                        classroomName: string;
-                                        isLab: boolean;
-                                    };
-                                },
-                            ];
-                        },
-                    ];
-                },
-            ];
-        },
-    ];
+                                    classroomName: string;
+                                    isLab: boolean;
+                                };
+                            },
+                        ];
+                    },
+                ];
+            },
+        ];
+    };
 }
-type Timetables = TimetableStructure["Timetables"];
-type Slots = Timetables[0]["Slots"];
+type Timetable = TimetableStructure["Timetable"];
+type Slots = Timetable["Slots"];
 type SlotData = Slots[0]["SlotData"];
 type SlotDataClasses = SlotData[0]["SlotDataClasses"];
 type SlotDataClass = SlotDataClasses[0];
@@ -69,24 +67,12 @@ function renderCell(slotDataItem: SlotData[0]) {
         </td>
     );
 }
-function renderSubdivisionSlot(slotData: SlotData) {
-    return (
-        <React.Fragment>
-            {slotData.map((dataItem, slotDataIndex: number) => (
-                <tr key={slotDataIndex}>{renderCell(dataItem)}</tr>
-            ))}
-        </React.Fragment>
-    );
-}
-
-function renderCompleteSlot(timetables: Timetables, slotIndex: number) {
+function renderSlot(slotData: SlotData) {
     return (
         <React.Fragment>
             <table>
-                {timetables.map((timetable, index) => (
-                    <React.Fragment key={index}>
-                        {renderSubdivisionSlot(timetable.Slots[slotIndex].SlotData)}
-                    </React.Fragment>
+                {slotData.map((dataItem, slotDataIndex: number) => (
+                    <tr key={slotDataIndex}>{renderCell(dataItem)}</tr>
                 ))}
             </table>
         </React.Fragment>
@@ -94,7 +80,7 @@ function renderCompleteSlot(timetables: Timetables, slotIndex: number) {
 }
 
 function renderRow(
-    timetables: Timetables,
+    timetable: Timetable,
     day: number | string,
     slotNumbers: Set<Slots[0]["number"]>,
 ) {
@@ -104,18 +90,18 @@ function renderRow(
             {Array.from(slotNumbers)
                 .sort()
                 .map((slotNumber) => {
-                    const slotIndex = timetables[0].Slots.findIndex(
+                    const slotIndex = timetable.Slots.findIndex(
                         (slot) => slot.day == day && slot.number == slotNumber,
                     );
-                    return <td key={slotNumber}>{renderCompleteSlot(timetables, slotIndex)}</td>;
+                    return (
+                        <td key={slotNumber}>{renderSlot(timetable.Slots[slotIndex].SlotData)}</td>
+                    );
                 })}
         </tr>
     );
 }
 
-function renderHeaders(
-    slotNumbers: Set<Slots[0]["number"]>,
-) {
+function renderHeaders(slotNumbers: Set<Slots[0]["number"]>) {
     const headers = (
         <>
             <th key="days-slots-header">Days/Slots</th>
@@ -133,7 +119,7 @@ function renderTimetable(data: TimetableStructure) {
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
 
-    data.Timetables[0].Slots.forEach((slot) => {
+    data.Timetable.Slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
     });
@@ -143,7 +129,7 @@ function renderTimetable(data: TimetableStructure) {
             <tbody>
                 {Array.from(slotDays)
                     .sort()
-                    .map((day) => renderRow(data.Timetables, day, slotNumbers))}
+                    .map((day) => renderRow(data.Timetable, day, slotNumbers))}
             </tbody>
         </table>
     );

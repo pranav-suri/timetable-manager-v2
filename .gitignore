@@ -179,3 +179,5 @@ bun.lockb
 
 # VSCode workspace settings
 .vscode/settings.json
+
+.old/
