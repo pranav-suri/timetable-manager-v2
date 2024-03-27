@@ -86,7 +86,7 @@ app.get("/create/:academicYearId", async (req) => {
 
         const timetables = [];
         for (const subdivision of subdivisions) {
-            const timetable = await getTimetable(academicYearId, subdivision.id, "subdivision");
+            const timetable = await getTimetable(subdivision.id, "subdivision");
             timetables.push(timetable);
         }
         return { Timetables: timetables };

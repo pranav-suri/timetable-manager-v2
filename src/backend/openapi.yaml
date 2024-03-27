@@ -41,6 +41,9 @@ paths:
   /departments:
     get:
       summary: Get all departments by batchId.
+  /subdivisionTimetable:
+    get:
+      summary: Get timetable information by subdivisionId.
   /divisionTimetable:
    get:
     summary: Get timetable information by divisionId.
@@ -57,6 +60,6 @@ paths:
     get:
       summary: Get all available classrooms by slotId.
   /slotData:
-    patch:
-      summary: Needs previous slotId, classroomIds[] and new SlotData[slotId, subdivisionIds[], subjectId, teacherId, classroomIds[]].
+    put:
+      summary: Needs previous slotDataIds[] and new slotId, subdivisionIds[], subjectId, teacherId, classroomIds[].
   

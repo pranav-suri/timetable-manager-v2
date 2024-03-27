@@ -12,7 +12,7 @@ class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare day: string;
+    public declare day: number;
     public declare number: number;
     public declare AcademicYearId: ForeignKey<number>;
 }
@@ -25,7 +25,7 @@ Slot.init(
             primaryKey: true,
         },
         day: {
-            type: DataTypes.STRING,
+            type: DataTypes.INTEGER.UNSIGNED,
         },
         number: {
             type: DataTypes.INTEGER.UNSIGNED,

@@ -15,34 +15,34 @@ import {
     SlotDataClasses,
 } from ".";
 
-AcademicYear.hasMany(Batch, { foreignKey: { allowNull: false } });
+AcademicYear.hasMany(Batch, { foreignKey: { allowNull: false }, as: "Batch" });
 Batch.belongsTo(AcademicYear);
 
-AcademicYear.hasMany(Classroom, { foreignKey: { allowNull: false } });
+AcademicYear.hasMany(Classroom, { foreignKey: { allowNull: false }, as: "Classroom" });
 Classroom.belongsTo(AcademicYear);
 
-Batch.hasMany(Department, { foreignKey: { allowNull: false } });
+Batch.hasMany(Department, { foreignKey: { allowNull: false }, as: "Department" });
 Department.belongsTo(Batch);
 
-Department.hasMany(Division, { foreignKey: { allowNull: false } });
+Department.hasMany(Division, { foreignKey: { allowNull: false }, as: "Division" });
 Division.belongsTo(Department);
 
-Department.hasMany(Subject, { foreignKey: { allowNull: false } });
+Department.hasMany(Subject, { foreignKey: { allowNull: false }, as: "Subject" });
 Subject.belongsTo(Department);
 
-Division.hasMany(Subdivision, { foreignKey: { allowNull: false } });
+Division.hasMany(Subdivision, { foreignKey: { allowNull: false }, as: "Subdivision" });
 Subdivision.belongsTo(Division);
 
-AcademicYear.hasMany(Slot, { foreignKey: { allowNull: false } });
+AcademicYear.hasMany(Slot, { foreignKey: { allowNull: false }, as: "Slot" });
 Slot.belongsTo(AcademicYear);
 
-AcademicYear.hasMany(Group, { foreignKey: { allowNull: false } });
+AcademicYear.hasMany(Group, { foreignKey: { allowNull: false }, as: "Group" });
 Group.belongsTo(AcademicYear);
 
-Group.hasMany(Subject, { foreignKey: { allowNull: false } });
+Group.hasMany(Subject, { foreignKey: { allowNull: false }, as: "Subject" });
 Subject.belongsTo(Group);
 
-AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false } });
+AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false }, as: "Teacher" });
 Teacher.belongsTo(AcademicYear);
 
 Slot.hasMany(SlotData, { foreignKey: { allowNull: false } });
@@ -71,6 +71,21 @@ SlotDataClasses.belongsTo(Classroom, {
     foreignKey: { name: "ClassroomId", allowNull: false },
 });
 
+Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
+Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
+Slot.hasMany(TeacherUnavailable);
+TeacherUnavailable.belongsTo(Slot);
+Teacher.hasMany(TeacherUnavailable);
+TeacherUnavailable.belongsTo(Teacher);
+
+Teacher.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
+Teach.belongsTo(Teacher);
+Subject.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
+Teach.belongsTo(Subject);
+
+// Teacher.belongsToMany(Subject, { through: Teach });
+// Subject.belongsToMany(Teacher, { through: Teach });
+
 // Classroom.belongsToMany(SlotData, {
 //     through: SlotDataClasses,
 //     foreignKey: {
@@ -85,20 +100,6 @@ SlotDataClasses.belongsTo(Classroom, {
 //         allowNull: false,
 //     },
 // });
-
-Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
-Slot.belongsToMany(Teacher, { through: TeacherUnavailable });
-Slot.hasMany(TeacherUnavailable);
-TeacherUnavailable.belongsTo(Slot);
-Teacher.hasMany(TeacherUnavailable);
-TeacherUnavailable.belongsTo(Teacher);
-
-// Teacher.belongsToMany(Subject, { through: Teach });
-// Subject.belongsToMany(Teacher, { through: Teach });
-Teacher.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
-Teach.belongsTo(Teacher);
-Subject.hasMany(Teach, { foreignKey: { allowNull: false }, as: "Teach" });
-Teach.belongsTo(Subject);
 
 await AcademicYear.sync();
 await Batch.sync();
