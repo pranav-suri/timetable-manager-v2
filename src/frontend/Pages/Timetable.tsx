@@ -152,7 +152,7 @@ export default function Timetable() {
     const [data, setData] = useState<TimetableStructure | null>(null);
 
     useEffect(() => {
-        fetch("http://localhost:3000/create/1/?departmentId=2&divisionId=2&batchId=2")
+        fetch("http://localhost:3000/divisionTimetable/?divisionId=2")
             .then((response) => response.json())
             .then((json: TimetableStructure) => setData(json))
             .catch((error) => console.error(error));

@@ -128,9 +128,59 @@ async function getTimetableByDivision(divisionId: string | number) {
     const subdivisions = await Subdivision.findAll({
         where: { DivisionId: divisionId },
     });
-    const subdivisionIds = subdivisions.map((subdivision) =>
-        subdivision.id
-    );
+    const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+    /*      
+        const slots = await Slot.findAll({
+            where: {
+                AcademicYearId: academicYearId,
+            },
+        });
+        const slotDatas = await SlotData.findAll({
+            where: {
+                SubdivisionId: {
+                    [Op.in]: subdivisionIds,
+                },
+            },
+        });
+
+        const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+        const teachers = await Teacher.findAll({
+            where: {
+                id: {
+                    [Op.in]: teacherIds,
+                },
+            },
+        });
+        const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+        const subjects = await Subject.findAll({
+            where: {
+                id: {
+                    [Op.in]: subjectIds,
+                },
+            },
+        });
+
+        const slotDataIds = slotDatas.map((slotData) => slotData.id);
+        const slotDataClasses = await SlotDataClasses.findAll({
+            where: {
+                SlotDataId: {
+                    [Op.in]: slotDataIds,
+                },
+            },
+        });
+        const classIds = slotDataClasses.map(
+            (slotDataClass) => slotDataClass.ClassroomId
+        );
+
+        const classrooms = await Classroom.findAll({
+            where: {
+                id: {
+                    [Op.in]: classIds,
+                },
+            },
+        });
+        */
+
     const slotsWithData = await Slot.findAll({
         order: [
             ["day", "ASC"],
@@ -170,7 +220,6 @@ async function getTimetableByDivision(divisionId: string | number) {
         ],
     });
     return { Slots: slotsWithData };
-
 }
 
 async function getTimetableByTeacher(teacherId: string | number) {
@@ -242,7 +291,7 @@ async function getTimetableByClassroom(classroomId: string | number) {
                     {
                         association: "SlotDataClasses",
                         where: {
-                            ClassroomId: classroomId
+                            ClassroomId: classroomId,
                         },
                         include: [
                             {
@@ -257,7 +306,10 @@ async function getTimetableByClassroom(classroomId: string | number) {
     return { Slots: slotsWithData };
 }
 
-async function getTimetable(searchId: string | number, searchBy: "subdivision" | "teacher" | "classroom" | "division") {
+async function getTimetable(
+    searchId: string | number,
+    searchBy: "subdivision" | "teacher" | "classroom" | "division",
+) {
     switch (searchBy) {
         case "division":
             return await getTimetableByDivision(searchId);

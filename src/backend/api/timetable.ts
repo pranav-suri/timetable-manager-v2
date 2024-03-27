@@ -111,7 +111,7 @@ app.get("/divisionTimetable", async (req) => {
         req.set.status = 400;
         return "divisionId is required.";
     }
-    return { Timetable: await getTimetable(divisionId, "division") };
+    return { Timetables: [await getTimetable(divisionId, "division")] };
 });
 
 app.get("/subdivisionTimetable", async (req) => {
@@ -120,7 +120,7 @@ app.get("/subdivisionTimetable", async (req) => {
         req.set.status = 400;
         return "subdivisionId is required.";
     }
-    return { Timetable: await getTimetable(subdivisionId, "subdivision") };
+    return { Timetables: [await getTimetable(subdivisionId, "subdivision")] };
 });
 
 app.get("/teacherTimetable", async (req) => {
@@ -129,7 +129,7 @@ app.get("/teacherTimetable", async (req) => {
         req.set.status = 400;
         return "teacherId is required.";
     }
-    return { Timetable: await getTimetable(teacherId, "teacher") };
+    return { Timetables: [await getTimetable(teacherId, "teacher")] };
 });
 
 app.get("/classroomTimetable", async (req) => {
@@ -138,7 +138,7 @@ app.get("/classroomTimetable", async (req) => {
         req.set.status = 400;
         return "classroomId is required.";
     }
-    return { Timetable: await getTimetable(classroomId, "classroom") };
+    return { Timetables: [await getTimetable(classroomId, "classroom")] };
 });
 
 app.get("/availableTeachers", async (req) => {
@@ -155,7 +155,7 @@ app.get("/availableClassrooms", async (req) => {
     if (!subjectId || !slotId) {
         req.set.status = 400;
         return "subjectId and slotId are required.";
-    } 
+    }
     return { classrooms: await getAvailableClassrooms(slotId, subjectId) };
 });
 
