@@ -1,7 +1,7 @@
 import { Classroom, SlotData, SlotDataClasses, Subject, Teacher } from "../database";
 
 async function getAvailableClassrooms(slotId: string | number, subjectId: string | number) {
-    const testP = await Subject.findByPk(subjectId);
+    // const testP = await Subject.findByPk(subjectId);
     const labsOrClasses = await Classroom.findAll({
         where: { isLab: (await Subject.findByPk(subjectId))?.isLab },
     });
@@ -11,16 +11,14 @@ async function getAvailableClassrooms(slotId: string | number, subjectId: string
     });
 
     const slotDataIds = slotDatas.map((slotData) => slotData.id);
-    console.log("Slot Data Ids: " + slotDataIds);
 
     const slotDataClasses = await SlotDataClasses.findAll({
         where: { SlotDataId: slotDataIds },
     });
-    
+
     const inUse = slotDataClasses.map((slotDataClass) => slotDataClass.ClassroomId);
     const inUseDistinct = [...new Set(inUse)];
 
-    console.log("inUse ids: "+ inUseDistinct);
     const classesInUse = await Classroom.findAll({
         where: { id: inUseDistinct },
     });
