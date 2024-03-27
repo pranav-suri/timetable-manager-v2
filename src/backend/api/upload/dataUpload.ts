@@ -73,14 +73,6 @@ const timetableData = {
 
 type TimetableData = typeof timetableData;
 
-type CsvType =
-    | "batchAndSubdivisionData"
-    | "classroomData"
-    | "subjectAndTeacherData"
-    | "unavailabilityData"
-    | "slotData"
-    | "timetableData";
-
 function validateCsvData(
     parsedCsv: Papa.ParseResult<
         | BatchAndSubdivisionData
@@ -90,7 +82,13 @@ function validateCsvData(
         | SlotData
         | TimetableData
     >,
-    csvType: CsvType,
+    csvType:
+        | "batchAndSubdivision"
+        | "classroom"
+        | "subjectAndTeacher"
+        | "unavailability"
+        | "slot"
+        | "timetable",
 ) {
     // This function will parse csv data handle errors with missing headings
     // This does not validate missing data in each row
@@ -98,37 +96,38 @@ function validateCsvData(
     let dataKeys: string[] = [];
 
     switch (csvType) {
-        case "batchAndSubdivisionData":
+        // This switch case is for assigning values of expectedKeys and dataKeys variable
+        case "batchAndSubdivision":
             expectedKeys = Object.keys(batchAndSubdivisionData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
-        case "classroomData":
+        case "classroom":
             expectedKeys = Object.keys(classroomData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
-        case "subjectAndTeacherData":
+        case "subjectAndTeacher":
             expectedKeys = Object.keys(subjectAndTeacherData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
-        case "unavailabilityData":
+        case "unavailability":
             expectedKeys = Object.keys(unavailabilityData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
-        case "slotData":
+        case "slot":
             expectedKeys = Object.keys(slotData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
-        case "timetableData":
+        case "timetable":
             expectedKeys = Object.keys(timetableData);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
         default:
-            console.log("Unhandled Validation in validateCsvData function");
-            return false;
+            throw new Error("Unhandled case in validateCsvData function.");
             break;
     }
+
+    // This loop will remove the row with missing data
     for (const error of parsedCsv.errors) {
-        // This works for now but need to handle this better
         // This runs in case of missing headings (missing commas at the last row of the csv file)
         if (error.type === "Delimiter") {
             console.log("Empty file uploaded");
@@ -142,7 +141,7 @@ function validateCsvData(
     }
 
     let valid = true;
-    // Check if all expected keys are present in the data[0] object
+    // This loop will check if all expected keys are present in the data[0] object
     for (const key of expectedKeys) {
         if (!dataKeys.includes(key)) {
             valid = false;
@@ -170,7 +169,7 @@ async function parseCsvData<T>(csvData: string) {
 async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<BatchAndSubdivisionData>(csvData);
 
-    if (!validateCsvData(parsedCsv, "batchAndSubdivisionData")) return false;
+    if (!validateCsvData(parsedCsv, "batchAndSubdivision")) return false;
 
     for (const row of parsedCsv.data) {
         const {
@@ -200,7 +199,7 @@ async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: Aca
 
 async function uploadClassroomData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<ClassroomData>(csvData);
-    if (!validateCsvData(parsedCsv, "classroomData")) {
+    if (!validateCsvData(parsedCsv, "classroom")) {
         return false;
     }
     for (const row of parsedCsv.data) {
@@ -219,7 +218,7 @@ async function uploadClassroomData(csvData: string, academicYearId: AcademicYear
 
 async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<SlotData>(csvData);
-    if (!validateCsvData(parsedCsv, "slotData")) {
+    if (!validateCsvData(parsedCsv, "slot")) {
         console.log("Errors in CSV file");
         return false;
     }
@@ -239,7 +238,7 @@ async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear[
 
 async function uploadSubjectAndTeacherData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<SubjectAndTeacherData>(csvData);
-    if (!validateCsvData(parsedCsv, "subjectAndTeacherData")) {
+    if (!validateCsvData(parsedCsv, "subjectAndTeacher")) {
         return false;
     }
     for (const row of parsedCsv.data) {
@@ -310,7 +309,7 @@ async function uploadSubjectAndTeacherData(csvData: string, academicYearId: Acad
 async function uploadUnavailabilityData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<UnavailabilityData>(csvData);
 
-    if (!validateCsvData(parsedCsv, "unavailabilityData")) {
+    if (!validateCsvData(parsedCsv, "unavailability")) {
         console.log("Errors in CSV file");
         return false;
     }
@@ -353,7 +352,7 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
 async function uploadTimetableData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<TimetableData>(csvData);
 
-    if (!validateCsvData(parsedCsv, "timetableData")) {
+    if (!validateCsvData(parsedCsv, "timetable")) {
         console.log("Errors in CSV file");
         return false;
     }
