@@ -6,7 +6,7 @@
     "start": "bun run start:frontend & bun run start:backend",
     "start:frontend": "bunx --bun vite",
     "start:backend": "bun run src/backend/index.ts",
-    "dev": "bun run dev:frontend & bun run dev:backend",
+    "dev": "bun run dev:frontend & bun run dev:backend && trap 'kill %1' && 'kill %2' SIGINT",
     "dev:frontend": "bunx --bun vite",
     "dev:backend": "bun run --hot src/backend/index.ts",
     "build": "bun lint && tsc && vite build",
