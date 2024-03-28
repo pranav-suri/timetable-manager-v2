@@ -2,7 +2,7 @@ import Elysia from "elysia";
 import cors from "@elysiajs/cors";
 import { AcademicYear, Batch, Department, Division, Subdivision } from "./database";
 import { getTimetable } from "./controllers";
-import timetable from "./api/timetable";
+import timetable from "./api/routes/timetable";
 const app = new Elysia();
 
 app.use(timetable);

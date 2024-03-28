@@ -9,8 +9,8 @@ import {
     Subdivision,
     Subject,
     Teacher,
-} from "../database";
-import { getAvailableClassrooms, getAvailableTeachers, getTimetable } from "../controllers";
+} from "../../database";
+import { getAvailableClassrooms, getAvailableTeachers, getTimetable } from "../../controllers";
 
 const app = new Elysia();
 app.use(cors({ methods: ["GET", "POST"] }));
@@ -90,6 +90,21 @@ app.get("/divisions", async (req) => {
     };
 });
 
+app.get("/subdivisions", async (req) => {
+    const { divisionId } = req.query;
+    if (!divisionId) {
+        req.set.status = 400;
+        return "divisionId is required.";
+    }
+    return {
+        subdivisions: await Subdivision.findAll({
+            where: {
+                DivisionId: divisionId,
+            },
+        }),
+    };
+});
+
 app.get("/departments", async (req) => {
     const { batchId } = req.query;
     if (!batchId) {
@@ -103,64 +118,6 @@ app.get("/departments", async (req) => {
             },
         }),
     };
-});
-
-app.get("/divisionTimetable", async (req) => {
-    const { divisionId } = req.query;
-    if (!divisionId) {
-        req.set.status = 400;
-        return "divisionId is required.";
-    }
-    return { Timetable: await getTimetable(divisionId, "division") };
-});
-
-app.get("/subdivisionTimetable", async (req) => {
-    const { subdivisionId } = req.query;
-    if (!subdivisionId) {
-        req.set.status = 400;
-        return "subdivisionId is required.";
-    }
-    return { Timetable: await getTimetable(subdivisionId, "subdivision") };
-});
-
-app.get("/teacherTimetable", async (req) => {
-    const { teacherId } = req.query;
-    if (!teacherId) {
-        req.set.status = 400;
-        return "teacherId is required.";
-    }
-    return { Timetable: await getTimetable(teacherId, "teacher") };
-});
-
-app.get("/classroomTimetable", async (req) => {
-    const { classroomId } = req.query;
-    if (!classroomId) {
-        req.set.status = 400;
-        return "classroomId is required.";
-    }
-    return { Timetable: await getTimetable(classroomId, "classroom") };
-});
-
-app.get("/availableTeachers", async (req) => {
-    const { subjectId, slotId } = req.query;
-    if (!subjectId || !slotId) {
-        req.set.status = 400;
-        return "subjectId and slotId are required.";
-    }
-    return { teachers: await getAvailableTeachers(slotId, subjectId) };
-});
-
-app.get("/availableClassrooms", async (req) => {
-    const { subjectId, slotId } = req.query;
-    if (!subjectId || !slotId) {
-        req.set.status = 400;
-        return "subjectId and slotId are required.";
-    }
-    return { classrooms: await getAvailableClassrooms(slotId, subjectId) };
-});
-
-app.put("/slotData", async (req) => {
-    //return { academicYears: await AcademicYear.findAll() };
 });
 
 export default app;
