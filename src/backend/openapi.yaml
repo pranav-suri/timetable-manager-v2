@@ -1,65 +1,196 @@
 openapi: 3.1.0
 info:
-  title: Timetable Manager API specification
-  description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
-  version: 0.1.9
+    title: Timetable Manager API specification
+    description: Optional multiline or single-line description in [CommonMark](http://commonmark.org/help/) or HTML.
+    version: 0.1.9
 servers:
-  - url: http://localhost:3000
-    description: Optional server description, e.g. Main (production) server
+    - url: http://localhost:3000
+      description: Optional server description, e.g. Main (production) server
 paths:
-  /users:
-    get:
-      summary: Returns a list of users.
-      description: Optional extended description in CommonMark or HTML.
-      responses:
-        '200':    # status code
-          description: A JSON array of user names
-          content:
+    /users:
+        get:
+            summary: Returns a list of users.
+            description: Optional extended description in CommonMark or HTML.
+            responses:
+                "200": # status code
+                    description: A JSON array of user names
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: string
+    /academicYears:
+        get:
+            summary: Get all academic years by userId.
+    /subjects:
+        get:
+            summary: Get all subjects by department and all multi-disciplinary subjects.
+    /classrooms:
+        get:
+            summary: Get all classrooms by academicYearId.
+    /teachers:
+        get:
+            summary: Get all teachers by academicYearId.
+    /batches:
+        get:
+            summary: Get all batches by academicYearId.
+    /divisions:
+        get:
+            summary: Get all divisions by departmentId.
+    /departments:
+        get:
+            summary: Get all departments by batchId.
+    /subdivisionTimetable:
+        get:
+            summary: Get timetable information by subdivisionId.
+    /divisionTimetable:
+        get:
+            summary: Get timetable information by divisionId.
+    /teacherTimetable:
+        get:
+            summary: Get timetable information by teacherId.
+    /classroomTimetable:
+        get:
+            summary: Get timetable information by classroomId.
+    /availableTeachers:
+        get:
+            summary: Get all available teachers by slot ID and subject ID.
+            parameters:
+                - name: subjectId
+                  in: query
+                  required: true
+                  description: ID of the subject.
+                  schema:
+                      type: number
+                - name: slotId
+                  in: query
+                  required: true
+                  description: ID of the slot.
+                  schema:
+                      type: number
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    teachers:
+                                        type: array
+                                        items:
+                                            $ref: "#/components/schemas/Teacher"
+                "400":
+                    $ref: "#/components/BadRequestError"
+    /availableClassrooms:
+        get:
+            summary: Get all available classrooms by slot ID and subject ID.
+            parameters:
+                - name: subjectId
+                  in: query
+                  required: true
+                  description: ID of the subject.
+                  schema:
+                      type: number
+                - name: slotId
+                  in: query
+                  required: true
+                  description: ID of the slot.
+                  schema:
+                      type: number
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    classrooms:
+                                        type: array
+                                        items:
+                                            type:
+                                                $ref: "#/components/schemas/Classroom"
+                "400":
+                    $ref: "#/components/BadRequestError"
+    /slotData:
+        put:
+            summary: Needs previous slotDataIds[] and new slotId, subdivisionIds[], subjectId, teacherId, classroomIds[].
+
+components:
+    BadRequestError:
+        description: Bad request
+        content:
             application/json:
-              schema: 
-                type: array
-                items: 
-                  type: string
-  /academicYears: 
-    get: 
-      summary: Get all academic years by userId.
-  /subjects:
-    get:
-      summary: Get all subjects by department and all multi-disciplinary subjects.
-  /classrooms:
-    get:
-      summary: Get all classrooms by academicYearId.
-  /teachers:
-    get:
-      summary: Get all teachers by academicYearId.
-  /batches:
-    get:
-      summary: Get all batches by academicYearId.
-  /divisions:
-    get:
-      summary: Get all divisions by departmentId.
-  /departments:
-    get:
-      summary: Get all departments by batchId.
-  /subdivisionTimetable:
-    get:
-      summary: Get timetable information by subdivisionId.
-  /divisionTimetable:
-   get:
-    summary: Get timetable information by divisionId.
-  /teacherTimetable:
-    get:
-      summary: Get timetable information by teacherId.
-  /classroomTimetable:
-    get:
-      summary: Get timetable information by classroomId.
-  /availableTeachers:
-    get:
-      summary: Get all available teachers by slotId.
-  /availableClassrooms:
-    get:
-      summary: Get all available classrooms by slotId.
-  /slotData:
-    put:
-      summary: Needs previous slotDataIds[] and new slotId, subdivisionIds[], subjectId, teacherId, classroomIds[].
-  
+                schema:
+                    type: object
+                    properties:
+                        error: 
+                            type: object
+                            properties:
+                                message:
+                                    type: string
+    schemas:
+        AcademicYear:
+            type: object
+        Batch:
+            type: object
+        Classroom:
+            type: object
+            properties:
+                id:
+                    type: number
+                classroomName:
+                    type: string
+                AcademicYearId:
+                    type: string
+        Department:
+            type: object
+            properties:
+              id: 
+                type: number
+              departmentName:
+                type: string
+              BatchId:
+                type: number
+        Division:
+            type: object
+        Group:
+            type: object
+        Slot:
+            type: object
+            properties:
+                id:
+                    type: number
+                day:
+                    type: number
+                number:
+                    type: number
+                AcademicYearId:
+                    type: number
+        Subdivision:
+            type: object
+        Subject:
+            type: object
+            properties:
+                id:
+                    type: number
+                subjectName:
+                    type: string
+                isLab:
+                    type: number
+                departmentId:
+                    type: number
+        Teacher:
+            type: object
+            properties:
+                id:
+                    type: number
+                teacherName:
+                    type: string
+                teacherEmail:
+                    type: string
+        Timetable:
+            type: object
+            properties:
