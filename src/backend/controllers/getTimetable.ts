@@ -93,11 +93,8 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
         },
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 required: false,
-                where: {
-                    SubdivisionId: subdivisionId,
-                },
                 include: [
                     {
                         association: "Teacher",
@@ -106,8 +103,13 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
                         association: "Subject",
                     },
                     {
+                        association: "SlotDataSubdivisions",
+                        where: { SubdivisionId: subdivisionId },
+                        include: [
+                    {
                         association: "Subdivision",
-                        include: ["Division"],
+                            },
+                        ],
                     },
                     {
                         association: "SlotDataClasses",
@@ -140,11 +142,8 @@ async function getTimetableByDivision(divisionId: string | number) {
         },
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 required: false,
-                where: {
-                    SubdivisionId: subdivisionIds,
-                },
                 include: [
                     {
                         association: "Teacher",
@@ -153,8 +152,13 @@ async function getTimetableByDivision(divisionId: string | number) {
                         association: "Subject",
                     },
                     {
+                        association: "SlotDataSubdivisions",
+                        where: { SubdivisionId: subdivisionIds },
+                        include: [
+                    {
                         association: "Subdivision",
-                        include: ["Division"],
+                            },
+                        ],
                     },
                     {
                         association: "SlotDataClasses",
@@ -182,7 +186,7 @@ async function getTimetableByTeacher(teacherId: string | number) {
         },
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 required: false,
                 where: {
                     TeacherId: teacherId,
@@ -195,8 +199,12 @@ async function getTimetableByTeacher(teacherId: string | number) {
                         association: "Subject",
                     },
                     {
+                        association: "SlotDataSubdivisions",
+                        include: [
+                    {
                         association: "Subdivision",
-                        include: ["Division"],
+                            },
+                        ],
                     },
                     {
                         association: "SlotDataClasses",
@@ -224,7 +232,7 @@ async function getTimetableByClassroom(classroomId: string | number) {
         },
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 required: false,
                 include: [
                     {
@@ -234,8 +242,12 @@ async function getTimetableByClassroom(classroomId: string | number) {
                         association: "Subject",
                     },
                     {
+                        association: "SlotDataSubdivisions",
+                        include: [
+                    {
                         association: "Subdivision",
-                        include: ["Division"],
+                            },
+                        ],
                     },
                     {
                         association: "SlotDataClasses",
@@ -291,7 +303,7 @@ async function getTimetable(searchId: string | number, searchBy: "subdivision" |
         },
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 required: false,
                 where: {
                     [searchColumn]: searchId,

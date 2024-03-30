@@ -1,13 +1,13 @@
 import { Teacher } from "../database";
 import getAllTeachers from "./getAllTeachers";
-
+//! Fix me
 async function getAvailableTeachers(slotId: string | number, subjectId: string | number) {
     const subjectTeachers = await getAllTeachers(subjectId);
 
     const teachers = await Teacher.findAll({
         include: [
             {
-                association: "SlotData",
+                association: "SlotDatas",
                 where: { slotId: slotId },
             },
         ],

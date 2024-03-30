@@ -8,17 +8,18 @@ import {
     Model,
 } from "sequelize";
 
-class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttributes<SlotDatas>> {
+class SlotDataSubdivisions extends Model<
+    InferAttributes<SlotDataSubdivisions>,
+    InferCreationAttributes<SlotDataSubdivisions>
+> {
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare TeacherId: ForeignKey<number>;
-    public declare SubjectId: ForeignKey<number>;
+    public declare SlotDataId: ForeignKey<number>;
     public declare SubdivisionId: ForeignKey<number>;
-    public declare SlotId: ForeignKey<number>;
 }
 
-SlotDatas.init(
+SlotDataSubdivisions.init(
     {
         id: {
             type: DataTypes.INTEGER.UNSIGNED,
@@ -30,8 +31,8 @@ SlotDatas.init(
     },
     {
         sequelize,
-        tableName: "SlotDatas",
-    },
+        tableName: "SlotDataSubdivisions",
+    }
 );
 
-export default SlotDatas;
+export default SlotDataSubdivisions;

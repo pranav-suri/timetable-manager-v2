@@ -11,8 +11,9 @@ import {
     Teach,
     Teacher,
     TeacherUnavailable,
-    SlotData as SlotInfo,
+    SlotDatas,
     SlotDataClasses,
+    SlotDataSubdivisions
 } from "../../database";
 import Papa from "papaparse";
 
@@ -53,11 +54,11 @@ const unavailabilityData = {
 
 type UnavailabilityData = typeof unavailabilityData;
 
-const slotData = {
+const slotInfo = {
     day: "",
     number: "",
 };
-type SlotData = typeof slotData;
+type SlotInfo = typeof slotInfo;
 
 const timetableData = {
     day: "",
@@ -79,7 +80,7 @@ function validateCsvData(
         | ClassroomData
         | SubjectAndTeacherData
         | UnavailabilityData
-        | SlotData
+        | SlotInfo
         | TimetableData
     >,
     csvType:
@@ -114,7 +115,7 @@ function validateCsvData(
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
         case "slot":
-            expectedKeys = Object.keys(slotData);
+            expectedKeys = Object.keys(slotInfo);
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
         case "timetable":
@@ -217,7 +218,7 @@ async function uploadClassroomData(csvData: string, academicYearId: AcademicYear
 }
 
 async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear["id"]) {
-    const parsedCsv = await parseCsvData<SlotData>(csvData);
+    const parsedCsv = await parseCsvData<SlotInfo>(csvData);
     if (!validateCsvData(parsedCsv, "slot")) {
         console.log("Errors in CSV file");
         return false;
@@ -518,12 +519,18 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
             return false;
         }
 
-        const [slotData, isCreatedSlotData] = await SlotInfo.findOrCreate({
+        const [slotData, isCreatedSlotData] = await SlotDatas.findOrCreate({
             where: {
-                SubdivisionId: subdivision.id,
                 SubjectId: subject.id,
                 TeacherId: teacher.id,
                 SlotId: slot.id,
+            },
+        });
+
+        const [slotDataSubdivisions, isCreatedSlotDataSubdivisions] = await SlotDataSubdivisions.findOrCreate({
+            where: {
+                SlotDataId: slotData.id,
+                SubdivisionId: subdivision.id,
             },
         });
 
