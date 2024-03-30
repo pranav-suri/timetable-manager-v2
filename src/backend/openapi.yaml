@@ -23,24 +23,108 @@ paths:
     /academicYears:
         get:
             summary: Get all academic years by userId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    academicYears:
+                                        $ref: "#/components/schemas/AcademicYears"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /subjects:
         get:
             summary: Get all subjects by department and all multi-disciplinary subjects.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    subjects:
+                                        $ref: "#/components/schemas/Subjects"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /classrooms:
         get:
             summary: Get all classrooms by academicYearId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    classrooms:
+                                        $ref: "#/components/schemas/Classrooms"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /teachers:
         get:
             summary: Get all teachers by academicYearId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    teachers:
+                                        $ref: "#/components/schemas/Teachers"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /batches:
         get:
             summary: Get all batches by academicYearId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    batches:
+                                        $ref: "#/components/schemas/Batches"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /divisions:
         get:
             summary: Get all divisions by departmentId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    divisions:
+                                        $ref: "#/components/schemas/Divisions"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /departments:
         get:
             summary: Get all departments by batchId.
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    departments:
+                                        $ref: "#/components/schemas/Departments"
+                "400":
+                    $ref: "#/components/BadRequestError"
     /subdivisionTimetable:
         get:
             summary: Get timetable information by subdivisionId.
@@ -78,9 +162,7 @@ paths:
                                 type: object
                                 properties:
                                     teachers:
-                                        type: array
-                                        items:
-                                            $ref: "#/components/schemas/Teacher"
+                                        $ref: "#/components/schemas/Teachers"
                 "400":
                     $ref: "#/components/BadRequestError"
     /availableClassrooms:
@@ -108,10 +190,7 @@ paths:
                                 type: object
                                 properties:
                                     classrooms:
-                                        type: array
-                                        items:
-                                            type:
-                                                $ref: "#/components/schemas/Classroom"
+                                        $ref: "#/components/schemas/Classrooms"
                 "400":
                     $ref: "#/components/BadRequestError"
     /slotData:
@@ -126,71 +205,126 @@ components:
                 schema:
                     type: object
                     properties:
-                        error: 
+                        error:
                             type: object
                             properties:
                                 message:
                                     type: string
     schemas:
-        AcademicYear:
-            type: object
-        Batch:
-            type: object
-        Classroom:
-            type: object
-            properties:
+        AcademicYears:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    year:
+                        type: number
+                    name:
+                        type: string
+        Batches:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    batchName:
+                        type: string
+                    AcademicYearId:
+                        type: number
+        Classrooms:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    classroomName:
+                        type: string
+                    AcademicYearId:
+                        type: string
+        Departments:
+            type: array
+            items:
+                type: object
+                properties:
                 id:
                     type: number
-                classroomName:
+                departmentName:
                     type: string
-                AcademicYearId:
-                    type: string
-        Department:
-            type: object
-            properties:
-              id: 
-                type: number
-              departmentName:
-                type: string
-              BatchId:
-                type: number
-        Division:
-            type: object
-        Group:
-            type: object
-        Slot:
-            type: object
-            properties:
-                id:
+                BatchId:
                     type: number
-                day:
-                    type: number
-                number:
-                    type: number
-                AcademicYearId:
-                    type: number
-        Subdivision:
-            type: object
-        Subject:
-            type: object
-            properties:
-                id:
-                    type: number
-                subjectName:
-                    type: string
-                isLab:
-                    type: number
-                departmentId:
-                    type: number
-        Teacher:
-            type: object
-            properties:
-                id:
-                    type: number
-                teacherName:
-                    type: string
-                teacherEmail:
-                    type: string
+        Divisions:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    divisionName:
+                        type: string
+                    DepartmentId:
+                        type: number
+        Groups:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    groupName:
+                        type: string
+                    AcademicYearId:
+                        type: number
+        Slots:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    day:
+                        type: number
+                    number:
+                        type: number
+                    AcademicYearId:
+                        type: number
+        Subdivisions:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    subdivisionName:
+                        type: string
+                    DivisionId:
+                        type: number
+        Subjects:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    subjectName:
+                        type: string
+                    isLab:
+                        type: number
+                    departmentId:
+                        type: number
+        Teachers:
+            type: array
+            items:
+                type: object
+                properties:
+                    id:
+                        type: number
+                    teacherName:
+                        type: string
+                    teacherEmail:
+                        type: string
         Timetable:
             type: object
             properties:
