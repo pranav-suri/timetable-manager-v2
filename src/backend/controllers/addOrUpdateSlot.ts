@@ -1,4 +1,4 @@
-import { SlotData, SlotDataClasses } from "../database";
+import { SlotDatas, SlotDataClasses } from "../database";
 // Please test @Mahajan
 
 async function addOrUpdateSlot(
@@ -10,14 +10,14 @@ async function addOrUpdateSlot(
     classroomIds: number[]
 ) {
     if (oldSlotDataIds) {
-        await SlotData.destroy({
+        await SlotDatas.destroy({
             where: {
                 id: oldSlotDataIds,
             },
         });
     }
     for (const subdivisionId of subdivisionIds) {
-        const slotData = await SlotData.create({
+        const slotData = await SlotDatas.create({
             SubdivisionId: subdivisionId,
             SubjectId: subjectId,
             TeacherId: teacherId,

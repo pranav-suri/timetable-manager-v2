@@ -11,8 +11,9 @@ import {
     Teach,
     Teacher,
     TeacherUnavailable,
-    SlotData,
+    SlotDatas,
     SlotDataClasses,
+    SlotDataSubdivisions,
 } from ".";
 
 AcademicYear.hasMany(Batch, { foreignKey: { allowNull: false }, as: "Batch" });
@@ -45,23 +46,20 @@ Subject.belongsTo(Group);
 AcademicYear.hasMany(Teacher, { foreignKey: { allowNull: false }, as: "Teacher" });
 Teacher.belongsTo(AcademicYear);
 
-Slot.hasMany(SlotData, { foreignKey: { allowNull: false } });
-SlotData.belongsTo(Slot);
+Slot.hasMany(SlotDatas, { foreignKey: { allowNull: false } });
+SlotDatas.belongsTo(Slot);
 
-Subdivision.hasMany(SlotData, { foreignKey: { allowNull: true } });
-SlotData.belongsTo(Subdivision);
+Teacher.hasMany(SlotDatas, { foreignKey: { allowNull: true } });
+SlotDatas.belongsTo(Teacher);
 
-Teacher.hasMany(SlotData, { foreignKey: { allowNull: true } });
-SlotData.belongsTo(Teacher);
+Subject.hasMany(SlotDatas, { foreignKey: { allowNull: true } });
+SlotDatas.belongsTo(Subject);
 
-Subject.hasMany(SlotData, { foreignKey: { allowNull: true } });
-SlotData.belongsTo(Subject);
-
-SlotData.hasMany(SlotDataClasses, {
+SlotDatas.hasMany(SlotDataClasses, {
     foreignKey: { name: "SlotDataId", allowNull: false },
     as: "SlotDataClasses",
 });
-SlotDataClasses.belongsTo(SlotData, {
+SlotDataClasses.belongsTo(SlotDatas, {
     foreignKey: { name: "SlotDataId", allowNull: false },
 });
 Classroom.hasMany(SlotDataClasses, {
@@ -69,6 +67,21 @@ Classroom.hasMany(SlotDataClasses, {
 });
 SlotDataClasses.belongsTo(Classroom, {
     foreignKey: { name: "ClassroomId", allowNull: false },
+});
+
+SlotDatas.hasMany(SlotDataSubdivisions, {
+    foreignKey: { name: "SlotDataId", allowNull: false },
+    as: "SlotDataSubdivisions",
+});
+SlotDataSubdivisions.belongsTo(SlotDatas, {
+    foreignKey: { name: "SlotDataId", allowNull: false },
+});
+Subdivision.hasMany(SlotDataSubdivisions, {
+    foreignKey: { name: "SubdivisionId", allowNull: false },
+    as: "SlotDataSubdivisions",
+});
+SlotDataSubdivisions.belongsTo(Subdivision, {
+    foreignKey: { name: "SubdivisionId", allowNull: false },
 });
 
 Teacher.belongsToMany(Slot, { through: TeacherUnavailable });
@@ -86,14 +99,14 @@ Teach.belongsTo(Subject);
 // Teacher.belongsToMany(Subject, { through: Teach });
 // Subject.belongsToMany(Teacher, { through: Teach });
 
-// Classroom.belongsToMany(SlotData, {
+// Classroom.belongsToMany(SlotDatas, {
 //     through: SlotDataClasses,
 //     foreignKey: {
 //         name: "SlotDataId",
 //         allowNull: false,
 //     },
 // });
-// SlotData.belongsToMany(Classroom, {
+// SlotDatas.belongsToMany(Classroom, {
 //     through: SlotDataClasses,
 //     foreignKey: {
 //         name: "ClassroomId",
@@ -115,5 +128,6 @@ await Subject.sync();
 
 await Teach.sync();
 await TeacherUnavailable.sync();
-await SlotData.sync();
+await SlotDatas.sync();
 await SlotDataClasses.sync();
+await SlotDataSubdivisions.sync();
