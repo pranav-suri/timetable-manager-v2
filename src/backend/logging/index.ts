@@ -5,6 +5,9 @@ export enum LogLevel {
     DEBUG = "DEBUG",
 }
 
+/**
+ * Logger class for logging messages to the console and log files.
+ */
 export default class Logger {
     private static _getFilePath = (logLevel: LogLevel) => {
         const basePath = "/var/log/timetable-manager/";
@@ -15,11 +18,18 @@ export default class Logger {
         const fileName = `${year}-${month}-${day}-${logLevel}.log`;
         return basePath + fileName;
     };
-    static async log(message: string, logLevel: LogLevel) {
+
+    /**
+     * Function to log messages to the console and to a log file at `/var/log/timetable-manager/`
+     * @param message - The message to be logged.
+     * @param logLevel - The log level of the message.
+     * @param logToConsole - Whether to log the message to the console. Default is false.
+     */
+    static async log(message: string, logLevel: LogLevel, logToConsole: boolean = false) {
         switch (logLevel) {
             case LogLevel.INFO: {
                 if (Bun.env.NODE_ENV === "production") break;
-                console.log(message);
+                if (logToConsole) console.log(message);
                 const infoFile = Bun.file(Logger._getFilePath(logLevel));
                 const infoFileWriter = infoFile.writer();
                 infoFileWriter.write(message);
@@ -27,21 +37,21 @@ export default class Logger {
             }
             case LogLevel.DEBUG: {
                 if (Bun.env.NODE_ENV === "production") break;
-                console.debug(message);
+                if (logToConsole) console.debug(message);
                 const debugFile = Bun.file(Logger._getFilePath(logLevel));
                 const debugFileWriter = debugFile.writer();
                 debugFileWriter.write(message);
                 break;
             }
             case LogLevel.ERROR: {
-                console.error(message);
+                if (logToConsole) console.error(message);
                 const errorFile = Bun.file(Logger._getFilePath(logLevel));
                 const errorFileWriter = errorFile.writer();
                 errorFileWriter.write(message);
                 break;
             }
             case LogLevel.WARN: {
-                console.warn(message);
+                if (logToConsole) console.warn(message);
                 const warnFile = Bun.file(Logger._getFilePath(logLevel));
                 const warnFileWriter = warnFile.writer();
                 warnFileWriter.write(message);
