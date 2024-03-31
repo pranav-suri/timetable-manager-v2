@@ -14,7 +14,6 @@ class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttribute
     public declare id: CreationOptional<number>;
     public declare TeacherId: ForeignKey<number>;
     public declare SubjectId: ForeignKey<number>;
-    public declare SubdivisionId: ForeignKey<number>;
     public declare SlotId: ForeignKey<number>;
 }
 

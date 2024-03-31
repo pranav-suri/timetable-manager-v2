@@ -1,3 +1,4 @@
+import { SlotDataSubdivisions } from ".";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -17,6 +18,8 @@ class Subdivision extends Model<
     public declare id: CreationOptional<number>;
     public declare subdivisionName: string;
     public declare DivisionId: ForeignKey<number>;
+    public declare SlotDataSubdivisions: ForeignKey<SlotDataSubdivisions[]>;
+    public declare SubdivisionId: ForeignKey<Subdivision["DivisionId"]>;
 }
 
 Subdivision.init(

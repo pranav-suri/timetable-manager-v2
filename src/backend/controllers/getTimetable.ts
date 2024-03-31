@@ -1,4 +1,17 @@
-import { AcademicYear, Slot, Subdivision } from "../database";
+import {
+    AcademicYear,
+    Slot,
+    Subdivision,
+    Batch,
+    Classroom,
+    Department,
+    Division,
+    SlotDataClasses,
+    SlotDataSubdivisions,
+    SlotDatas,
+    Subject,
+    Teacher,
+} from "../database";
 async function getAcademicYearId(
     searchId: string | number,
     searchBy: "subdivision" | "teacher" | "classroom" | "division",
@@ -83,7 +96,7 @@ async function getAcademicYearId(
 }
 
 async function getTimetableBySubdivision(subdivisionId: string | number) {
-    const slotsWithData = await Slot.findAll({
+    const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -91,48 +104,85 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
         where: {
             AcademicYearId: await getAcademicYearId(subdivisionId, "subdivision"),
         },
-        include: [
-            {
-                association: "SlotDatas",
-                required: false,
-                include: [
-                    {
-                        association: "Teacher",
-                    },
-                    {
-                        association: "Subject",
-                    },
-                    {
-                        association: "SlotDataSubdivisions",
-                        where: { SubdivisionId: subdivisionId },
-                        include: [
-                    {
-                        association: "Subdivision",
-                            },
-                        ],
-                    },
-                    {
-                        association: "SlotDataClasses",
-                        include: [
-                            {
-                                association: "Classroom",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
     });
-    return { Slots: slotsWithData };
+    const subdivisions = await Subdivision.findAll({
+        where: { id: subdivisionId },
+        limit: 1,
+    });
+    const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+    const slotDataSubdivisions = await SlotDataSubdivisions.findAll({
+        where: {
+            SubdivisionId: subdivisionIds,
+        },
+    });
+    const slotDataIds = slotDataSubdivisions.map(
+        (slotDataSubdivision) => slotDataSubdivision.SlotDataId,
+    );
+    const slotDatas = await SlotDatas.findAll({
+        where: {
+            id: slotDataIds,
+        },
+    });
+    const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    const teachers = await Teacher.findAll({
+        where: {
+            id: teacherIds,
+        },
+    });
+    const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjects = await Subject.findAll({
+        where: {
+            id: subjectIds,
+        },
+    });
+
+    const slotDataClasses = await SlotDataClasses.findAll({
+        where: {
+            SlotDataId: slotDataIds,
+        },
+    });
+    const classIds = slotDataClasses.map((slotDataClass) => slotDataClass.ClassroomId);
+
+    const classrooms = await Classroom.findAll({
+        where: {
+            id: classIds,
+        },
+    });
+    const divisionIds = subdivisions.map((subdivision) => subdivision.DivisionId);
+    const divisions = await Division.findAll({
+        where: {
+            id: divisionIds,
+        },
+    });
+    const departmentIds = divisions.map((division) => division.DepartmentId);
+    const departments = await Department.findAll({
+        where: {
+            id: departmentIds,
+        },
+    });
+    const batchIds = departments.map((department) => department.BatchId);
+    const batches = await Batch.findAll({
+        where: {
+            id: batchIds,
+        },
+    });
+    return {
+        slots,
+        slotDatas,
+        slotDataClasses,
+        slotDataSubdivisions,
+        classrooms,
+        subjects,
+        teachers,
+        subdivisions,
+        divisions,
+        departments,
+        batches,
+    };
 }
 
 async function getTimetableByDivision(divisionId: string | number) {
-    const subdivisions = await Subdivision.findAll({
-        where: { DivisionId: divisionId },
-    });
-    const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
-
-    const slotsWithData = await Slot.findAll({
+    const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -140,43 +190,85 @@ async function getTimetableByDivision(divisionId: string | number) {
         where: {
             AcademicYearId: await getAcademicYearId(divisionId, "division"),
         },
-        include: [
-            {
-                association: "SlotDatas",
-                required: false,
-                include: [
-                    {
-                        association: "Teacher",
-                    },
-                    {
-                        association: "Subject",
-                    },
-                    {
-                        association: "SlotDataSubdivisions",
-                        where: { SubdivisionId: subdivisionIds },
-                        include: [
-                    {
-                        association: "Subdivision",
-                            },
-                        ],
-                    },
-                    {
-                        association: "SlotDataClasses",
-                        include: [
-                            {
-                                association: "Classroom",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
     });
-    return { Slots: slotsWithData };
+    const divisions = await Division.findAll({ where: { id: divisionId }, limit: 1 });
+
+    const subdivisions = await Subdivision.findAll({
+        where: { DivisionId: divisionId },
+    });
+    const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+
+    const slotDataSubdivisions = await SlotDataSubdivisions.findAll({
+        where: {
+            SubdivisionId: subdivisionIds,
+        },
+    });
+
+    const slotDataIds = slotDataSubdivisions.map(
+        (slotDataSubdivision) => slotDataSubdivision.SlotDataId,
+    );
+    const slotDatas = await SlotDatas.findAll({
+        where: {
+            id: slotDataIds,
+        },
+    });
+
+    const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    const teachers = await Teacher.findAll({
+        where: {
+            id: teacherIds,
+        },
+    });
+
+    const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjects = await Subject.findAll({
+        where: {
+            id: subjectIds,
+        },
+    });
+
+    const slotDataClasses = await SlotDataClasses.findAll({
+        where: {
+            SlotDataId: slotDataIds,
+        },
+    });
+    const classIds = slotDataClasses.map((slotDataClass) => slotDataClass.ClassroomId);
+
+    const classrooms = await Classroom.findAll({
+        where: {
+            id: classIds,
+        },
+    });
+    const departmentIds = divisions.map((division) => division.DepartmentId);
+    const departments = await Department.findAll({
+        where: {
+            id: departmentIds,
+        },
+    });
+    const batchIds = departments.map((department) => department.BatchId);
+    const batches = await Batch.findAll({
+        where: {
+            id: batchIds,
+        },
+    });
+    return {
+        slots,
+        slotDatas,
+        slotDataClasses,
+        slotDataSubdivisions,
+        classrooms,
+        subjects,
+        teachers,
+        subdivisions,
+        divisions,
+        departments,
+        batches,
+    };
 }
 
 async function getTimetableByTeacher(teacherId: string | number) {
-    const slotsWithData = await Slot.findAll({
+    const teachers = [await Teacher.findByPk(teacherId)];
+    const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -184,45 +276,78 @@ async function getTimetableByTeacher(teacherId: string | number) {
         where: {
             AcademicYearId: await getAcademicYearId(teacherId, "teacher"),
         },
-        include: [
-            {
-                association: "SlotDatas",
-                required: false,
-                where: {
-                    TeacherId: teacherId,
-                },
-                include: [
-                    {
-                        association: "Teacher",
-                    },
-                    {
-                        association: "Subject",
-                    },
-                    {
-                        association: "SlotDataSubdivisions",
-                        include: [
-                    {
-                        association: "Subdivision",
-                            },
-                        ],
-                    },
-                    {
-                        association: "SlotDataClasses",
-                        include: [
-                            {
-                                association: "Classroom",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
     });
-    return { Slots: slotsWithData };
+    const slotDatas = await SlotDatas.findAll({
+        where: {
+            TeacherId: teacherId,
+        },
+    });
+    const slotDataIds = slotDatas.map((slotData) => slotData.id);
+    const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjects = await Subject.findAll({
+        where: {
+            id: subjectIds,
+        },
+    });
+    const slotDataClasses = await SlotDataClasses.findAll({
+        where: {
+            SlotDataId: slotDataIds,
+        },
+    });
+    const classIds = slotDataClasses.map((slotDataClass) => slotDataClass.ClassroomId);
+    const classrooms = await Classroom.findAll({
+        where: {
+            id: classIds,
+        },
+    });
+    const slotDataSubdivisions = await SlotDataSubdivisions.findAll({
+        where: {
+            SlotDataId: slotDataIds,
+        },
+    });
+    const subdivisionIds = slotDataSubdivisions.map(
+        (slotDataSubdivision) => slotDataSubdivision.SubdivisionId,
+    );
+    const subdivisions = await Subdivision.findAll({
+        where: {
+            id: subdivisionIds,
+        },
+    });
+    const divisionIds = subdivisions.map((subdivision) => subdivision.DivisionId);
+    const divisions = await Division.findAll({
+        where: {
+            id: divisionIds,
+        },
+    });
+    const departmentIds = divisions.map((division) => division.DepartmentId);
+    const departments = await Department.findAll({
+        where: {
+            id: departmentIds,
+        },
+    });
+    const batchIds = departments.map((department) => department.BatchId);
+    const batches = await Batch.findAll({
+        where: {
+            id: batchIds,
+        },
+    });
+    return {
+        slots,
+        slotDatas,
+        slotDataClasses,
+        slotDataSubdivisions,
+        classrooms,
+        subjects,
+        teachers,
+        subdivisions,
+        divisions,
+        departments,
+        batches,
+    };
 }
 
 async function getTimetableByClassroom(classroomId: string | number) {
-    const slotsWithData = await Slot.findAll({
+    const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -230,41 +355,76 @@ async function getTimetableByClassroom(classroomId: string | number) {
         where: {
             AcademicYearId: await getAcademicYearId(classroomId, "classroom"),
         },
-        include: [
-            {
-                association: "SlotDatas",
-                required: false,
-                include: [
-                    {
-                        association: "Teacher",
-                    },
-                    {
-                        association: "Subject",
-                    },
-                    {
-                        association: "SlotDataSubdivisions",
-                        include: [
-                    {
-                        association: "Subdivision",
-                            },
-                        ],
-                    },
-                    {
-                        association: "SlotDataClasses",
-                        where: {
-                            ClassroomId: classroomId,
-                        },
-                        include: [
-                            {
-                                association: "Classroom",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
     });
-    return { Slots: slotsWithData };
+    const slotDataClasses = await SlotDataClasses.findAll({
+        where: {
+            ClassroomId: classroomId,
+        },
+    });
+    const slotDataIds = slotDataClasses.map((slotDataClass) => slotDataClass.SlotDataId);
+    const slotDatas = await SlotDatas.findAll({
+        where: {
+            id: slotDataIds,
+        },
+    });
+    const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    const teachers = await Teacher.findAll({
+        where: {
+            id: teacherIds,
+        },
+    });
+    const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjects = await Subject.findAll({
+        where: {
+            id: subjectIds,
+        },
+    });
+    const classrooms = [await Classroom.findByPk(classroomId)];
+    const slotDataSubdivisions = await SlotDataSubdivisions.findAll({
+        where: {
+            SlotDataId: slotDataIds,
+        },
+    });
+    const subdivisionIds = slotDataSubdivisions.map(
+        (slotDataSubdivision) => slotDataSubdivision.SubdivisionId,
+    );
+    const subdivisions = await Subdivision.findAll({
+        where: {
+            id: subdivisionIds,
+        },
+    });
+    const divisionIds = subdivisions.map((subdivision) => subdivision.DivisionId);
+    const divisions = await Division.findAll({
+        where: {
+            id: divisionIds,
+        },
+    });
+    const departmentIds = divisions.map((division) => division.DepartmentId);
+    const departments = await Department.findAll({
+        where: {
+            id: departmentIds,
+        },
+    });
+    const batchIds = departments.map((department) => department.BatchId);
+    const batches = await Batch.findAll({
+        where: {
+            id: batchIds,
+        },
+    });
+
+    return {
+        slots,
+        slotDatas,
+        slotDataClasses,
+        slotDataSubdivisions,
+        classrooms,
+        subjects,
+        teachers,
+        subdivisions,
+        divisions,
+        departments,
+        batches,
+    };
 }
 
 async function getTimetable(
@@ -285,53 +445,4 @@ async function getTimetable(
     }
 }
 
-/*
-async function getTimetable(searchId: string | number, searchBy: "subdivision" | "teacher") {
-    const searchByColumnMap = {
-        subdivision: "SubdivisionId",
-        teacher: "TeacherId",
-    };
-    const searchColumn = searchByColumnMap[searchBy];
-
-    const slotsWithData = await Slot.findAll({
-        order: [
-            ["day", "ASC"],
-            ["number", "ASC"],
-        ],
-        where: {
-            AcademicYearId: await getAcademicYearId(searchId, searchBy),
-        },
-        include: [
-            {
-                association: "SlotDatas",
-                required: false,
-                where: {
-                    [searchColumn]: searchId,
-                },
-                include: [
-                    {
-                        association: "Teacher",
-                    },
-                    {
-                        association: "Subject",
-                    },
-                    {
-                        association: "Subdivision",
-                        include: ["Division"],
-                    },
-                    {
-                        association: "SlotDataClasses",
-                        include: [
-                            {
-                                association: "Classroom",
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    });
-    return { Slots: slotsWithData };
-}
-*/
 export default getTimetable;

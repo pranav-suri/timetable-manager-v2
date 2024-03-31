@@ -1,6 +1,6 @@
 import { Elysia } from "elysia";
 import cors from "@elysiajs/cors";
-import { getTimetable } from "../../controllers";
+import { getTimetable, getTTNested } from "../../controllers";
 
 const app = new Elysia();
 app.use(cors({ methods: ["GET", "POST"] }));
@@ -11,7 +11,7 @@ app.get("/divisionTimetable", async (req) => {
         req.set.status = 400;
         return "divisionId is required.";
     }
-    return { Timetable: await getTimetable(divisionId, "division") };
+    return { Timetable: await getTTNested(divisionId, "division") };
 });
 
 app.get("/subdivisionTimetable", async (req) => {
@@ -20,7 +20,7 @@ app.get("/subdivisionTimetable", async (req) => {
         req.set.status = 400;
         return "subdivisionId is required.";
     }
-    return { Timetable: await getTimetable(subdivisionId, "subdivision") };
+    return { Timetable: await getTTNested(subdivisionId, "subdivision") };
 });
 
 app.get("/teacherTimetable", async (req) => {
@@ -29,7 +29,7 @@ app.get("/teacherTimetable", async (req) => {
         req.set.status = 400;
         return "teacherId is required.";
     }
-    return { Timetable: await getTimetable(teacherId, "teacher") };
+    return { Timetable: await getTTNested(teacherId, "teacher") };
 });
 
 app.get("/classroomTimetable", async (req) => {
@@ -38,11 +38,7 @@ app.get("/classroomTimetable", async (req) => {
         req.set.status = 400;
         return "classroomId is required.";
     }
-    return { Timetable: await getTimetable(classroomId, "classroom") };
-});
-
-app.put("/slotData", async (req) => {
-    //return { academicYears: await AcademicYear.findAll() };
+    return { Timetable: await getTTNested(classroomId, "classroom") };
 });
 
 export default app;
