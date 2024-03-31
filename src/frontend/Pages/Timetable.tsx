@@ -1,59 +1,30 @@
-import React, { useState, useEffect } from "react";
-interface TimetableStructure {
-    Timetable: {
-        Slots: [
-            {
-                id: number;
-                day: number;
-                number: number;
-                AcademicYearId: number;
-                SlotDatas: [
-                    {
-                        id: number;
-                        Teacher: {
-                            id: number;
-                            teacherName: string;
-                            teacherEmail: string;
-                        };
-                        Subject: {
-                            id: number;
-                            isLab: boolean;
-                            subjectName: string;
-                        };
+import {
+    AppBar,
+    Button,
+    CircularProgress,
+    Toolbar,
+    ButtonGroup,
+    Paper,
+    ClickAwayListener,
+    MenuList,
+    MenuItem,
+    Popper,
+    Grow,
+    Typography,
+} from "@mui/material";
+import {
+    ArrowDropDown as ArrowDropDownIcon,
+    ArrowDropUp as ArrowDropUpIcon,
+} from "@mui/icons-material";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-                        SlotDataSubdivisions: [
-                            {
-                                id: number;
-                                Subdivision: {
-                                    id: number;
-                                    subdivisionName: string;
-                                };
-                            },
-                        ];
-                        SlotDataClasses: [
-                            {
-                                id: number;
-                                Classroom: {
-                                    id: number;
-                                    classroomName: string;
-                                    isLab: boolean;
-                                };
-                            },
-                        ];
-                    },
-                ];
-            },
-        ];
-    };
-}
-type Timetable = TimetableStructure["Timetable"];
-type Slots = Timetable["Slots"];
-type SlotDatas = Slots[0]["SlotDatas"];
-type SlotDataClasses = SlotDatas[0]["SlotDataClasses"];
-type SlotDataSubdivisions = SlotDatas[0]["SlotDataSubdivisions"];
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
 function printClasses(slotDataClasses: SlotDataClasses) {
-    console.log(slotDataClasses);
     return slotDataClasses.map((slotDataClass, slotDataClassIndex) => (
         <React.Fragment key={slotDataClassIndex}>
             {" "}
@@ -63,7 +34,6 @@ function printClasses(slotDataClasses: SlotDataClasses) {
     ));
 }
 function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
-    console.log(slotDataSubdivisions);
     return slotDataSubdivisions.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
         <React.Fragment key={slotDataSubdivisionIndex}>
             {" "}
@@ -149,18 +119,142 @@ function renderTimetable(data: TimetableStructure) {
         </table>
     );
 }
-export default function Timetable(props: { url: string }) {
+
+const fetchAcademicYears = async () => {
+    const response = await fetch("http://localhost:3000/academicYears");
+    return response.json();
+};
+
+export default function Timetable() {
+    const [open, setOpen] = React.useState(false);
+    const anchorRef = React.useRef<HTMLDivElement>(null);
+    const [selectedIndex, setSelectedIndex] = React.useState(1);
     const [data, setData] = useState<TimetableStructure | null>(null);
 
-    useEffect(() => {
-        fetch(props.url)
+    const fetchTimetable = (
+        setData: React.Dispatch<React.SetStateAction<TimetableStructure | null>>,
+        url: string,
+    ) => {
+        if (!url) return;
+        fetch(url)
             .then((response) => response.json())
-            .then((json: TimetableStructure) => setData(json))
-            .catch((error) => console.error(error));
-    }, []);
-    let renderedTT = null;
-    if (data) {
-        renderedTT = renderTimetable(data);
+            .then((data) => setData(data));
+    };
+
+    const options: { label: string; url: string }[] = [
+        { label: "Division", url: "http://localhost:3000/divisionTimetable/?divisionId=2" },
+        { label: "Teacher", url: "http://localhost:3000/teacherTimetable/?teacherId=1" },
+        { label: "Classroom", url: "http://localhost:3000/classroomTimetable/?classroomId=1" },
+    ];
+
+    const handleMenuItemClick = (
+        event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+        index: number,
+    ) => {
+        setSelectedIndex(index);
+        setOpen(false);
+        fetchTimetable(setData, options[index].url);
+    };
+
+    const handleToggle = () => {
+        setOpen((prevOpen) => !prevOpen);
+    };
+
+    const handleClose = (event: Event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target as HTMLElement)) {
+            return;
+        }
+
+        setOpen(false);
+    };
+
+    if (!data) {
+        fetchTimetable(setData, options[selectedIndex].url);
     }
-    return <table>{renderedTT}</table>;
+
+    return (
+        <Router>
+            <AppBar position="static" color="primary">
+                <Toolbar>
+                    <Typography variant="button" mr={2}>
+                        <Paper variant="elevation">Timetable Type:</Paper>
+                    </Typography>
+                    <ButtonGroup
+                        variant="contained"
+                        aria-label="Button group with a nested menu"
+                        id="split-button-menu"
+                        ref={anchorRef}
+                    >
+                        <Button onClick={handleToggle}>{options[selectedIndex].label}</Button>
+                        <Button
+                            size="small"
+                            aria-controls={open ? "split-button-menu" : undefined}
+                            aria-expanded={open ? "true" : undefined}
+                            aria-label="select timetable type"
+                            aria-haspopup="menu"
+                            onClick={handleToggle}
+                        >
+                            {open ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />}
+                        </Button>
+                    </ButtonGroup>
+                    <Popper
+                        sx={{
+                            zIndex: 1,
+                        }}
+                        open={open}
+                        anchorEl={anchorRef.current}
+                        role={undefined}
+                        transition
+                        disablePortal
+                    >
+                        {
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
+                            ({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                            placement === "bottom" ? "center top" : "center bottom",
+                                    }}
+                                >
+                                    <Paper>
+                                        <ClickAwayListener onClickAway={handleClose}>
+                                            <MenuList id="split-button-menu" autoFocusItem>
+                                                {options.map((option, index) => (
+                                                    <MenuItem
+                                                        key={option.label}
+                                                        selected={index === selectedIndex}
+                                                        onClick={(event) =>
+                                                            handleMenuItemClick(event, index)
+                                                        }
+                                                    >
+                                                        {option.label}
+                                                    </MenuItem>
+                                                ))}
+                                            </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )
+                        }
+                    </Popper>
+                </Toolbar>
+            </AppBar>
+            <Routes>
+                <Route path="*" element={<Navigate to={"division"} />} />
+                <Route
+                    path="division"
+                    element={data ? renderTimetable(data) : <CircularProgress />}
+                />
+                <Route
+                    path="teacher"
+                    element={data ? renderTimetable(data) : <CircularProgress />}
+                />
+                <Route
+                    path="classroom"
+                    element={data ? renderTimetable(data) : <CircularProgress />}
+                />
+            </Routes>
+        </Router>
+    );
 }
