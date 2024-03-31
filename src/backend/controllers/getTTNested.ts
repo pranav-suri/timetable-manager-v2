@@ -1,4 +1,4 @@
-import { AcademicYear, Slot, Subdivision } from "../database";
+import { AcademicYear, Slot, SlotDataSubdivisions, SlotDatas, Subdivision } from "../database";
 async function getAcademicYearId(
     searchId: string | number,
     searchBy: "subdivision" | "teacher" | "classroom" | "division",
@@ -106,8 +106,8 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
                         association: "SlotDataSubdivisions",
                         where: { SubdivisionId: subdivisionId },
                         include: [
-                    {
-                        association: "Subdivision",
+                            {
+                                association: "Subdivision",
                             },
                         ],
                     },
@@ -136,6 +136,13 @@ async function getTimetableByDivision(divisionId: string | number) {
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
+            [
+                { model: SlotDatas, as: "SlotDatas" },
+                { model: SlotDataSubdivisions, as: "SlotDataSubdivisions" },
+                { model: Subdivision, as: "Subdivision" },
+                "subdivisionName",
+                "ASC",
+            ],
         ],
         where: {
             AcademicYearId: await getAcademicYearId(divisionId, "division"),
@@ -155,8 +162,8 @@ async function getTimetableByDivision(divisionId: string | number) {
                         association: "SlotDataSubdivisions",
                         where: { SubdivisionId: subdivisionIds },
                         include: [
-                    {
-                        association: "Subdivision",
+                            {
+                                association: "Subdivision",
                             },
                         ],
                     },
@@ -201,8 +208,8 @@ async function getTimetableByTeacher(teacherId: string | number) {
                     {
                         association: "SlotDataSubdivisions",
                         include: [
-                    {
-                        association: "Subdivision",
+                            {
+                                association: "Subdivision",
                             },
                         ],
                     },
@@ -244,8 +251,8 @@ async function getTimetableByClassroom(classroomId: string | number) {
                     {
                         association: "SlotDataSubdivisions",
                         include: [
-                    {
-                        association: "Subdivision",
+                            {
+                                association: "Subdivision",
                             },
                         ],
                     },
