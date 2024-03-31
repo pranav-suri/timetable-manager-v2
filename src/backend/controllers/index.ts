@@ -1,6 +1,19 @@
 import getTimetable from "./getTimetable";
-import getAllTeachers from "./getAllTeachers";
+import getTTNested from "./getTTNested";
+import getSubjectTeachers from "./getSubjectTeachers";
 import getAvailableTeachers from "./getAvailableTeachers";
 import getAvailableClassrooms from "./getAvailableClassrooms";
+import addSlotData from "./addSlotData";
+import deleteSlotData from "./deleteSlotData";
+import addOrUpdateSlotData from "./addOrUpdateSlotData";
 
-export { getTimetable, getAllTeachers, getAvailableTeachers, getAvailableClassrooms };
+export {
+    getTTNested,
+    getTimetable,
+    getSubjectTeachers,
+    getAvailableTeachers,
+    getAvailableClassrooms,
+    addSlotData,
+    deleteSlotData,
+    addOrUpdateSlotData,
+};

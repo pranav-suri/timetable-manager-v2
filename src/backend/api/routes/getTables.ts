@@ -10,25 +10,27 @@ import {
     Subject,
     Teacher,
 } from "../../database";
-import { getAvailableClassrooms, getAvailableTeachers, getTimetable } from "../../controllers";
+import {
+    getSubjectTeachers,
+} from "../../controllers";
 
 const app = new Elysia();
 app.use(cors({ methods: ["GET", "POST"] }));
 
 app.get("/academicYears", async () => {
-    return { academicYears: await AcademicYear.findAll() }; // add userId function
+    return { academicYears: await AcademicYear.findAll() }; // TODO: add userId function
 });
 
 app.get("/subjects", async (req) => {
     const { departmentId } = req.query;
     if (!departmentId) {
         req.set.status = 400;
-        return "departmentId is required.";
+        return { error: { message: "departmentId is required." } };
     }
     return {
         subjects: await Subject.findAll({
             where: {
-                DepartmentId: departmentId, // add multi disc sub
+                DepartmentId: departmentId, // TODO: add multi disc sub
             },
         }),
     };
@@ -38,7 +40,7 @@ app.get("/classrooms", async (req) => {
     const { academicYearId } = req.query;
     if (!academicYearId) {
         req.set.status = 400;
-        return "academicYearId is required.";
+        return { error: { message: "academicYearId is required." } };
     }
     return {
         classrooms: await Classroom.findAll({ where: { AcademicYearId: academicYearId } }),
@@ -49,7 +51,7 @@ app.get("/teachers", async (req) => {
     const { academicYearId } = req.query;
     if (!academicYearId) {
         req.set.status = 400;
-        return "academicYearId is required.";
+        return { error: { message: "academicYearId is required." } };
     }
     return {
         teachers: await Teacher.findAll({
@@ -60,11 +62,20 @@ app.get("/teachers", async (req) => {
     };
 });
 
+app.get("/subjectTeachers", async (req) => {
+    const { subjectId } = req.query;
+    if (!subjectId) {
+        req.set.status = 400;
+        return { error: { message: "subjectId is required." } };
+    }
+    return { teachers: await getSubjectTeachers(subjectId) };
+});
+
 app.get("/batches", async (req) => {
     const { academicYearId } = req.query;
     if (!academicYearId) {
         req.set.status = 400;
-        return "academicYearId is required.";
+        return { error: { message: "academicYearId is required." } };
     }
     return {
         batches: await Batch.findAll({
@@ -79,7 +90,7 @@ app.get("/divisions", async (req) => {
     const { departmentId } = req.query;
     if (!departmentId) {
         req.set.status = 400;
-        return "departmentId is required.";
+        return { error: { message: "departmentId is required." } };
     }
     return {
         divisions: await Division.findAll({
@@ -94,7 +105,7 @@ app.get("/subdivisions", async (req) => {
     const { divisionId } = req.query;
     if (!divisionId) {
         req.set.status = 400;
-        return "divisionId is required.";
+        return { error: { message: "divisionId is required." } };
     }
     return {
         subdivisions: await Subdivision.findAll({
@@ -109,7 +120,7 @@ app.get("/departments", async (req) => {
     const { batchId } = req.query;
     if (!batchId) {
         req.set.status = 400;
-        return "batchId is required.";
+        return { error: { message: "batchId is required." } };
     }
     return {
         departments: await Department.findAll({

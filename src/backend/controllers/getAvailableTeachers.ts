@@ -1,10 +1,11 @@
 import { Teacher } from "../database";
-import getAllTeachers from "./getAllTeachers";
-//! Fix me
-async function getAvailableTeachers(slotId: string | number, subjectId: string | number) {
-    const subjectTeachers = await getAllTeachers(subjectId);
+import {getSubjectTeachers} from "./";
 
-    const teachers = await Teacher.findAll({
+async function getAvailableTeachers(slotId: string | number, subjectId: string | number) {
+    const subjectTeachers = await getSubjectTeachers(subjectId);
+
+    // Busy teachers in the given slot
+    const busyTeachers = await Teacher.findAll({
         include: [
             {
                 association: "SlotDatas",
@@ -13,10 +14,11 @@ async function getAvailableTeachers(slotId: string | number, subjectId: string |
         ],
     });
 
-    const availableTeachers = subjectTeachers.filter(
-        (subjectTeacher) => !teachers.some((teacher) => teacher.id === subjectTeacher.id)
+    const availableSubjectTeachers = subjectTeachers.filter(
+        (subjectTeacher) => !busyTeachers.some((teacher) => teacher.id === subjectTeacher.id)
     );
-    return availableTeachers;
+
+    return availableSubjectTeachers;
 }
 
 export default getAvailableTeachers;
