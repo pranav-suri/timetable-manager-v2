@@ -18,9 +18,8 @@ const app = new Elysia()
     .use(editing)
     .use(validators)
     .onError(({ code, error }) => {
-        const parsedError = JSON.parse(JSON.stringify(error));
-        // return parsedError;
-        if ((code = "VALIDATION")) {
+        if (code == "VALIDATION") {
+            const parsedError = JSON.parse(JSON.stringify(error));
             const customErrorResponse = {
                 code: code,
                 type: parsedError.type,
@@ -35,7 +34,8 @@ const app = new Elysia()
             };
             return customErrorResponse;
         }
-        return parsedError;
+        // JSON.stringify returns empty object. This is likely Elysia specific.
+        return error.toString();
     })
     .use(swagger());
 
