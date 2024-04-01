@@ -1,4 +1,3 @@
-import { timetable } from "../api/routes";
 import {
     AcademicYear,
     Classroom,
@@ -267,7 +266,7 @@ export async function timetablesValidator(
     if (timetableType === "academicYear") {
         academicYearId = searchId;
     } else {
-        academicYearId = await getAcademicYearId(searchId, timetableType);
+        academicYearId = await getAcademicYearId(timetableType, searchId);
     }
     const slots = await Slot.findAll({
         where: { AcademicYearId: academicYearId },

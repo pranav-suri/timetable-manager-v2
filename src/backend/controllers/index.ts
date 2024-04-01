@@ -6,6 +6,7 @@ import getAvailableClassrooms from "./getAvailableClassrooms";
 import addSlotData from "./addSlotData";
 import deleteSlotData from "./deleteSlotData";
 import addOrUpdateSlotData from "./addOrUpdateSlotData";
+import getAcademicYearId from "./getAcademicYearId.ts";
 
 export {
     getTTNested,
@@ -16,4 +17,5 @@ export {
     addSlotData,
     deleteSlotData,
     addOrUpdateSlotData,
+    getAcademicYearId,
 };
