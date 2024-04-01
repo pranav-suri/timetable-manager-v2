@@ -1,44 +1,42 @@
-import { Elysia } from "elysia";
-import cors from "@elysiajs/cors";
+import { Elysia, t } from "elysia";
 import { getTimetable, getTTNested } from "../../controllers";
 
 const app = new Elysia();
-app.use(cors({ methods: ["GET", "POST"] }));
 
-app.get("/divisionTimetable", async (req) => {
-    const { divisionId } = req.query;
-    if (!divisionId) {
-        req.set.status = 400;
-        return "divisionId is required.";
-    }
+app.get("/divisionTimetable", async ({query}) => {
+    const { divisionId } = query;
     return { Timetable: await getTTNested(divisionId, "division") };
+}, {
+    query: t.Object({
+        divisionId: t.Numeric(),
+    }),
 });
 
-app.get("/subdivisionTimetable", async (req) => {
-    const { subdivisionId } = req.query;
-    if (!subdivisionId) {
-        req.set.status = 400;
-        return "subdivisionId is required.";
-    }
+app.get("/subdivisionTimetable", async ({query}) => {
+    const { subdivisionId } = query;
     return { Timetable: await getTTNested(subdivisionId, "subdivision") };
+}, {
+    query: t.Object({
+        subdivisionId: t.Numeric(),
+    }),
 });
 
-app.get("/teacherTimetable", async (req) => {
-    const { teacherId } = req.query;
-    if (!teacherId) {
-        req.set.status = 400;
-        return "teacherId is required.";
-    }
+app.get("/teacherTimetable", async ({query}) => {
+    const { teacherId } = query;
     return { Timetable: await getTTNested(teacherId, "teacher") };
+}, {
+    query: t.Object({
+        teacherId: t.Numeric(),
+    }),
 });
 
-app.get("/classroomTimetable", async (req) => {
-    const { classroomId } = req.query;
-    if (!classroomId) {
-        req.set.status = 400;
-        return "classroomId is required.";
-    }
+app.get("/classroomTimetable", async ({query}) => {
+    const { classroomId } = query;
     return { Timetable: await getTTNested(classroomId, "classroom") };
+}, {
+    query: t.Object({
+        classroomId: t.Numeric(),
+    }),
 });
 
 export default app;

@@ -1,38 +1,45 @@
 import { timetable } from "../api/routes";
-import { Classroom, Slot, SlotDataClasses, SlotDatas, Subdivision, Teacher } from "../database";
-import { Sequelize, Op } from "sequelize";
+import {
+    AcademicYear,
+    Classroom,
+    Slot,
+    Subdivision,
+    Teacher,
+} from "../database";
+import { getAcademicYearId } from ".";
 
 // TODO: Make return type similar in all functions
 
-interface ValidatorInput {
-    slotId: number;
-    teacherIds?: number | number[];
-    classroomIds?: number | number[];
-    subdivisionIds?: number | number[];
-}
+type TimetableType = "subdivision" | "division" | "teacher" | "classroom" | "academicYear";
 
 // Checks for teacher collisions in a slot
-async function teacherValidator(ids: ValidatorInput) {
-    const { slotId, teacherIds, classroomIds, subdivisionIds } = ids;
-    const whereTeacherClause = teacherIds ? { id: teacherIds } : {};
-
-    const includeClassroomClause = classroomIds
-        ? {
-              association: "SlotDataClasses",
-              where: { ClassroomId: classroomIds },
-              attributes: [],
-              required: true,
-          }
-        : {};
-    const includeSubdivisionClause = subdivisionIds
-        ? {
-              association: "SlotDataSubdivisions",
-              where: { SubdivisionId: subdivisionIds },
-              attributes: [],
-              required: true,
-          }
-        : {};
-
+async function teacherValidator(slotId: number, timetableType: TimetableType, searchId: number) {
+    let whereClassroomClause = {};
+    let whereSubdivisionClause = {};
+    let whereTeacherClause = {};
+    switch (timetableType) {
+        case "subdivision":
+            whereSubdivisionClause = { SubdivisionId: searchId };
+            break;
+        case "division":
+            const subdivisions = await Subdivision.findAll({
+                where: { DivisionId: searchId },
+            });
+            const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+            whereSubdivisionClause = { SubdivisionId: subdivisionIds };
+            break;
+        case "teacher":
+            whereTeacherClause = { id: searchId };
+            break;
+        case "classroom":
+            whereClassroomClause = { ClassroomId: searchId };
+            break;
+        case "academicYear":
+            // Do nothing, data will be filtered by only SlotId in the query
+            break;
+        default:
+            throw new Error("Invalid timetable type");
+    }
     const teachers = await Teacher.findAll({
         attributes: [["id", "TeacherId"]],
         where: { ...whereTeacherClause },
@@ -42,7 +49,20 @@ async function teacherValidator(ids: ValidatorInput) {
                 where: { SlotId: slotId },
                 required: true,
                 attributes: [["id", "SlotDataId"]],
-                include: [{ ...includeClassroomClause }, { ...includeSubdivisionClause }],
+                include: [
+                    {
+                        association: "SlotDataClasses",
+                        where: { ...whereClassroomClause },
+                        attributes: [],
+                        required: true,
+                    },
+                    {
+                        association: "SlotDataSubdivisions",
+                        where: { ...whereSubdivisionClause },
+                        attributes: [],
+                        required: true,
+                    },
+                ],
             },
         ],
     });
@@ -52,18 +72,33 @@ async function teacherValidator(ids: ValidatorInput) {
 }
 
 // Checks for classroom collisions in a slot
-async function classroomValidator(ids: ValidatorInput) {
-    const { slotId, teacherIds, classroomIds, subdivisionIds } = ids;
-    const whereClassroomClause = classroomIds ? { id: classroomIds } : {};
-    const whereTeacherClause = teacherIds ? { TeacherId: teacherIds } : {};
-    const includeSubdivisionClause = subdivisionIds
-        ? {
-              association: "SlotDataSubdivisions",
-              attributes: [],
-              required: true,
-              where: { SubdivisionId: subdivisionIds },
-          }
-        : {};
+async function classroomValidator(slotId: number, timetableType: TimetableType, searchId: number) {
+    let whereSubdivisionClause = {};
+    let whereClassroomClause = {};
+    let whereTeacherClause = {};
+    switch (timetableType) {
+        case "subdivision":
+            whereSubdivisionClause = { SubdivisionId: searchId };
+            break;
+        case "division":
+            const subdivisions = await Subdivision.findAll({
+                where: { DivisionId: searchId },
+            });
+            const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+            whereSubdivisionClause = { SubdivisionId: subdivisionIds };
+            break;
+        case "teacher":
+            whereTeacherClause = { TeacherId: searchId };
+            break;
+        case "classroom":
+            whereClassroomClause = { id: searchId };
+            break;
+        case "academicYear":
+            // Do nothing, data will be filtered by only SlotId in the query
+            break;
+        default:
+            throw new Error("Invalid timetable type");
+    }
     const classrooms = await Classroom.findAll({
         attributes: [["id", "ClassroomId"]],
         where: { ...whereClassroomClause },
@@ -71,13 +106,19 @@ async function classroomValidator(ids: ValidatorInput) {
             {
                 association: "SlotDataClasses",
                 attributes: ["SlotDataId"],
-                required: true,
                 include: [
                     {
                         association: "SlotData",
+                        required: true,
                         where: { SlotId: slotId, ...whereTeacherClause },
                         attributes: [],
-                        include: [{ ...includeSubdivisionClause }],
+                        include: [
+                            {
+                                required: true,
+                                association: "SlotDataSubdivisions",
+                                where: { ...whereSubdivisionClause },
+                            },
+                        ],
                     },
                 ],
             },
@@ -90,18 +131,36 @@ async function classroomValidator(ids: ValidatorInput) {
 }
 
 // Checks for all subdivision collisions in a slot
-async function subdivisionValidator(ids: ValidatorInput) {
-    const { slotId, teacherIds, classroomIds, subdivisionIds } = ids;
-    const whereSubdivisionClause = subdivisionIds ? { id: subdivisionIds } : {};
-    const whereTeacherClause = teacherIds ? { TeacherId: teacherIds } : {};
-    const includeClassroomClause = classroomIds
-        ? {
-              association: "SlotDataClasses",
-              where: { ClassroomId: classroomIds },
-              attributes: [],
-              required: true,
-          }
-        : {};
+async function subdivisionValidator(
+    slotId: number,
+    timetableType: TimetableType,
+    searchId: number,
+) {
+    let whereSubdivisionClause = {};
+    let whereClassroomClause = {};
+    let whereTeacherClause = {};
+    switch (timetableType) {
+        case "subdivision":
+            whereSubdivisionClause = { id: searchId };
+            break;
+        case "division":
+            const subdivisions = await Subdivision.findAll({
+                where: { DivisionId: searchId },
+            });
+            const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
+            whereSubdivisionClause = { id: subdivisionIds };
+            break;
+        case "teacher":
+            whereTeacherClause = { TeacherId: searchId };
+            break;
+        case "classroom":
+            whereClassroomClause = { ClassroomId: searchId };
+            break;
+        case "academicYear":
+            // Do nothing, data will be filtered by only SlotId in the query
+            break;
+        default:
+    }
     const subdivisions = await Subdivision.findAll({
         attributes: ["id"],
         where: { ...whereSubdivisionClause },
@@ -109,12 +168,12 @@ async function subdivisionValidator(ids: ValidatorInput) {
             {
                 association: "SlotDataSubdivisions",
                 attributes: ["id"],
-                required: true,
                 include: [
                     {
                         association: "SlotData",
                         where: { SlotId: slotId, ...whereTeacherClause },
                         attributes: ["id"],
+                        required: true,
                         include: [
                             {
                                 association: "Subject",
@@ -127,7 +186,10 @@ async function subdivisionValidator(ids: ValidatorInput) {
                                 ],
                             },
                             {
-                                ...includeClassroomClause,
+                                association: "SlotDataClasses",
+                                where: { ...whereClassroomClause },
+                                attributes: [],
+                                required: true,
                             },
                         ],
                     },
@@ -183,37 +245,45 @@ async function subdivisionValidator(ids: ValidatorInput) {
     return { subdivisionCollisions: subdivCollisions };
 }
 
-async function slotValidator(ids: ValidatorInput) {
-    const { teacherCollisions } = await teacherValidator(ids);
-    const { classroomCollisions } = await classroomValidator(ids);
-    const { subdivisionCollisions } = await subdivisionValidator(ids);
+async function slotValidator(slotId: number, timetableType: TimetableType, searchId: number) {
+    const { teacherCollisions } = await teacherValidator(slotId, timetableType, searchId);
+    const { classroomCollisions } = await classroomValidator(slotId, timetableType, searchId);
+    const { subdivisionCollisions } = await subdivisionValidator(slotId, timetableType, searchId);
     return { teacherCollisions, classroomCollisions, subdivisionCollisions };
 }
 
-async function timetablesValidator(
-    academicYearId: number,
-    ids: {
-        teacherIds?: number | number[];
-        classroomIds?: number | number[];
-        subdivisionIds?: number | number[];
-    },
-) {
-    const { teacherIds, classroomIds, subdivisionIds } = ids;
+export async function timetablesValidator(
+    timetableType: TimetableType,
+    searchId: number,
+): Promise<
+    {
+        teacherCollisions: Teacher[];
+        classroomCollisions: Classroom[];
+        subdivisionCollisions: Subdivision[];
+        slotId: number;
+    }[]
+> {
+    let academicYearId: AcademicYear["id"];
+    if (timetableType === "academicYear") {
+        academicYearId = searchId;
+    } else {
+        academicYearId = await getAcademicYearId(searchId, timetableType);
+    }
     const slots = await Slot.findAll({
         where: { AcademicYearId: academicYearId },
     });
-    const validator = [];
+    const collisions = [];
     for (const slot of slots) {
         const result = {
             slotId: slot.id,
-            ...(await slotValidator({ slotId: slot.id, teacherIds, classroomIds, subdivisionIds })),
+            ...(await slotValidator(slot.id, timetableType, searchId)),
         };
         const hasCollision =
             result.teacherCollisions.length ||
             result.classroomCollisions.length ||
             result.subdivisionCollisions.length;
 
-        if (hasCollision) validator.push(result);
+        if (hasCollision) collisions.push(result);
     }
-    return validator;
+    return collisions;
 }

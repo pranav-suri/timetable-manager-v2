@@ -1,6 +1,6 @@
 import { Classroom, SlotDatas, SlotDataClasses, Subject, Teacher } from "../database";
 //! Fix me
-async function getAvailableClassrooms(slotId: string | number, subjectId: string | number) {
+async function getAvailableClassrooms(slotId: number, subjectId: number) {
     // const testP = await Subject.findByPk(subjectId);
     const labsOrClasses = await Classroom.findAll({
         where: { isLab: (await Subject.findByPk(subjectId))?.isLab },

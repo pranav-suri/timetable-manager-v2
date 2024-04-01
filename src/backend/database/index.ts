@@ -10,7 +10,7 @@ import Subject from "./subject";
 import Teach from "./teach";
 import Teacher from "./teacher";
 import TeacherUnavailable from "./teacherUnavailable";
-import SlotDatas from "./slotData";
+import SlotDatas from "./slotDatas";
 import SlotDataClasses from "./slotDataClasses";
 import SlotDataSubdivisions from "./slotDataSubdivisions";
 import "./relations";

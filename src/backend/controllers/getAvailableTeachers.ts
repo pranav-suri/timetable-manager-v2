@@ -1,7 +1,7 @@
 import { Teacher } from "../database";
 import {getSubjectTeachers} from "./";
 
-async function getAvailableTeachers(slotId: string | number, subjectId: string | number) {
+async function getAvailableTeachers(slotId: number, subjectId: number) {
     const subjectTeachers = await getSubjectTeachers(subjectId);
 
     // Busy teachers in the given slot

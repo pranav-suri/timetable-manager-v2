@@ -1,6 +1,6 @@
 import { AcademicYear, Slot, SlotDataSubdivisions, SlotDatas, Subdivision } from "../database";
 async function getAcademicYearId(
-    searchId: string | number,
+    searchId: number,
     searchBy: "subdivision" | "teacher" | "classroom" | "division",
 ) {
     let academicYear;
@@ -82,7 +82,7 @@ async function getAcademicYearId(
     }
 }
 
-async function getTimetableBySubdivision(subdivisionId: string | number) {
+async function getTimetableBySubdivision(subdivisionId: number) {
     const slotsWithData = await Slot.findAll({
         order: [
             ["day", "ASC"],
@@ -126,7 +126,7 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
     return { Slots: slotsWithData };
 }
 
-async function getTimetableByDivision(divisionId: string | number) {
+async function getTimetableByDivision(divisionId: number) {
     const subdivisions = await Subdivision.findAll({
         where: { DivisionId: divisionId },
     });
@@ -182,11 +182,18 @@ async function getTimetableByDivision(divisionId: string | number) {
     return { Slots: slotsWithData };
 }
 
-async function getTimetableByTeacher(teacherId: string | number) {
+async function getTimetableByTeacher(teacherId: number) {
     const slotsWithData = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
+            [
+                { model: SlotDatas, as: "SlotDatas" },
+                { model: SlotDataSubdivisions, as: "SlotDataSubdivisions" },
+                { model: Subdivision, as: "Subdivision" },
+                "subdivisionName",
+                "ASC",
+            ],
         ],
         where: {
             AcademicYearId: await getAcademicYearId(teacherId, "teacher"),
@@ -228,11 +235,18 @@ async function getTimetableByTeacher(teacherId: string | number) {
     return { Slots: slotsWithData };
 }
 
-async function getTimetableByClassroom(classroomId: string | number) {
+async function getTimetableByClassroom(classroomId: number) {
     const slotsWithData = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
+            [
+                { model: SlotDatas, as: "SlotDatas" },
+                { model: SlotDataSubdivisions, as: "SlotDataSubdivisions" },
+                { model: Subdivision, as: "Subdivision" },
+                "subdivisionName",
+                "ASC",
+            ],
         ],
         where: {
             AcademicYearId: await getAcademicYearId(classroomId, "classroom"),
@@ -275,7 +289,7 @@ async function getTimetableByClassroom(classroomId: string | number) {
 }
 
 async function getTTNested(
-    searchId: string | number,
+    searchId: number,
     searchBy: "subdivision" | "teacher" | "classroom" | "division",
 ) {
     switch (searchBy) {

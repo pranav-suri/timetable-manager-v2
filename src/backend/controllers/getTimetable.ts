@@ -1,3 +1,4 @@
+import { getAcademicYearId } from ".";
 import {
     AcademicYear,
     Slot,
@@ -12,97 +13,15 @@ import {
     Subject,
     Teacher,
 } from "../database";
-async function getAcademicYearId(
-    searchId: string | number,
-    searchBy: "subdivision" | "teacher" | "classroom" | "division",
-) {
-    let academicYear;
-    switch (searchBy) {
-        case "division":
-            academicYear = await AcademicYear.findOne({
-                include: [
-                    {
-                        association: "Batch",
-                        include: [
-                            {
-                                association: "Department",
-                                include: [
-                                    {
-                                        association: "Division",
-                                        where: { id: searchId },
-                                        required: true,
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            });
-            break;
-        case "subdivision":
-            academicYear = await AcademicYear.findOne({
-                include: [
-                    {
-                        association: "Batch",
-                        include: [
-                            {
-                                association: "Department",
-                                include: [
-                                    {
-                                        association: "Division",
-                                        include: [
-                                            {
-                                                association: "Subdivision",
-                                                where: { id: searchId },
-                                                required: true,
-                                            },
-                                        ],
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ],
-            });
-            break;
-        case "teacher":
-            academicYear = await AcademicYear.findOne({
-                include: [
-                    {
-                        association: "Teacher",
-                        where: { id: searchId },
-                        required: true,
-                    },
-                ],
-            });
-            break;
-        case "classroom":
-            academicYear = await AcademicYear.findOne({
-                include: [
-                    {
-                        association: "Classroom",
-                        where: { id: searchId },
-                        required: true,
-                    },
-                ],
-            });
-            break;
-        default:
-            throw new Error("Unhandled case in getAcademicYearId function.");
-    }
-    if (academicYear) {
-        return academicYear.id;
-    }
-}
 
-async function getTimetableBySubdivision(subdivisionId: string | number) {
+async function getTimetableBySubdivision(subdivisionId: number) {
     const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId(subdivisionId, "subdivision"),
+            AcademicYearId: await getAcademicYearId("subdivision", subdivisionId),
         },
     });
     const subdivisions = await Subdivision.findAll({
@@ -181,14 +100,14 @@ async function getTimetableBySubdivision(subdivisionId: string | number) {
     };
 }
 
-async function getTimetableByDivision(divisionId: string | number) {
+async function getTimetableByDivision(divisionId: number) {
     const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId(divisionId, "division"),
+            AcademicYearId: await getAcademicYearId("division", divisionId),
         },
     });
     const divisions = await Division.findAll({ where: { id: divisionId }, limit: 1 });
@@ -266,7 +185,7 @@ async function getTimetableByDivision(divisionId: string | number) {
     };
 }
 
-async function getTimetableByTeacher(teacherId: string | number) {
+async function getTimetableByTeacher(teacherId: number) {
     const teachers = [await Teacher.findByPk(teacherId)];
     const slots = await Slot.findAll({
         order: [
@@ -274,7 +193,7 @@ async function getTimetableByTeacher(teacherId: string | number) {
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId(teacherId, "teacher"),
+            AcademicYearId: await getAcademicYearId("teacher" , teacherId),
         },
     });
     const slotDatas = await SlotDatas.findAll({
@@ -346,14 +265,14 @@ async function getTimetableByTeacher(teacherId: string | number) {
     };
 }
 
-async function getTimetableByClassroom(classroomId: string | number) {
+async function getTimetableByClassroom(classroomId: number) {
     const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId(classroomId, "classroom"),
+            AcademicYearId: await getAcademicYearId("classroom", classroomId),
         },
     });
     const slotDataClasses = await SlotDataClasses.findAll({
@@ -428,7 +347,7 @@ async function getTimetableByClassroom(classroomId: string | number) {
 }
 
 async function getTimetable(
-    searchId: string | number,
+    searchId: number,
     searchBy: "subdivision" | "teacher" | "classroom" | "division",
 ) {
     switch (searchBy) {

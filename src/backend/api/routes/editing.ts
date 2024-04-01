@@ -1,41 +1,41 @@
 import { Elysia } from "elysia";
-import cors from "@elysiajs/cors";
 import {
     deleteSlotData,
     addSlotData,
     addOrUpdateSlotData,
 } from "../../controllers";
+import { t } from "elysia";
 
 const app = new Elysia();
-app.use(cors({ methods: ["GET", "POST"] }));
 
-app.delete("/deleteSlotData", async (req) => {
+app.delete("/deleteSlotData", async ({query}) => {
     //TODO: Return the deleted element 
-    console.log(req.body);
-    const { slotDataId } = req.body;
-    if (!slotDataId) {
-        req.set.status = 400;
-        return { error: { message: "slotDataId is required." } };
-    }
+    console.log(query);
+    const { slotDataId } = query;
     await deleteSlotData(slotDataId);
     return;
+}, {
+    query: t.Object({
+        slotDataId: t.Numeric(),
+    }),
 });
 
-app.post("/addSlotData", async (req) => {
-    const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = req.body;
-    if (!slotId || !subjectId) {
-        req.set.status = 400;
-        return { error: { message: "slotId and subjectId is required." } };
-    }
+app.post("/addSlotData", async ({body}) => {
+    const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
     return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
+}, {
+    body: t.Object({
+        slotId: t.Numeric(),
+        subjectId: t.Numeric(),
+        teacherId: t.Optional(t.Numeric()),
+        subdivisionIds: t.Optional(t.Array(t.Numeric())),
+        classroomIds: t.Optional(t.Array(t.Numeric())),
+    }),
+
 });
 
-app.put("/addOrUpdateSlotData", async (req) => {
-    const { oldSlotDataId, slotId, subjectId, subdivisionIds, teacherId, classroomIds } = req.body;
-    if (!slotId || !subjectId) {
-        req.set.status = 400;
-        return { error: { message: "slotId and subjectId is required." } };
-    }
+app.put("/addOrUpdateSlotData", async ({body}) => {
+    const { oldSlotDataId, slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
     return await addOrUpdateSlotData(
         oldSlotDataId,
         slotId,
@@ -44,6 +44,15 @@ app.put("/addOrUpdateSlotData", async (req) => {
         subdivisionIds,
         classroomIds,
     );
+}, {
+    body: t.Object({
+        oldSlotDataId: t.Numeric(),
+        slotId: t.Numeric(),
+        subjectId: t.Numeric(),
+        teacherId: t.Optional(t.Numeric()),
+        subdivisionIds: t.Optional(t.Array(t.Numeric())),
+        classroomIds: t.Optional(t.Array(t.Numeric())),
+    }),
 });
 
 export default app;

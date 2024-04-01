@@ -1,18 +1,7 @@
 import Elysia from "elysia";
 import cors from "@elysiajs/cors";
-import { available, editing, getTables, timetable } from "./api/routes";
 import sampleDataUpload from "./api/upload/sampleUpload";
-const app = new Elysia();
-
-app.use(timetable);
-app.use(getTables);
-app.use(available);
-app.use(editing);
-app.use(cors({ methods: ["GET"] }));
-
-app.get("/", () => {
-    return { message: `${Date.now()}` };
-});
+import app from "./api/routes";
 
 app.listen(3000);
 

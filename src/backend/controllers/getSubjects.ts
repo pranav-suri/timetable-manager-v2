@@ -1,11 +1,12 @@
 import { Subject } from "../database";
 
-async function getSubjects(departmentId: string | number) {
-    const result = await Subject.findAll({
+async function getSubjects(departmentId: number) {
+    const subjects = await Subject.findAll({
         where: {
             DepartmentId: departmentId,
         },
     });
+    return subjects;
 }
 
 export default getSubjects;
