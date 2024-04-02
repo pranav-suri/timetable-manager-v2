@@ -2,10 +2,11 @@ import timetable from "./timetable";
 import getTables from "./getTables";
 import available from "./available";
 import editing from "./editing";
-import validators from "./validators";
-import Elysia from "elysia";
+import validate from "./validate";
+import Elysia, { Context } from "elysia";
 import cors from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
+import Logger, { LogLevel } from "../../logging";
 
 const app = new Elysia()
     .use(cors({ methods: ["GET", "POST"] }))
@@ -16,12 +17,17 @@ const app = new Elysia()
     .use(timetable)
     .use(available)
     .use(editing)
-    .use(validators)
-    .onError(({ code, error }) => {
-        if (code == "VALIDATION") {
-            const parsedError = JSON.parse(JSON.stringify(error));
+    .use(validate)
+    .onError((ctx) => {
+        const errorResponse = JSON.stringify({  message: ctx.error.toString(), ...ctx }, null, 2);
+        Logger.log(errorResponse, LogLevel.ERROR, true, import.meta.path);
+        
+        if (ctx.code == "VALIDATION") {
+            const parsedError = JSON.parse(JSON.stringify(ctx.error));
+            // return parsedError;
             const customErrorResponse = {
-                code: code,
+                code: ctx.code,
+                path: ctx.path,
                 type: parsedError.type,
                 // schema: parsedError.validator.schema,
                 schema: {
@@ -35,7 +41,7 @@ const app = new Elysia()
             return customErrorResponse;
         }
         // JSON.stringify returns empty object. This is likely Elysia specific.
-        return error.toString();
+        return JSON.parse(errorResponse);
     })
     .use(swagger());
 

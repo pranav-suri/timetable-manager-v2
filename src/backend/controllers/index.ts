@@ -7,9 +7,11 @@ import addSlotData from "./addSlotData";
 import deleteSlotData from "./deleteSlotData";
 import addOrUpdateSlotData from "./addOrUpdateSlotData";
 import getAcademicYearId from "./getAcademicYearId.ts";
+import {timetableValidator, slotValidator} from "./validators.ts";
 
 export {
     getTTNested,
+    timetableValidator,
     getTimetable,
     getSubjectTeachers,
     getAvailableTeachers,
@@ -18,4 +20,5 @@ export {
     deleteSlotData,
     addOrUpdateSlotData,
     getAcademicYearId,
+    slotValidator
 };

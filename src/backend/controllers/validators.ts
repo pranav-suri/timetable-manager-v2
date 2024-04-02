@@ -1,10 +1,4 @@
-import {
-    AcademicYear,
-    Classroom,
-    Slot,
-    Subdivision,
-    Teacher,
-} from "../database";
+import { AcademicYear, Classroom, Slot, Subdivision, Teacher } from "../database";
 import { getAcademicYearId } from ".";
 
 // TODO: Make return type similar in all functions
@@ -114,6 +108,7 @@ async function classroomValidator(slotId: number, timetableType: TimetableType, 
                         include: [
                             {
                                 required: true,
+                                attributes: [],
                                 association: "SlotDataSubdivisions",
                                 where: { ...whereSubdivisionClause },
                             },
@@ -240,7 +235,7 @@ async function subdivisionValidator(
         // Collision if all groupIds are the same but allowSimultaneous is false.
         if (!subdivision.SlotDatas[0].allowSimultaneous) return true;
     });
-
+    // return { subdivisionCollisions: groupSubdivCollision };
     return { subdivisionCollisions: subdivCollisions };
 }
 
@@ -248,10 +243,10 @@ async function slotValidator(slotId: number, timetableType: TimetableType, searc
     const { teacherCollisions } = await teacherValidator(slotId, timetableType, searchId);
     const { classroomCollisions } = await classroomValidator(slotId, timetableType, searchId);
     const { subdivisionCollisions } = await subdivisionValidator(slotId, timetableType, searchId);
-    return { teacherCollisions, classroomCollisions, subdivisionCollisions };
+    return { slotId, teacherCollisions, classroomCollisions, subdivisionCollisions };
 }
 
-export async function timetablesValidator(
+async function timetableValidator(
     timetableType: TimetableType,
     searchId: number,
 ): Promise<
@@ -273,10 +268,7 @@ export async function timetablesValidator(
     });
     const collisions = [];
     for (const slot of slots) {
-        const result = {
-            slotId: slot.id,
-            ...(await slotValidator(slot.id, timetableType, searchId)),
-        };
+        const result = await slotValidator(slot.id, timetableType, searchId);
         const hasCollision =
             result.teacherCollisions.length ||
             result.classroomCollisions.length ||
@@ -286,3 +278,5 @@ export async function timetablesValidator(
     }
     return collisions;
 }
+
+export { timetableValidator, slotValidator };
