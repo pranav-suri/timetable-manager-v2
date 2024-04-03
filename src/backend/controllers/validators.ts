@@ -240,10 +240,31 @@ async function subdivisionValidator(
 }
 
 async function slotValidator(slotId: number, timetableType: TimetableType, searchId: number) {
-    const { teacherCollisions } = await teacherValidator(slotId, timetableType, searchId);
-    const { classroomCollisions } = await classroomValidator(slotId, timetableType, searchId);
-    const { subdivisionCollisions } = await subdivisionValidator(slotId, timetableType, searchId);
-    return { slotId, teacherCollisions, classroomCollisions, subdivisionCollisions };
+    /**
+     * The following block executes asynchronously
+     */
+    {
+    //     const [teacherCollisions, classroomCollisions, subdivisionCollisions] = await Promise.all([
+    //         teacherValidator(slotId, timetableType, searchId),
+    //         classroomValidator(slotId, timetableType, searchId),
+    //         subdivisionValidator(slotId, timetableType, searchId),
+    //     ]);
+    //     return { slotId, ...teacherCollisions, ...classroomCollisions, ...subdivisionCollisions };
+    }
+
+    /**
+     * The following block executes synchronously
+     */
+    {
+        const { teacherCollisions } = await teacherValidator(slotId, timetableType, searchId);
+        const { classroomCollisions } = await classroomValidator(slotId, timetableType, searchId);
+        const { subdivisionCollisions } = await subdivisionValidator(
+            slotId,
+            timetableType,
+            searchId,
+        );
+        return { slotId, teacherCollisions, classroomCollisions, subdivisionCollisions };
+    }
 }
 
 async function timetableValidator(
@@ -266,17 +287,41 @@ async function timetableValidator(
     const slots = await Slot.findAll({
         where: { AcademicYearId: academicYearId },
     });
-    const collisions = [];
-    for (const slot of slots) {
-        const result = await slotValidator(slot.id, timetableType, searchId);
-        const hasCollision =
-            result.teacherCollisions.length ||
-            result.classroomCollisions.length ||
-            result.subdivisionCollisions.length;
 
-        if (hasCollision) collisions.push(result);
+    /**
+     * The following block executes asynchronously
+     */
+    {
+    //     const collisions = await Promise.all(
+    //         slots.map(async (slot) => {
+    //             const result = await slotValidator(slot.id, timetableType, searchId);
+
+    //             const hasCollision =
+    //                 result.teacherCollisions.length ||
+    //                 result.classroomCollisions.length ||
+    //                 result.subdivisionCollisions.length;
+
+    //             return hasCollision ? result : null;
+    //         }),
+    //     );
+    //     return collisions.filter((result) => result);
     }
-    return collisions;
+    /**
+     * The following block executes synchronously
+     */
+    {
+        const collisions = [];
+        for (const slot of slots) {
+            const result = await slotValidator(slot.id, timetableType, searchId);
+            const hasCollision =
+                result.teacherCollisions.length ||
+                result.classroomCollisions.length ||
+                result.subdivisionCollisions.length;
+
+            if (hasCollision) collisions.push(result);
+        }
+        return collisions;
+    }
 }
 
 export { timetableValidator, slotValidator };
