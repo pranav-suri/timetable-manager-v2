@@ -1,3 +1,5 @@
+import fs from "fs";
+
 export enum LogLevel {
     INFO = "INFO",
     ERROR = "ERROR",
@@ -19,13 +21,6 @@ export default class Logger {
         return basePath + fileName;
     };
 
-    private static createFileIfNotExists = async (filePath: string) => {
-        const file = Bun.file(filePath);
-        if (!file.exists()) {
-            await Bun.write(filePath, "");
-        }
-    };
-
     /**
      * Function to log messages to the console and to a log file at `./logs/`
      * @param message - The message to be logged.
@@ -38,7 +33,12 @@ export default class Logger {
         logToConsole: boolean = false,
         path: string,
     ) => {
-        const srcPath = path.split("/").slice(-4, path.length).join("/");
+        // Check os, if os is windows then replace / with \
+        if (process.platform === "win32") {
+            path = path.replace(/\\/g, "/");
+        }
+        const srcPosition = path.split("/").indexOf("src");
+        const srcPath = path.split("/").slice(srcPosition, path.length).join("/");
         const messagePrefix = `[${new Date().toISOString()}] : ${srcPath} => `;
         switch (logLevel) {
             case LogLevel.INFO: {
@@ -60,10 +60,13 @@ export default class Logger {
                 break;
             }
         }
-        await this.createFileIfNotExists(Logger._getFilePath(logLevel));
-        await Bun.write(
-            Logger._getFilePath(logLevel),
-            messagePrefix + message + (await Bun.file(Logger._getFilePath(logLevel)).text()) + "\n",
-        );
+        if (fs.existsSync(Logger._getFilePath(logLevel))) {
+            fs.appendFileSync(Logger._getFilePath(logLevel), messagePrefix + message + "\n");
+        } else {
+            fs.existsSync("./logs") || fs.mkdirSync("./logs");
+            fs.writeFileSync(Logger._getFilePath(logLevel), messagePrefix + message + "\n");
+        }
+
+        // fs.appendFileSync(Logger._getFilePath(logLevel), messagePrefix + message + "\n");
     };
 }
