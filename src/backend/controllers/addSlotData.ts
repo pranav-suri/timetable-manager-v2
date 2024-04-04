@@ -1,32 +1,20 @@
 import { SlotDatas, SlotDataClasses, SlotDataSubdivisions } from "../database";
+import { addSlotDataClassesAndSubdivs } from "./addSlotDataClassesAndSubdivs";
 
 async function addSlotData(
     slotId: number,
     subjectId: number,
-    teacherId?: number,
+    teacherId?: number | null,
     subdivisionIds?: number[],
     classroomIds?: number[],
 ) {
-    const whereTeacherClause = teacherId ? { TeacherId: teacherId } : {};
+    const whereTeacherClause = teacherId ? { TeacherId: teacherId } : {teacherId: null};
 
     const [slotData] = await SlotDatas.findOrCreate({
         where: { SubjectId: subjectId, SlotId: slotId, ...whereTeacherClause },
     });
 
-    if (subdivisionIds) {
-        for (const subdivisionId of subdivisionIds) {
-            await SlotDataSubdivisions.findOrCreate({
-                where: { SlotDataId: slotData.id, SubdivisionId: subdivisionId },
-            });
-        }
-    }
-    if (classroomIds) {
-        for (const classroomId of classroomIds) {
-            await SlotDataClasses.findOrCreate({
-                where: { SlotDataId: slotData.id, ClassroomId: classroomId },
-            });
-        }
-    }
+    await addSlotDataClassesAndSubdivs(slotData.id, subdivisionIds, classroomIds);
     return slotData;
 }
 

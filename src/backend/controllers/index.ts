@@ -5,9 +5,9 @@ import getAvailableTeachers from "./getAvailableTeachers";
 import getAvailableClassrooms from "./getAvailableClassrooms";
 import addSlotData from "./addSlotData";
 import deleteSlotData from "./deleteSlotData";
-import addOrUpdateSlotData from "./addOrUpdateSlotData";
+import updateSlotData from "./udateSlotData.ts";
 import getAcademicYearId from "./getAcademicYearId.ts";
-import {timetableValidator, slotValidator} from "./validators.ts";
+import { timetableValidator, slotValidator } from "./validators.ts";
 
 export {
     getTTNested,
@@ -18,7 +18,7 @@ export {
     getAvailableClassrooms,
     addSlotData,
     deleteSlotData,
-    addOrUpdateSlotData,
+    updateSlotData,
     getAcademicYearId,
     slotValidator
 };

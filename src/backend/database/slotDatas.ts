@@ -12,7 +12,7 @@ class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttribute
     public declare createdAt: CreationOptional<Date>;
     public declare updatedAt: CreationOptional<Date>;
     public declare id: CreationOptional<number>;
-    public declare TeacherId: ForeignKey<number>;
+    public declare TeacherId: ForeignKey<number | null>;
     public declare SubjectId: ForeignKey<number>;
     public declare SlotId: ForeignKey<number>;
 }

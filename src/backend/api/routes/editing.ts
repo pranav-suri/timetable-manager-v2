@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { deleteSlotData, addSlotData, addOrUpdateSlotData } from "../../controllers";
+import { deleteSlotData, addSlotData, updateSlotData } from "../../controllers";
 import { t } from "elysia";
 
 const app = new Elysia({ prefix: "/slotDatas" })
@@ -35,21 +35,20 @@ const app = new Elysia({ prefix: "/slotDatas" })
         {
             params: t.Object({
                 id: t.Numeric(),
-            }),        
+            }),
             detail: {
                 summary: "Delete slot data",
                 tags: ["Slot Datas"],
             },
-        }
+        },
     )
     .put(
         "/:id",
         async ({ body, params }) => {
             const { id } = params;
             const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
-            return await addOrUpdateSlotData(
+            return await updateSlotData(
                 id,
-                slotId,
                 subjectId,
                 teacherId,
                 subdivisionIds,
