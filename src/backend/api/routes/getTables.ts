@@ -65,7 +65,7 @@ const app = new Elysia()
         },
     )
     .get(
-        "/academicYear/:id/batches",
+        "/academicYears/:id/batches",
         async ({ params }) => {
             const { id } = params;
             return {

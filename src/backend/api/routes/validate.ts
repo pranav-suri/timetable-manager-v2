@@ -11,7 +11,7 @@ const app = new Elysia({ prefix: "/validate" })
                 teacherId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate teacher timetable complete",
+                summary: "Validate teacher timetable",
                 tags: ["Validate"],
             },
         },
@@ -27,7 +27,7 @@ const app = new Elysia({ prefix: "/validate" })
                 teacherId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate teacher timetable slot",
+                summary: "Validate a slot of teacher timetable",
                 tags: ["Validate"],
             },
         },
@@ -42,7 +42,7 @@ const app = new Elysia({ prefix: "/validate" })
                 divisionId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate division timetable complete",
+                summary: "Validate division timetable",
                 tags: ["Validate"],
             },
         },
@@ -58,7 +58,7 @@ const app = new Elysia({ prefix: "/validate" })
                 divisionId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate division timetable slot",
+                summary: "Validate a slot of division timetable",
                 tags: ["Validate"],
             },
         },
@@ -73,7 +73,7 @@ const app = new Elysia({ prefix: "/validate" })
                 subdivisionId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate subdivision timetable complete",
+                summary: "Validate subdivision timetable",
                 tags: ["Validate"],
             },
         },
@@ -89,7 +89,7 @@ const app = new Elysia({ prefix: "/validate" })
                 subdivisionId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate subdivision timetable slot",
+                summary: "Validate a slot of subdivision timetable",
                 tags: ["Validate"],
             },
         },
@@ -104,7 +104,7 @@ const app = new Elysia({ prefix: "/validate" })
                 classroomId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate classroom timetable complete",
+                summary: "Validate classroom timetable",
                 tags: ["Validate"],
             },
         },
@@ -120,7 +120,7 @@ const app = new Elysia({ prefix: "/validate" })
                 classroomId: t.Numeric(),
             }),
             detail: {
-                summary: "Validate classroom timetable slot",
+                summary: "Validate a slot of classroom timetable",
                 tags: ["Validate"],
             },
         },
