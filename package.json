@@ -18,7 +18,8 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@elysiajs/cors": "^0.8.0",
+    "@elysiajs/cors": "latest",
+    "@elysiajs/eden": "^1.0.11",
     "@elysiajs/swagger": "^1.0.3",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
@@ -26,7 +27,7 @@
     "@mui/icons-material": "^5.15.14",
     "@mui/material": "^5.15.14",
     "@types/papaparse": "^5.3.14",
-    "elysia": "^0.8.3",
+    "elysia": "latest",
     "mysql2": "^3.9.0",
     "papaparse": "^5.4.1",
     "react": "^18.2.0",
@@ -41,7 +42,7 @@
     "@typescript-eslint/eslint-plugin": "^7.3.1",
     "@typescript-eslint/parser": "^7.3.1",
     "@vitejs/plugin-react-swc": "^3.5.0",
-    "bun-types": "^1.0.19",
+    "bun-types": "latest",
     "eslint": "^8.55.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.1.3",
