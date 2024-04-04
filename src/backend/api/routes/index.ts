@@ -3,10 +3,10 @@ import getTables from "./getTables";
 import available from "./available";
 import editing from "./editing";
 import validate from "./validate";
-import Elysia, { Context } from "elysia";
+import Elysia from "elysia";
 import cors from "@elysiajs/cors";
 import { swagger } from "@elysiajs/swagger";
-import Logger, { LogLevel } from "../../logging";
+import Logger from "../../logging";
 
 const app = new Elysia()
     .use(cors({ methods: ["GET", "POST"] }))
@@ -19,9 +19,8 @@ const app = new Elysia()
     .use(editing)
     .use(validate)
     .onError((ctx) => {
-        const errorResponse = JSON.stringify({  message: ctx.error.toString(), ...ctx }, null, 2);
-        Logger.log(errorResponse, LogLevel.ERROR, true, import.meta.path);
-        
+        const errorResponse = JSON.stringify({ message: ctx.error.toString(), ...ctx }, null, 2);
+
         if (ctx.code == "VALIDATION") {
             const parsedError = JSON.parse(JSON.stringify(ctx.error));
             // return parsedError;
@@ -41,6 +40,7 @@ const app = new Elysia()
             return customErrorResponse;
         }
         // JSON.stringify returns empty object. This is likely Elysia specific.
+        Logger.log(errorResponse, "WARN", true, __filename);
         return JSON.parse(errorResponse);
     })
     .use(swagger());

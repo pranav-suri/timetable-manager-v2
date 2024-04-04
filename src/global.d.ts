@@ -53,3 +53,15 @@ type Slots = Timetable["Slots"];
 type SlotDatas = Slots[0]["SlotDatas"];
 type SlotDataClasses = SlotDatas[0]["SlotDataClasses"];
 type SlotDataSubdivisions = SlotDatas[0]["SlotDataSubdivisions"];
+
+type AcademicYear = {
+    id: number;
+    year: number;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+type AcademicYears = {
+    academicYears: AcademicYear[];
+};
