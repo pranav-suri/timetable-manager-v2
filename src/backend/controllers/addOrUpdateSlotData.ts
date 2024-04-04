@@ -1,5 +1,5 @@
 import deleteSlotData from "./deleteSlotData";
-import createSlotData from "./addSlotData";
+import addSlotData from "./addSlotData";
 // Please test @Mahajan
 
 async function addOrUpdateSlotData(
@@ -11,7 +11,7 @@ async function addOrUpdateSlotData(
     classroomIds?: number[],
 ) {
     if (oldSlotDataId) await deleteSlotData(oldSlotDataId);
-    return await createSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
+    return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
 }
 
 export default addOrUpdateSlotData;

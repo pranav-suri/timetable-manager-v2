@@ -9,144 +9,249 @@ import {
     Subject,
     Teacher,
 } from "../../database";
-import { getSubjectTeachers } from "../../controllers";
+import { getSubjectTeachers, getTTNested } from "../../controllers";
 
-const app = new Elysia({ prefix: "tables" })
-    .get("/academicYears", async () => {
-        return { academicYears: await AcademicYear.findAll() }; // TODO: add userId function
-    })
+const app = new Elysia()
     .get(
-        "/subjects",
-        async ({ query }) => {
-            const { departmentId } = query;
-            return {
-                subjects: await Subject.findAll({
-                    where: {
-                        DepartmentId: departmentId, // TODO: add multi disc sub
-                    },
-                }),
-            };
+        "/academicYears",
+        async () => {
+            return { academicYears: await AcademicYear.findAll() }; // TODO: add userId function
         },
         {
-            query: t.Object({
-                departmentId: t.Numeric(),
-            }),
+            detail: {
+                summary: "Get all academic years",
+                tags: ["Academic Years"],
+            },
         },
     )
     .get(
-        "/classrooms",
-        async ({ query }) => {
-            const { academicYearId } = query;
-            return {
-                classrooms: await Classroom.findAll({ where: { AcademicYearId: academicYearId } }),
-            };
-        },
-        {
-            query: t.Object({
-                academicYearId: t.Numeric(),
-            }),
-        },
-    )
-    .get(
-        "/teachers",
-        async ({ query }) => {
-            const { academicYearId } = query;
+        "/academicYears/:id/teachers",
+        async ({ params }) => {
+            const { id } = params;
             return {
                 teachers: await Teacher.findAll({
                     where: {
-                        AcademicYearId: academicYearId,
+                        AcademicYearId: id,
                     },
                 }),
             };
         },
         {
-            query: t.Object({
-                academicYearId: t.Numeric(),
+            params: t.Object({
+                id: t.Numeric(),
             }),
+            detail: {
+                summary: "Get teachers of an academic year",
+                tags: ["Teachers"],
+            },
         },
     )
     .get(
-        "/subjectTeachers",
-        async ({ query }) => {
-            const { subjectId } = query;
-            return { teachers: await getSubjectTeachers(subjectId) };
+        "/academicYears/:id/classrooms",
+        async ({ params }) => {
+            const { id } = params;
+            return {
+                classrooms: await Classroom.findAll({ where: { AcademicYearId: id } }),
+            };
         },
         {
-            query: t.Object({
-                subjectId: t.Numeric(),
+            params: t.Object({
+                id: t.Numeric(),
             }),
+            detail: {
+                summary: "Get classrooms of an academic year",
+                tags: ["Classrooms"],
+            },
         },
     )
     .get(
-        "/batches",
-        async ({ query }) => {
-            const { academicYearId } = query;
+        "/academicYear/:id/batches",
+        async ({ params }) => {
+            const { id } = params;
             return {
                 batches: await Batch.findAll({
                     where: {
-                        AcademicYearId: academicYearId,
+                        AcademicYearId: id,
                     },
                 }),
             };
         },
         {
-            query: t.Object({
-                academicYearId: t.Numeric(),
+            params: t.Object({
+                id: t.Numeric(),
             }),
+            detail: {
+                summary: "Get batches of an academic year",
+                tags: ["Batches"],
+            },
         },
     )
     .get(
-        "/divisions",
-        async ({ query }) => {
-            const { departmentId } = query;
-            return {
-                divisions: await Division.findAll({
-                    where: {
-                        DepartmentId: departmentId,
-                    },
-                }),
-            };
-        },
-        {
-            query: t.Object({
-                departmentId: t.Numeric(),
-            }),
-        },
-    )
-    .get(
-        "/subdivisions",
-        async ({ query }) => {
-            const { divisionId } = query;
-            return {
-                subdivisions: await Subdivision.findAll({
-                    where: {
-                        DivisionId: divisionId,
-                    },
-                }),
-            };
-        },
-        {
-            query: t.Object({
-                divisionId: t.Numeric(),
-            }),
-        },
-    )
-    .get(
-        "/departments",
-        async ({ query }) => {
-            const { batchId } = query;
+        "batches/:id/departments",
+        async ({ params }) => {
+            const { id } = params;
             return {
                 departments: await Department.findAll({
                     where: {
-                        BatchId: batchId,
+                        BatchId: id,
                     },
                 }),
             };
         },
         {
-            query: t.Object({
-                batchId: t.Numeric(),
+            params: t.Object({
+                id: t.Numeric(),
             }),
+            detail: {
+                summary: "Get departments of a batch",
+                tags: ["Departments"],
+            },
+        },
+    )
+    .get(
+        "/departments/:id/subjects",
+        async ({ params }) => {
+            const { id } = params;
+            return {
+                subjects: await Subject.findAll({
+                    where: {
+                        DepartmentId: id, // TODO: add multi disc sub
+                    },
+                }),
+            };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get subjects of a department",
+                tags: ["Subjects"],
+            },
+        },
+    )
+    .get(
+        "/departments/:id/divisions",
+        async ({ params }) => {
+            const { id } = params;
+            return {
+                divisions: await Division.findAll({
+                    where: {
+                        DepartmentId: id,
+                    },
+                }),
+            };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get divisions of a department",
+                tags: ["Divisions"],
+            },
+        },
+    )
+    .get(
+        "divisions/:id/subdivisions",
+        async ({ params }) => {
+            const { id } = params;
+            return {
+                subdivisions: await Subdivision.findAll({
+                    where: {
+                        DivisionId: id,
+                    },
+                }),
+            };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get subdivisions of a division",
+                tags: ["Subdivisions"],
+            },
+        },
+    )
+    .get(
+        "/divisions/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { Timetable: await getTTNested(id, "division") };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a division",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/subdivisions/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { Timetable: await getTTNested(id, "subdivision") };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a subdivision",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/teachers/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { Timetable: await getTTNested(id, "teacher") };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a teacher",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/classrooms/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { Timetable: await getTTNested(id, "classroom") };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a classroom",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/subjects/:id/teachers",
+        async ({ params }) => {
+            const { id } = params;
+            return { teachers: await getSubjectTeachers(id) };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get teachers of a subject",
+                tags: ["Teachers"],
+            },
         },
     );
 

@@ -2,24 +2,9 @@ import { Elysia } from "elysia";
 import { deleteSlotData, addSlotData, addOrUpdateSlotData } from "../../controllers";
 import { t } from "elysia";
 
-const app = new Elysia({ prefix: "edit" })
-    .delete(
-        "/deleteSlotData",
-        async ({ query }) => {
-            //TODO: Return the deleted element
-            console.log(query);
-            const { slotDataId } = query;
-            await deleteSlotData(slotDataId);
-            return;
-        },
-        {
-            query: t.Object({
-                slotDataId: t.Numeric(),
-            }),
-        },
-    )
+const app = new Elysia({ prefix: "/slotDatas" })
     .post(
-        "/addSlotData",
+        "/",
         async ({ body }) => {
             const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
             return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
@@ -32,15 +17,38 @@ const app = new Elysia({ prefix: "edit" })
                 subdivisionIds: t.Optional(t.Array(t.Numeric())),
                 classroomIds: t.Optional(t.Array(t.Numeric())),
             }),
+            detail: {
+                summary: "Add slot data",
+                tags: ["Slot Datas"],
+            },
         },
     )
+    .delete(
+        "/:id",
+        async ({ params }) => {
+            //TODO: Return the deleted element
+            console.log(params);
+            const { id } = params;
+            await deleteSlotData(id);
+            return;
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),        
+            detail: {
+                summary: "Delete slot data",
+                tags: ["Slot Datas"],
+            },
+        }
+    )
     .put(
-        "/addOrUpdateSlotData",
-        async ({ body }) => {
-            const { oldSlotDataId, slotId, subjectId, subdivisionIds, teacherId, classroomIds } =
-                body;
+        "/:id",
+        async ({ body, params }) => {
+            const { id } = params;
+            const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
             return await addOrUpdateSlotData(
-                oldSlotDataId,
+                id,
                 slotId,
                 subjectId,
                 teacherId,
@@ -50,13 +58,19 @@ const app = new Elysia({ prefix: "edit" })
         },
         {
             body: t.Object({
-                oldSlotDataId: t.Numeric(),
                 slotId: t.Numeric(),
                 subjectId: t.Numeric(),
                 teacherId: t.Optional(t.Numeric()),
                 subdivisionIds: t.Optional(t.Array(t.Numeric())),
                 classroomIds: t.Optional(t.Array(t.Numeric())),
             }),
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Update slot data",
+                tags: ["Slot Datas"],
+            },
         },
     );
 

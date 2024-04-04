@@ -1,9 +1,9 @@
 import { Elysia, t } from "elysia";
 import { getAvailableClassrooms, getAvailableTeachers, getTimetable } from "../../controllers";
 
-const app = new Elysia({ prefix: "available" })
+const app = new Elysia({ prefix: "/available" })
     .get(
-        "/availableTeachers",
+        "/teachers",
         async ({ query }) => {
             const { subjectId, slotId } = query;
             return { teachers: await getAvailableTeachers(slotId, subjectId) };
@@ -13,6 +13,10 @@ const app = new Elysia({ prefix: "available" })
                 subjectId: t.Numeric(),
                 slotId: t.Numeric(),
             }),
+            detail: {
+                summary: "Get available teachers",
+                tags: ["Teachers"],
+            },
             // response: t.Object({
             //     teachers: t.Array(
             //         t.Object({
@@ -24,7 +28,7 @@ const app = new Elysia({ prefix: "available" })
         },
     )
     .get(
-        "/availableClassrooms",
+        "/classrooms",
         async ({ query, set }) => {
             const { subjectId, slotId } = query;
             return { classrooms: await getAvailableClassrooms(slotId, subjectId) };
@@ -34,6 +38,10 @@ const app = new Elysia({ prefix: "available" })
                 subjectId: t.Numeric(),
                 slotId: t.Numeric(),
             }),
+            detail: {
+                summary: "Get available classrooms",
+                tags: ["Classrooms"],
+            },
         },
     );
 export default app;

@@ -1,8 +1,8 @@
 import { Elysia, t } from "elysia";
 import { slotValidator, timetableValidator } from "../../controllers";
-const app = new Elysia({ prefix: "validate" })
+const app = new Elysia({ prefix: "/validate" })
     .get(
-        "/validateTeacherTT",
+        "/teacherTT",
         async ({ query }) => {
             return await timetableValidator("teacher", query.teacherId);
         },
@@ -10,10 +10,14 @@ const app = new Elysia({ prefix: "validate" })
             query: t.Object({
                 teacherId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate teacher timetable complete",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateTeacherTTSlot",
+        "/teacherTT/slot",
         async ({ query }) => {
             return await slotValidator(query.slotId, "teacher", query.teacherId);
         },
@@ -22,10 +26,14 @@ const app = new Elysia({ prefix: "validate" })
                 slotId: t.Numeric(),
                 teacherId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate teacher timetable slot",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateDivisionTT",
+        "/divisionTT",
         async ({ query }) => {
             return await timetableValidator("division", query.divisionId);
         },
@@ -33,10 +41,14 @@ const app = new Elysia({ prefix: "validate" })
             query: t.Object({
                 divisionId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate division timetable complete",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateDivisionTTSlot",
+        "/divisionTT/slot",
         async ({ query }) => {
             return await slotValidator(query.slotId, "division", query.divisionId);
         },
@@ -45,10 +57,14 @@ const app = new Elysia({ prefix: "validate" })
                 slotId: t.Numeric(),
                 divisionId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate division timetable slot",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateSubdivisionTT",
+        "/subdivisionTT",
         async ({ query }) => {
             return await timetableValidator("subdivision", query.subdivisionId);
         },
@@ -56,10 +72,14 @@ const app = new Elysia({ prefix: "validate" })
             query: t.Object({
                 subdivisionId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate subdivision timetable complete",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateSubdivisionTTSlot",
+        "/subdivisionTT/slot",
         async ({ query }) => {
             return await slotValidator(query.slotId, "subdivision", query.subdivisionId);
         },
@@ -68,10 +88,14 @@ const app = new Elysia({ prefix: "validate" })
                 slotId: t.Numeric(),
                 subdivisionId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate subdivision timetable slot",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateClassroomTT",
+        "/classroomTT",
         async ({ query }) => {
             return await timetableValidator("classroom", query.classroomId);
         },
@@ -79,10 +103,14 @@ const app = new Elysia({ prefix: "validate" })
             query: t.Object({
                 classroomId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate classroom timetable complete",
+                tags: ["Validate"],
+            },
         },
     )
     .get(
-        "/validateClassroomTTSlot",
+        "/classroomTT/slot",
         async ({ query }) => {
             return await slotValidator(query.slotId, "classroom", query.classroomId);
         },
@@ -91,6 +119,10 @@ const app = new Elysia({ prefix: "validate" })
                 slotId: t.Numeric(),
                 classroomId: t.Numeric(),
             }),
+            detail: {
+                summary: "Validate classroom timetable slot",
+                tags: ["Validate"],
+            },
         },
     );
 

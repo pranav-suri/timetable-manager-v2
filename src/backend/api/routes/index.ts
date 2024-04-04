@@ -1,4 +1,3 @@
-import timetable from "./timetable";
 import getTables from "./getTables";
 import available from "./available";
 import editing from "./editing";
@@ -9,12 +8,12 @@ import { swagger } from "@elysiajs/swagger";
 import Logger from "../../logging";
 
 const app = new Elysia()
-    .use(cors({ methods: ["GET", "POST"] }))
+    .use(swagger())
+    .use(cors({ methods: ["GET", "POST", "DELETE", "PUT", "PATCH"] }))
     .get("/", () => {
         return { message: `${Date.now()}` };
     })
     .use(getTables)
-    .use(timetable)
     .use(available)
     .use(editing)
     .use(validate)
@@ -42,7 +41,6 @@ const app = new Elysia()
         // JSON.stringify returns empty object. This is likely Elysia specific.
         Logger.log(errorResponse, "WARN", true, __filename);
         return JSON.parse(errorResponse);
-    })
-    .use(swagger());
+    });
 
 export default app;
