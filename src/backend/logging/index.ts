@@ -1,11 +1,6 @@
 import fs from "fs";
 
-export enum LogLevel {
-    INFO = "INFO",
-    ERROR = "ERROR",
-    WARN = "WARN",
-    DEBUG = "DEBUG",
-}
+export type LogLevel = "INFO" | "ERROR" | "WARN" | "DEBUG";
 
 /**
  * Logger class for logging messages to the console and log files.
@@ -33,7 +28,6 @@ export default class Logger {
         logToConsole: boolean = false,
         path: string,
     ) => {
-        // Check os, if os is windows then replace / with \
         if (process.platform === "win32") {
             path = path.replace(/\\/g, "/");
         }
@@ -41,21 +35,21 @@ export default class Logger {
         const srcPath = path.split("/").slice(srcPosition, path.length).join("/");
         const messagePrefix = `[${new Date().toISOString()}] : ${srcPath} => `;
         switch (logLevel) {
-            case LogLevel.INFO: {
+            case "INFO": {
                 if (Bun.env.NODE_ENV === "production") return;
                 if (logToConsole) console.log(messagePrefix + message);
                 break;
             }
-            case LogLevel.DEBUG: {
+            case "DEBUG": {
                 if (Bun.env.NODE_ENV === "production") return;
                 if (logToConsole) console.debug(messagePrefix + message);
                 break;
             }
-            case LogLevel.ERROR: {
+            case "ERROR": {
                 if (logToConsole) console.error(messagePrefix + message);
                 break;
             }
-            case LogLevel.WARN: {
+            case "WARN": {
                 if (logToConsole) console.warn(messagePrefix + message);
                 break;
             }
@@ -66,7 +60,13 @@ export default class Logger {
             fs.existsSync("./logs") || fs.mkdirSync("./logs");
             fs.writeFileSync(Logger._getFilePath(logLevel), messagePrefix + message + "\n");
         }
-
-        // fs.appendFileSync(Logger._getFilePath(logLevel), messagePrefix + message + "\n");
     };
+    /**
+     * Custom function to meet the logging requirements of the sequelize library.
+     * @param sqlString
+     * @param timing
+     */
+    static sqlLog(sqlString: string, timing?: number) {
+        Logger.log(`${sqlString}`, "DEBUG", true, "src/backend/database/sequelize.ts");
+    }
 }
