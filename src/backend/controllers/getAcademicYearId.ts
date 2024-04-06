@@ -60,7 +60,7 @@ async function getAcademicYearId(
             };
             break;
         default:
-            throw new Error("Unhandled case in getAcademicYearId function.");
+            throw new Error(`Unhandled case in getAcademicYearId function: ${searchBy}`);
     }
 
     const academicYear = await AcademicYear.findOne({
@@ -150,7 +150,7 @@ async function getAcademicYearId_old(
             });
             break;
         default:
-            throw new Error("Unhandled case in getAcademicYearId function.");
+            throw new Error(`Unhandled case in getAcademicYearId function. ${searchBy}`);
     }
     if (academicYear) {
         return academicYear.id;

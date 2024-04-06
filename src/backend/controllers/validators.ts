@@ -31,7 +31,7 @@ async function teacherValidator(slotId: number, timetableType: TimetableType, se
             // Do nothing, data will be filtered by only SlotId in the query
             break;
         default:
-            throw new Error("Invalid timetable type");
+            throw new Error(`Invalid timetable type: ${timetableType}`);
     }
     const teachers = await Teacher.findAll({
         attributes: [["id", "TeacherId"]],
@@ -90,7 +90,7 @@ async function classroomValidator(slotId: number, timetableType: TimetableType, 
             // Do nothing, data will be filtered by only SlotId in the query
             break;
         default:
-            throw new Error("Invalid timetable type");
+            throw new Error(`Invalid timetable type: ${timetableType}`);
     }
     const classrooms = await Classroom.findAll({
         attributes: [["id", "ClassroomId"]],
@@ -244,12 +244,12 @@ async function slotValidator(slotId: number, timetableType: TimetableType, searc
      * The following block executes asynchronously
      */
     {
-    //     const [teacherCollisions, classroomCollisions, subdivisionCollisions] = await Promise.all([
-    //         teacherValidator(slotId, timetableType, searchId),
-    //         classroomValidator(slotId, timetableType, searchId),
-    //         subdivisionValidator(slotId, timetableType, searchId),
-    //     ]);
-    //     return { slotId, ...teacherCollisions, ...classroomCollisions, ...subdivisionCollisions };
+        //     const [teacherCollisions, classroomCollisions, subdivisionCollisions] = await Promise.all([
+        //         teacherValidator(slotId, timetableType, searchId),
+        //         classroomValidator(slotId, timetableType, searchId),
+        //         subdivisionValidator(slotId, timetableType, searchId),
+        //     ]);
+        //     return { slotId, ...teacherCollisions, ...classroomCollisions, ...subdivisionCollisions };
     }
 
     /**
@@ -292,19 +292,17 @@ async function timetableValidator(
      * The following block executes asynchronously
      */
     {
-    //     const collisions = await Promise.all(
-    //         slots.map(async (slot) => {
-    //             const result = await slotValidator(slot.id, timetableType, searchId);
-
-    //             const hasCollision =
-    //                 result.teacherCollisions.length ||
-    //                 result.classroomCollisions.length ||
-    //                 result.subdivisionCollisions.length;
-
-    //             return hasCollision ? result : null;
-    //         }),
-    //     );
-    //     return collisions.filter((result) => result);
+        //     const collisions = await Promise.all(
+        //         slots.map(async (slot) => {
+        //             const result = await slotValidator(slot.id, timetableType, searchId);
+        //             const hasCollision =
+        //                 result.teacherCollisions.length ||
+        //                 result.classroomCollisions.length ||
+        //                 result.subdivisionCollisions.length;
+        //             return hasCollision ? result : null;
+        //         }),
+        //     );
+        //     return collisions.filter((result) => result);
     }
     /**
      * The following block executes synchronously

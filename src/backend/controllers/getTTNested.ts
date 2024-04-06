@@ -75,7 +75,7 @@ async function getAcademicYearId(
             });
             break;
         default:
-            throw new Error("Unhandled case in getAcademicYearId function.");
+            throw new Error(`Unhandled case in getAcademicYearId function: ${searchBy}`);
     }
     if (academicYear) {
         return academicYear.id;
@@ -123,7 +123,7 @@ async function getTimetableBySubdivision(subdivisionId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByDivision(divisionId: number) {
@@ -179,7 +179,7 @@ async function getTimetableByDivision(divisionId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByTeacher(teacherId: number) {
@@ -232,7 +232,7 @@ async function getTimetableByTeacher(teacherId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByClassroom(classroomId: number) {
@@ -285,7 +285,7 @@ async function getTimetableByClassroom(classroomId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTTNested(
@@ -302,7 +302,7 @@ async function getTTNested(
         case "teacher":
             return await getTimetableByTeacher(searchId);
         default:
-            throw new Error("Unhandled case in getTTNested function.");
+            throw new Error(`Unhandled case in getTTNested function: ${searchBy}`);
     }
 }
 

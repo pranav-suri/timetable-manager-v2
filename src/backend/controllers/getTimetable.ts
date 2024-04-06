@@ -360,7 +360,7 @@ async function getTimetable(
         case "teacher":
             return await getTimetableByTeacher(searchId);
         default:
-            throw new Error("Unhandled case in getTimetable function.");
+            throw new Error(`Unhandled case in getTimetable function. ${searchBy}`);
     }
 }
 

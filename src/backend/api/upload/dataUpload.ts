@@ -123,7 +123,7 @@ function validateCsvData(
             dataKeys = Object.keys(parsedCsv.data[0]);
             break;
         default:
-            throw new Error("Unhandled case in validateCsvData function.");
+            throw new Error(`Unhandled case in validateCsvData function: ${csvType}`);
             break;
     }
 
