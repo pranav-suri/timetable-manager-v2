@@ -10,12 +10,25 @@ import {
     Teacher,
 } from "../../database";
 import { getSubjectTeachers, getTTNested } from "../../controllers";
+import {
+    AcademicYearResponse,
+    ClassroomResponse,
+    TeacherResponse,
+    BatchResponse,
+    SubdivisionResponse,
+    SubjectResponse,
+    TimetableResponse,
+    DepartmentResponse,
+    DivisionResponse,
+} from "./responseTypes";
 
 const app = new Elysia()
     .get(
         "/academicYears",
         async () => {
-            return { academicYears: await AcademicYear.findAll() }; // TODO: add userId function
+            return {
+                academicYears: await AcademicYear.findAll(),
+            } as AcademicYearResponse; // TODO: add userId function
         },
         {
             detail: {
@@ -34,7 +47,7 @@ const app = new Elysia()
                         AcademicYearId: id,
                     },
                 }),
-            };
+            } as TeacherResponse;
         },
         {
             params: t.Object({
@@ -52,7 +65,7 @@ const app = new Elysia()
             const { id } = params;
             return {
                 classrooms: await Classroom.findAll({ where: { AcademicYearId: id } }),
-            };
+            } as ClassroomResponse;
         },
         {
             params: t.Object({
@@ -74,7 +87,7 @@ const app = new Elysia()
                         AcademicYearId: id,
                     },
                 }),
-            };
+            } as BatchResponse;
         },
         {
             params: t.Object({
@@ -87,7 +100,7 @@ const app = new Elysia()
         },
     )
     .get(
-        "batches/:id/departments",
+        "/batches/:id/departments",
         async ({ params }) => {
             const { id } = params;
             return {
@@ -96,7 +109,7 @@ const app = new Elysia()
                         BatchId: id,
                     },
                 }),
-            };
+            } as DepartmentResponse;
         },
         {
             params: t.Object({
@@ -118,7 +131,7 @@ const app = new Elysia()
                         DepartmentId: id, // TODO: add multi disc sub
                     },
                 }),
-            };
+            } as SubjectResponse;
         },
         {
             params: t.Object({
@@ -140,7 +153,7 @@ const app = new Elysia()
                         DepartmentId: id,
                     },
                 }),
-            };
+            } as DivisionResponse;
         },
         {
             params: t.Object({
@@ -153,7 +166,7 @@ const app = new Elysia()
         },
     )
     .get(
-        "divisions/:id/subdivisions",
+        "/divisions/:id/subdivisions",
         async ({ params }) => {
             const { id } = params;
             return {
@@ -162,7 +175,7 @@ const app = new Elysia()
                         DivisionId: id,
                     },
                 }),
-            };
+            } as SubdivisionResponse;
         },
         {
             params: t.Object({
