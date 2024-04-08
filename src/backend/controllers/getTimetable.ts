@@ -1,3 +1,4 @@
+import { ForeignKey } from "sequelize";
 import { getAcademicYearId } from ".";
 import {
     AcademicYear,
@@ -43,9 +44,12 @@ async function getTimetableBySubdivision(subdivisionId: number) {
         },
     });
     const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    // Needs to be filtered because of the possibility of null values
+    // Returns an array of numbers with null values filtered out.
+    const teacherIdsFiltered = teacherIds.filter((teacherId) => teacherId) as ForeignKey<number[]>;
     const teachers = await Teacher.findAll({
         where: {
-            id: teacherIds,
+            id: teacherIdsFiltered,
         },
     });
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
@@ -133,9 +137,10 @@ async function getTimetableByDivision(divisionId: number) {
     });
 
     const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    const teacherIdsFiltered = teacherIds.filter((teacherId) => teacherId) as ForeignKey<number[]>;
     const teachers = await Teacher.findAll({
         where: {
-            id: teacherIds,
+            id: teacherIdsFiltered,
         },
     });
 
@@ -193,7 +198,7 @@ async function getTimetableByTeacher(teacherId: number) {
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId("teacher" , teacherId),
+            AcademicYearId: await getAcademicYearId("teacher", teacherId),
         },
     });
     const slotDatas = await SlotDatas.findAll({
@@ -287,9 +292,10 @@ async function getTimetableByClassroom(classroomId: number) {
         },
     });
     const teacherIds = slotDatas.map((slotData) => slotData.TeacherId);
+    const teacherIdsFiltered = teacherIds.filter((teacherId) => teacherId) as ForeignKey<number[]>;
     const teachers = await Teacher.findAll({
         where: {
-            id: teacherIds,
+            id: teacherIdsFiltered,
         },
     });
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);

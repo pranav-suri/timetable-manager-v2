@@ -6,6 +6,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 class Teacher extends Model<InferAttributes<Teacher>, InferCreationAttributes<Teacher>> {
@@ -15,7 +16,7 @@ class Teacher extends Model<InferAttributes<Teacher>, InferCreationAttributes<Te
     public declare teacherName: string;
     public declare teacherEmail: string;
     public declare AcademicYearId: ForeignKey<number>;
-    public declare SlotDatas: ForeignKey<SlotDatas[]>;
+    public declare SlotDatas: NonAttribute<SlotDatas[]>;
 }
 
 Teacher.init(

@@ -1,3 +1,4 @@
+import { SlotDataClasses } from ".";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -6,6 +7,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 class Classroom extends Model<InferAttributes<Classroom>, InferCreationAttributes<Classroom>> {
@@ -15,7 +17,7 @@ class Classroom extends Model<InferAttributes<Classroom>, InferCreationAttribute
     public declare classroomName: string;
     public declare isLab: boolean;
     public declare AcademicYearId: ForeignKey<number>;
-    public declare SlotDataClasses: ForeignKey<SlotDataClasses[]>;
+    public declare SlotDataClasses: NonAttribute<SlotDataClasses[]>;
 }
 
 Classroom.init(

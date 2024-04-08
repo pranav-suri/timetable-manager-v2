@@ -159,7 +159,7 @@ async function subdivisionValidator(
             break;
         default:
     }
-    const subdivisions: any = await Subdivision.findAll({
+    const subdivisions = await Subdivision.findAll({
         attributes: ["id"],
         where: { ...whereSubdivisionClause },
         include: [
@@ -197,14 +197,14 @@ async function subdivisionValidator(
     });
 
     // Only contains subdivisions in more than one slotData of a slot.
-    const possibleSubdivCollisions: any = subdivisions.filter(
-        (subdivision: any) => subdivision.SlotDataSubdivisions.length > 1,
+    const possibleSubdivCollisions = subdivisions.filter(
+        (subdivision) => subdivision.SlotDataSubdivisions.length > 1,
     );
 
-    // Redoing logic without refactoring
-    const subdivCollisions: any = possibleSubdivCollisions.filter((subdivision: any) => {
+    // Logic without refactoring
+    const subdivCollisions = possibleSubdivCollisions.filter((subdivision) => {
         const groupIdsSet = new Set(
-            subdivision.SlotDataSubdivisions.map((slotDataSubdivision: any) => {
+            subdivision.SlotDataSubdivisions.map((slotDataSubdivision) => {
                 return slotDataSubdivision.SlotData.Subject.Group.id;
             }),
         );
@@ -212,36 +212,37 @@ async function subdivisionValidator(
         if (groupIdsSet.size > 1) return true;
 
         // Collision if all groupIds are the same but allowSimultaneous is false.
-        if (!subdivision.SlotDataSubdivisions[0].SlotData.allowSimultaneous) return true;
+        if (!subdivision.SlotDataSubdivisions[0].SlotData.Subject.Group.allowSimultaneous)
+            return true;
     });
+    return { subdivisionCollisions: subdivCollisions };
 
     // Refactoring the data to make it more readable.
-    const refactoredSubdiv = possibleSubdivCollisions.map((subdivision: any) => {
-        const updatedSubdivision = {
-            SubdivisionId: subdivision.id,
-            SlotDatas: subdivision.SlotDataSubdivisions.map((slotDataSubdivision: any) => {
-                return {
-                    SlotDataId: slotDataSubdivision.SlotData.id,
-                    SubjectId: slotDataSubdivision.SlotData.Subject.id,
-                    GroupId: slotDataSubdivision.SlotData.Subject.Group.id,
-                    allowSimultaneous: slotDataSubdivision.SlotData.Subject.Group.allowSimultaneous,
-                };
-            }),
-        };
-        return updatedSubdivision;
-    });
-    // Subjects from different groups cannot be at the same time.
-
-    // const groupSubdivCollision = refactoredSubdiv.filter((subdivision: any) => {
-    //     const groupIdsSet = new Set(subdivision.SlotDatas.map((slotData: any) => slotData.GroupId));
-    //     // Collision if groupIds are different.
-    //     if (groupIdsSet.size) return true;
-
-    //     // Collision if all groupIds are the same but allowSimultaneous is false.
-    //     if (!subdivision.SlotDatas[0].allowSimultaneous) return true;
-    // });
-    // return { subdivisionCollisions: groupSubdivCollision };
-    return { subdivisionCollisions: subdivCollisions };
+    {
+        // const refactoredSubdiv = possibleSubdivCollisions.map((subdivision) => {
+        //     const updatedSubdivision = {
+        //         SubdivisionId: subdivision.id,
+        //         SlotDatas: subdivision.SlotDataSubdivisions.map((slotDataSubdivision) => {
+        //             return {
+        //                 SlotDataId: slotDataSubdivision.SlotData.id,
+        //                 SubjectId: slotDataSubdivision.SlotData.Subject.id,
+        //                 GroupId: slotDataSubdivision.SlotData.Subject.Group.id,
+        //                 allowSimultaneous: slotDataSubdivision.SlotData.Subject.Group.allowSimultaneous,
+        //             };
+        //         }),
+        //     };
+        //     return updatedSubdivision;
+        // });
+        // // Subjects from different groups cannot be at the same time.
+        // const groupSubdivCollision = refactoredSubdiv.filter((subdivision) => {
+        //     const groupIdsSet = new Set(subdivision.SlotDatas.map((slotData) => slotData.GroupId));
+        //     // Collision if groupIds are different.
+        //     if (groupIdsSet.size) return true;
+        //     // Collision if all groupIds are the same but allowSimultaneous is false.
+        //     if (!subdivision.SlotDatas[0].allowSimultaneous) return true;
+        // });
+        // return { subdivisionCollisions: groupSubdivCollision };
+    }
 }
 
 async function slotValidator(slotId: number, timetableType: TimetableType, searchId: number) {

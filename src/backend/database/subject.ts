@@ -1,3 +1,4 @@
+import Group from "./group";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -6,6 +7,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 class Subject extends Model<InferAttributes<Subject>, InferCreationAttributes<Subject>> {
@@ -16,6 +18,7 @@ class Subject extends Model<InferAttributes<Subject>, InferCreationAttributes<Su
     public declare isLab: boolean;
     public declare DepartmentId: ForeignKey<number>;
     public declare GroupId: ForeignKey<number>;
+    public declare Group: NonAttribute<Group>;
 }
 
 Subject.init(
