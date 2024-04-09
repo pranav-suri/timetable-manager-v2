@@ -5,7 +5,7 @@ import getAvailableTeachers from "./getAvailableTeachers";
 import getAvailableClassrooms from "./getAvailableClassrooms";
 import addSlotData from "./addSlotData";
 import deleteSlotData from "./deleteSlotData";
-import updateSlotData from "./udateSlotData.ts";
+import updateSlotData from "./updateSlotData.ts";
 import getAcademicYearId from "./getAcademicYearId.ts";
 import { timetableValidator, slotValidator } from "./validators.ts";
 
