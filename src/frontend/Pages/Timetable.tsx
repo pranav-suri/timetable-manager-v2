@@ -103,7 +103,7 @@ function renderHeaders(slotNumbers: Set<Slots[0]["number"]>) {
 function renderTimetable(data: TimetableStructure) {
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
-
+    
     data.Timetable.Slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
@@ -142,9 +142,9 @@ export default function Timetable() {
     };
 
     const options: { label: string; url: string }[] = [
-        { label: "Division", url: "http://localhost:3000/divisionTimetable/?divisionId=2" },
-        { label: "Teacher", url: "http://localhost:3000/teacherTimetable/?teacherId=1" },
-        { label: "Classroom", url: "http://localhost:3000/classroomTimetable/?classroomId=1" },
+        { label: "Division", url: "http://localhost:3000/divisions/2/timetable" },
+        { label: "Teacher", url: "http://localhost:3000/teachers/1/timetable" },
+        { label: "Classroom", url: "http://localhost:3000/classrooms/1/timetable" },
     ];
 
     const handleMenuItemClick = (
