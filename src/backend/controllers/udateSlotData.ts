@@ -3,6 +3,7 @@ import { addSlotDataClassesAndSubdivs } from "./addSlotDataClassesAndSubdivs";
 
 async function updateSlotData(
     slotDataId: number,
+    slotId: number,
     subjectId: number,
     teacherId?: number | null,
     subdivisionIds?: number[],
@@ -10,7 +11,7 @@ async function updateSlotData(
 ) {
     if (!teacherId) teacherId = null;
     await SlotDatas.update(
-        { SubjectId: subjectId, TeacherId: teacherId },
+        { SlotId: slotId, SubjectId: subjectId, TeacherId: teacherId },
         { where: { id: slotDataId } },
     );
     await SlotDataClasses.destroy({

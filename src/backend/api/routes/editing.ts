@@ -49,6 +49,7 @@ const app = new Elysia({ prefix: "/slotDatas" })
             const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
             return await updateSlotData(
                 id,
+                slotId,
                 subjectId,
                 teacherId,
                 subdivisionIds,
