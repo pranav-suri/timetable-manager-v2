@@ -1,3 +1,4 @@
+import { SlotDatas } from ".";
 import sequelize from "./sequelize";
 import {
     CreationOptional,

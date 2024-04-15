@@ -301,4 +301,3 @@ const app = new Elysia()
     );
 
 export default app;
-export type GetTables = typeof app;

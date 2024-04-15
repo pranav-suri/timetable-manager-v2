@@ -1,3 +1,4 @@
+import { SlotDatas } from ".";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -6,6 +7,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
@@ -15,6 +17,7 @@ class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare day: number;
     public declare number: number;
     public declare AcademicYearId: ForeignKey<number>;
+    public declare SlotDatas: NonAttribute<SlotDatas[]>;
 }
 
 Slot.init(
