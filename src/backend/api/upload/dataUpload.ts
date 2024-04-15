@@ -17,6 +17,8 @@ import {
 } from "../../database";
 import Papa from "papaparse";
 
+// FIXME: #6 @pranav-suri Normalize variable names according to eslint rules
+
 const batchAndSubdivisionData = {
     batch_name: "",
     department_name: "",

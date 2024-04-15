@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import Logger from "../logging";
+import Logger from "../../utils/logging";
 
 const sequelize = new Sequelize("timetable_manager", "root", Bun.env.DB_PASS, {
     dialect: "mysql",

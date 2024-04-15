@@ -20,8 +20,8 @@ class SlotDataSubdivisions extends Model<
     public declare id: CreationOptional<number>;
     public declare SlotDataId: ForeignKey<number>;
     public declare SubdivisionId: ForeignKey<number>;
-    public declare SlotData: NonAttribute<SlotDatas>;
-    public declare Subdivision: NonAttribute<Subdivision>;
+    public declare SlotData: ForeignKey<SlotDatas>;
+    public declare Subdivision: ForeignKey<Subdivision>;
 }
 
 SlotDataSubdivisions.init(
@@ -37,7 +37,7 @@ SlotDataSubdivisions.init(
     {
         sequelize,
         tableName: "SlotDataSubdivisions",
-    }
+    },
 );
 
 export default SlotDataSubdivisions;

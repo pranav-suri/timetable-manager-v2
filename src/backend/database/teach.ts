@@ -16,8 +16,8 @@ class Teach extends Model<InferAttributes<Teach>, InferCreationAttributes<Teach>
     public declare id: CreationOptional<number>;
     public declare TeacherId: ForeignKey<number>;
     public declare SubjectId: ForeignKey<number>;
-    public declare Subject: NonAttribute<Subject>;
-    public declare Teacher: NonAttribute<Teach>;
+    public declare Subject: ForeignKey<Subject>;
+    public declare Teacher: ForeignKey<Teach>;
 }
 
 Teach.init(

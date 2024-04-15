@@ -17,7 +17,7 @@ class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {
     public declare day: number;
     public declare number: number;
     public declare AcademicYearId: ForeignKey<number>;
-    public declare SlotDatas: NonAttribute<SlotDatas[]>;
+    public declare SlotDatas: ForeignKey<SlotDatas[]>;
 }
 
 Slot.init(

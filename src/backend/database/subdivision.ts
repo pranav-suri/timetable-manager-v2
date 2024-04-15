@@ -20,7 +20,7 @@ class Subdivision extends Model<
     public declare subdivisionName: string;
     public declare DivisionId: ForeignKey<number>;
     public declare SubdivisionId: ForeignKey<Subdivision["DivisionId"]>;
-    public declare SlotDataSubdivisions: NonAttribute<SlotDataSubdivisions[]>;
+    public declare SlotDataSubdivisions: ForeignKey<SlotDataSubdivisions[]>;
 }
 
 Subdivision.init(
