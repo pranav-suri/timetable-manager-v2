@@ -32,7 +32,7 @@ export default class Logger {
             path = path.replace(/\\/g, "/");
         }
         const srcPosition = path.split("/").indexOf("src");
-        const srcPath = path.split("/").slice(srcPosition, path.length).join("/");
+        const srcPath = path.split("/").slice(srcPosition + 1, path.length).join("/");
         const messagePrefix = `[${new Date().toISOString()}] : ${srcPath} => `;
         switch (logLevel) {
             case "INFO": {
