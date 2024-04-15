@@ -6,7 +6,9 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
+import Subject from "./subject";
 
 class Teach extends Model<InferAttributes<Teach>, InferCreationAttributes<Teach>> {
     public declare createdAt: CreationOptional<Date>;
@@ -14,6 +16,8 @@ class Teach extends Model<InferAttributes<Teach>, InferCreationAttributes<Teach>
     public declare id: CreationOptional<number>;
     public declare TeacherId: ForeignKey<number>;
     public declare SubjectId: ForeignKey<number>;
+    public declare Subject: NonAttribute<Subject>;
+    public declare Teacher: NonAttribute<Teach>;
 }
 
 Teach.init(

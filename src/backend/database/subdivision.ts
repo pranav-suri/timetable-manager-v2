@@ -7,6 +7,7 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
+    NonAttribute,
 } from "sequelize";
 
 class Subdivision extends Model<
@@ -18,8 +19,8 @@ class Subdivision extends Model<
     public declare id: CreationOptional<number>;
     public declare subdivisionName: string;
     public declare DivisionId: ForeignKey<number>;
-    public declare SlotDataSubdivisions: ForeignKey<SlotDataSubdivisions[]>;
     public declare SubdivisionId: ForeignKey<Subdivision["DivisionId"]>;
+    public declare SlotDataSubdivisions: NonAttribute<SlotDataSubdivisions[]>;
 }
 
 Subdivision.init(

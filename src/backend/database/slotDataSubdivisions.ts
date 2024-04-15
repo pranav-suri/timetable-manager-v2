@@ -9,6 +9,7 @@ import {
     NonAttribute,
 } from "sequelize";
 import SlotDatas from "./slotDatas";
+import { Subdivision } from ".";
 
 class SlotDataSubdivisions extends Model<
     InferAttributes<SlotDataSubdivisions>,
@@ -20,6 +21,7 @@ class SlotDataSubdivisions extends Model<
     public declare SlotDataId: ForeignKey<number>;
     public declare SubdivisionId: ForeignKey<number>;
     public declare SlotData: NonAttribute<SlotDatas>;
+    public declare Subdivision: NonAttribute<Subdivision>;
 }
 
 SlotDataSubdivisions.init(

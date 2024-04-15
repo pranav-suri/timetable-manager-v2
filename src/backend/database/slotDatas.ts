@@ -9,6 +9,7 @@ import {
     NonAttribute,
 } from "sequelize";
 import Subject from "./subject";
+import { SlotDataClasses, SlotDataSubdivisions, Teacher } from ".";
 
 class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttributes<SlotDatas>> {
     public declare createdAt: CreationOptional<Date>;
@@ -18,6 +19,9 @@ class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttribute
     public declare SubjectId: ForeignKey<number>;
     public declare SlotId: ForeignKey<number>;
     public declare Subject: NonAttribute<Subject>;
+    public declare Teacher: NonAttribute<Teacher | null>;
+    public declare SlotDataSubdivisions: NonAttribute<SlotDataSubdivisions[]>;
+    public declare SlotDataClasses: NonAttribute<SlotDataClasses[]>;
 }
 
 SlotDatas.init(
