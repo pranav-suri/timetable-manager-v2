@@ -18,11 +18,17 @@ import {
 } from "@mui/icons-material";
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-
+import { TimetableResponse } from "../../backend/api/routes/responseTypes";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
+
+type Timetable = TimetableResponse["timetable"];
+type Slots = Timetable["slots"];
+type SlotDatas = Slots[0]["SlotDatas"];
+type SlotDataClasses = SlotDatas[0]["SlotDataClasses"];
+type SlotDataSubdivisions = SlotDatas[0]["SlotDataSubdivisions"];
 
 function printClasses(slotDataClasses: SlotDataClasses) {
     return slotDataClasses.map((slotDataClass, slotDataClassIndex) => (
@@ -45,7 +51,8 @@ function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
 function renderCell(slotDataItem: SlotDatas[0]) {
     return (
         <td>
-            {slotDataItem.Teacher.teacherName} <br />
+            {/* Check if teacher exists */}
+            {slotDataItem.Teacher?.teacherName} <br />
             {slotDataItem.Subject.subjectName} <br />
             {printSubdivisions(slotDataItem.SlotDataSubdivisions)} <br />
             {printClasses(slotDataItem.SlotDataClasses)}
@@ -75,11 +82,11 @@ function renderRow(
             {Array.from(slotNumbers)
                 .sort()
                 .map((slotNumber) => {
-                    const slotIndex = timetable.Slots.findIndex(
+                    const slotIndex = timetable.slots.findIndex(
                         (slot) => slot.day == day && slot.number == slotNumber,
                     );
                     return (
-                        <td key={slotNumber}>{renderSlot(timetable.Slots[slotIndex].SlotDatas)}</td>
+                        <td key={slotNumber}>{renderSlot(timetable.slots[slotIndex].SlotDatas)}</td>
                     );
                 })}
         </tr>
@@ -100,11 +107,11 @@ function renderHeaders(slotNumbers: Set<Slots[0]["number"]>) {
     return headers;
 }
 
-function renderTimetable(data: TimetableStructure) {
+function renderTimetable(data: TimetableResponse) {
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
-    
-    data.Timetable.Slots.forEach((slot) => {
+
+    data.timetable.slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
     });
@@ -114,7 +121,7 @@ function renderTimetable(data: TimetableStructure) {
             <tbody>
                 {Array.from(slotDays)
                     .sort()
-                    .map((day) => renderRow(data.Timetable, day, slotNumbers))}
+                    .map((day) => renderRow(data.timetable, day, slotNumbers))}
             </tbody>
         </table>
     );
@@ -129,10 +136,10 @@ export default function Timetable() {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
-    const [data, setData] = useState<TimetableStructure | null>(null);
+    const [data, setData] = useState<TimetableResponse | null>(null);
 
     const fetchTimetable = (
-        setData: React.Dispatch<React.SetStateAction<TimetableStructure | null>>,
+        setData: React.Dispatch<React.SetStateAction<TimetableResponse | null>>,
         url: string,
     ) => {
         if (!url) return;
