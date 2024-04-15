@@ -209,16 +209,16 @@ async function getTimetableByClassroom(classroomId: number) {
 
 async function getTTNested(
     searchId: number,
-    searchBy: "subdivision" | "teacher" | "classroom" | "division",
+    searchBy: "subdivisions" | "teachers" | "classrooms" | "divisions",
 ) {
     switch (searchBy) {
-        case "division":
+        case "divisions":
             return await getTimetableByDivision(searchId);
-        case "subdivision":
+        case "subdivisions":
             return await getTimetableBySubdivision(searchId);
-        case "classroom":
+        case "classrooms":
             return await getTimetableByClassroom(searchId);
-        case "teacher":
+        case "teachers":
             return await getTimetableByTeacher(searchId);
         default:
             throw new Error(`Unhandled case in getTTNested function: ${searchBy}`);

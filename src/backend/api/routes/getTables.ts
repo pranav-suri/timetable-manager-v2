@@ -191,10 +191,10 @@ const app = new Elysia()
         "/:timetableSearchBy/:id/timetable",
         async ({ params }) => {
             const timetableSearchTypes = [
-                "division",
-                "subdivision",
-                "teacher",
-                "classroom",
+                "divisions",
+                "subdivisions",
+                "teachers",
+                "classrooms",
             ] as const;
             const { timetableSearchBy, id } = params;
             if (!timetableSearchTypes.includes(timetableSearchBy)) {
@@ -206,10 +206,10 @@ const app = new Elysia()
         {
             params: t.Object({
                 timetableSearchBy: t.Enum({
-                    divisions: "division",
-                    subdivisions: "subdivision",
-                    teachers: "teacher",
-                    classrooms: "classroom",
+                    divisions: "divisions",
+                    subdivisions: "subdivisions",
+                    teachers: "teachers",
+                    classrooms: "classrooms",
                 } as const),
                 id: t.Numeric(),
             }),
