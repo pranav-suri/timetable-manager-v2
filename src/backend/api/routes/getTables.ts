@@ -191,7 +191,7 @@ const app = new Elysia()
         "/divisions/:id/timetable",
         async ({ params }) => {
             const { id } = params;
-            return { Timetable: await getTTNested(id, "division") };
+            return { timetable: await getTTNested(id, "division") };
         },
         {
             params: t.Object({
@@ -207,7 +207,7 @@ const app = new Elysia()
         "/subdivisions/:id/timetable",
         async ({ params }) => {
             const { id } = params;
-            return { Timetable: await getTTNested(id, "subdivision") };
+            return { timetable: await getTTNested(id, "subdivision") };
         },
         {
             params: t.Object({
@@ -223,7 +223,7 @@ const app = new Elysia()
         "/teachers/:id/timetable",
         async ({ params }) => {
             const { id } = params;
-            return { Timetable: await getTTNested(id, "teacher") };
+            return { timetable: await getTTNested(id, "teacher") };
         },
         {
             params: t.Object({
@@ -239,7 +239,7 @@ const app = new Elysia()
         "/classrooms/:id/timetable",
         async ({ params }) => {
             const { id } = params;
-            return { Timetable: await getTTNested(id, "classroom") };
+            return { timetable: await getTTNested(id, "classroom") };
         },
         {
             params: t.Object({
@@ -269,4 +269,3 @@ const app = new Elysia()
     );
 
 export default app;
-export type GetTables = typeof app;

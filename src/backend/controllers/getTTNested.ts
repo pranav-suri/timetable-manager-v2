@@ -42,7 +42,7 @@ async function getTimetableBySubdivision(subdivisionId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByDivision(divisionId: number) {
@@ -98,7 +98,7 @@ async function getTimetableByDivision(divisionId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByTeacher(teacherId: number) {
@@ -151,7 +151,7 @@ async function getTimetableByTeacher(teacherId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTimetableByClassroom(classroomId: number) {
@@ -204,7 +204,7 @@ async function getTimetableByClassroom(classroomId: number) {
             },
         ],
     });
-    return { Slots: slotsWithData };
+    return { slots: slotsWithData };
 }
 
 async function getTTNested(
