@@ -200,7 +200,7 @@ const app = new Elysia()
             if (!timetableSearchTypes.includes(timetableSearchBy)) {
                 throw new Error("Invalid search type");
             }
-            const slots = (await getTTNested(id, timetableSearchBy)).Slots;
+            const { slots } = await getTTNested(id, timetableSearchBy);
             return { timetable: { slots } } as TimetableResponse;
         },
         {
