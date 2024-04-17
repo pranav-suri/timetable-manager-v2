@@ -1,6 +1,3 @@
-import { AcademicYear as DBAcademicYear } from "../backend/database";
-import { InferAttributes } from "sequelize";
-
 declare global {
     interface TimetableStructure {
         Timetable: {

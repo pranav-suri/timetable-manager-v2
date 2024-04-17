@@ -66,7 +66,7 @@ export default class Logger {
      * @param sqlString
      * @param timing
      */
-    static sqlLog(sqlString: string, timing?: number) {
+    static sqlLog(sqlString: string, _timing?: number) {
         Logger.log(`${sqlString}`, "DEBUG", true, "src/backend/database/sequelize.ts");
     }
 }

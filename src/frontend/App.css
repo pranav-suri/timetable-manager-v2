@@ -1,12 +1,17 @@
-table{
-  overflow-x: scroll;
-  overflow-y: scroll;
+table {
+    overflow-x: scroll;
+    overflow-y: scroll;
 }
-th, td {
-  min-width: 200px;
+th,
+td {
+    min-width: 200px;
 }
-table, th, td, tr {
+table,
+th,
+td,
+tr {
     border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
+    border-collapse: collapse;
+    padding: 15px;
+    /* color: hsl(63, 100%, 85%); */
 }
