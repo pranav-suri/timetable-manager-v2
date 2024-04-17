@@ -13,7 +13,7 @@ import {
     TeacherUnavailable,
     SlotDatas,
     SlotDataClasses,
-    SlotDataSubdivisions
+    SlotDataSubdivisions,
 } from "../../database";
 import Papa from "papaparse";
 
@@ -93,7 +93,7 @@ function validateCsvData(
         | "slot"
         | "timetable",
 ) {
-    // This function will parse csv data handle errors with missing headings
+    // This function will handle errors with missing headings
     // This does not validate missing data in each row
     let expectedKeys: string[] = [];
     let dataKeys: string[] = [];
@@ -131,12 +131,13 @@ function validateCsvData(
 
     // This loop will remove the row with missing data
     for (const error of parsedCsv.errors) {
-        // This runs in case of missing headings (missing commas at the last row of the csv file)
-        if (error.type === "Delimiter") {
+        if (error.code === "UndetectableDelimiter") {
             console.log("Empty file uploaded");
             return false;
         }
-        if (error.row) {
+
+        // This runs in case of missing headings (missing commas at the last row of the csv file)
+        if (error.code === "TooFewFields" && error.row) {
             // console.log("Deleting row: ", error.row + 2); // +2 because top row is header and data starts from index 0
             // console.log("Row data: ", parsedCsv.data[error.row])
             parsedCsv.data.splice(error.row, 1);
@@ -156,17 +157,18 @@ function validateCsvData(
 }
 
 async function parseCsvData<T>(csvData: string) {
-    const csvParsingOptions = {
+    return Papa.parse<T>(csvData, {
         header: true,
         skipEmptyLines: true,
         transform: (value: string, header: string) => {
-            if (header) {
-                return value.trim();
-            }
-            return value;
+            return value.trim();
         },
-    };
-    return Papa.parse<T>(csvData, csvParsingOptions);
+        transformHeader: (header: string) => {
+            // This will convert the header to lowercase and replace spaces with underscores
+            const new_header = header.trim().toLowerCase().split(" ").join("_");
+            return new_header;
+        },
+    });
 }
 
 async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: AcademicYear["id"]) {
@@ -222,7 +224,6 @@ async function uploadClassroomData(csvData: string, academicYearId: AcademicYear
 async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear["id"]) {
     const parsedCsv = await parseCsvData<SlotInfo>(csvData);
     if (!validateCsvData(parsedCsv, "slot")) {
-        console.log("Errors in CSV file");
         return false;
     }
     for (const row of parsedCsv.data) {
@@ -313,7 +314,6 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
     const parsedCsv = await parseCsvData<UnavailabilityData>(csvData);
 
     if (!validateCsvData(parsedCsv, "unavailability")) {
-        console.log("Errors in CSV file");
         return false;
     }
     for (const row of parsedCsv.data) {
@@ -356,7 +356,6 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
     const parsedCsv = await parseCsvData<TimetableData>(csvData);
 
     if (!validateCsvData(parsedCsv, "timetable")) {
-        console.log("Errors in CSV file");
         return false;
     }
 
@@ -529,12 +528,13 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
             },
         });
 
-        const [slotDataSubdivisions, isCreatedSlotDataSubdivisions] = await SlotDataSubdivisions.findOrCreate({
-            where: {
-                SlotDataId: slotData.id,
-                SubdivisionId: subdivision.id,
-            },
-        });
+        const [slotDataSubdivisions, isCreatedSlotDataSubdivisions] =
+            await SlotDataSubdivisions.findOrCreate({
+                where: {
+                    SlotDataId: slotData.id,
+                    SubdivisionId: subdivision.id,
+                },
+            });
 
         const [slotDataClasses, isCreatedSlotDataClasses] = await SlotDataClasses.findOrCreate({
             where: {

@@ -41,9 +41,11 @@ function renderSlot(slotDatas: SlotDatas) {
     return (
         <React.Fragment>
             <table>
-                {slotDatas.map((dataItem, slotDataIndex: number) => (
-                    <tr key={slotDataIndex}>{renderCell(dataItem)}</tr>
-                ))}
+                <tbody>
+                    {slotDatas.map((dataItem, slotDataIndex: number) => (
+                        <tr key={slotDataIndex}>{renderCell(dataItem)}</tr>
+                    ))}
+                </tbody>
             </table>
         </React.Fragment>
     );
@@ -98,11 +100,17 @@ export default function OldTimetable() {
     });
     return (
         <table>
-            <thead>{renderHeaders(slotNumbers)}</thead>
+            <thead>
+                <tr>{renderHeaders(slotNumbers)}</tr>
+            </thead>
             <tbody>
                 {Array.from(slotDays)
                     .sort()
-                    .map((day) => renderRow(data.timetable, day, slotNumbers))}
+                    .map((day) => (
+                        <React.Fragment key={day}>
+                            {renderRow(data.timetable, day, slotNumbers)}
+                        </React.Fragment>
+                    ))}
             </tbody>
         </table>
     );
