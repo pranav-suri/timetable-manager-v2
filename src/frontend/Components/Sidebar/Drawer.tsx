@@ -1,30 +1,38 @@
 import * as React from "react";
 import { styled, useTheme } from "@mui/material/styles";
-import Box from "@mui/material/Box";
-import Drawer from "@mui/material/Drawer";
-import MuiAppBar, { AppBarProps as MuiAppBarProps } from "@mui/material/AppBar";
-import Toolbar from "@mui/material/Toolbar";
-import CssBaseline from "@mui/material/CssBaseline";
-import List from "@mui/material/List";
-import Typography from "@mui/material/Typography";
-import Divider from "@mui/material/Divider";
-import IconButton from "@mui/material/IconButton";
-import MenuIcon from "@mui/icons-material/Menu";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-import ListItem from "@mui/material/ListItem";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
-import { Autocomplete, TextField } from "@mui/material";
-import Timetable from "../../Pages/Timetable";
-import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
+import {
+    Box,
+    Drawer,
+    AppBar as MuiAppBar,
+    AppBarProps as MuiAppBarProps,
+    Toolbar,
+    CssBaseline,
+    List,
+    Typography,
+    Divider,
+    IconButton,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Autocomplete,
+    TextField,
+} from "@mui/material";
+import {
+    Menu as MenuIcon,
+    ChevronLeft as ChevronLeftIcon,
+    ChevronRight as ChevronRightIcon,
+    MoveToInbox as InboxIcon,
+    Mail as MailIcon,
+} from "@mui/icons-material";
+import { SubjectResponse, TeacherResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
 import api from "../..";
 import OldTimetable from "../Timetable/OldTimetable";
 import OldNavBar from "../NavBar/OldNavBar";
+import { TeacherAutocomplete } from "./TeacherAutocomplete";
+import { SubjectAutocomplete } from "./SubjectAutocomplete";
+
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
 type SlotDatas = Slots[0]["SlotDatas"];
@@ -92,21 +100,32 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export function PersistentDrawerRight() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(true);
-    const [value, setValue] = React.useState<SlotDatas[0] | null>(null);
     const [inputValue, setInputValue] = React.useState("");
-    const [timetableData, setTimetable] = React.useState<TimetableResponse | null>(null);
     const [sidebarData, setSidebarData] = React.useState<Slots[0] | null>(null);
+    const [allTeachersData, setAllTeacherData] = React.useState<TeacherResponse | null>(null);
+    const [timetableData, setTimetable] = React.useState<TimetableResponse | null>(null);
+    const [subjectsData, setSubjects] = React.useState<SubjectResponse | null>(null);
+    const [subjectTeachersData, setSubjectTeacherData] = React.useState<TeacherResponse | null>(
+        null,
+    );
+    const [slotData, setSlotData] = React.useState<SlotDatas[0] | null>(null);
+    const [currentTeacher, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(null);
     React.useEffect(() => {
-        fetchAndSet(setTimetable, api.divisions({ id: 2 }).timetable.get()).then(() =>
-            setSidebarData(timetableData?.timetable.slots[0]!),
-        );
+        fetchAndSet(setTimetable, api.divisions({ id: 2 }).timetable.get());
     }, []);
-
+    React.useEffect(() => {
+        fetchAndSet(setSubjectTeacherData, api.subjects({ id: 1 }).teachers.get());
+        fetchAndSet(setSubjects, api.departments({ id: 2 }).subjects.get());
+        setSidebarData(timetableData?.timetable.slots[4] ?? null);
+        setSlotData(timetableData?.timetable.slots[4].SlotDatas[0] ?? null);
+        const currentTeacher = timetableData?.timetable.slots[4].SlotDatas[0]?.Teacher;
+        setValue(currentTeacher ?? null);
+    }, [timetableData]);
+    const allTeacher = allTeachersData?.teachers;
+    const subjectTeachers = subjectTeachersData?.teachers ?? [];
+    const {subjects} = subjectsData ?? {subjects: []};
     const slots = timetableData?.timetable.slots;
-    if (!slots) return "Data missing or invalid in drawer";
-
-    // TODO: Fetch available teachers, get teachers currently in timetable. Add them to a new teachers array and use that as option
-
+    
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -115,9 +134,13 @@ export function PersistentDrawerRight() {
         setOpen(false);
     };
 
-    const getTeacherLabels = (slotData: SlotDatas[0]) => {
-        return slotData.Teacher?.teacherName || "";
+    const getTeacherLabels = (teacher: TeacherResponse["teachers"][0]) => {
+        return teacher.teacherName;
     };
+    
+    if (!slots) return "Data missing or invalid in drawer";
+    // if (!slotData) return "SlotData missing or invalid in drawer";
+    if (!subjects) return "SubjectData missing or invalid in drawer";
 
     return (
         <Box sx={{ display: "flex" }}>
@@ -161,12 +184,13 @@ export function PersistentDrawerRight() {
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
-                <div>{`value: ${value !== null ? `'${value}'` : "null"}`}</div>
+                <div>{`value: ${currentTeacher !== null ? `'${currentTeacher}'` : "null"}`}</div>
                 <div>{`inputValue: '${inputValue}'`}</div>
-                <Autocomplete
+                {/* <Autocomplete
+                    disablePortal
                     autoHighlight
-                    value={value}
-                    onChange={(event: any, newValue: SlotDatas[0] | null) => {
+                    value={currentTeacher}
+                    onChange={(event, newValue) => {
                         setValue(newValue);
                     }}
                     inputValue={inputValue}
@@ -175,10 +199,13 @@ export function PersistentDrawerRight() {
                     }}
                     id="combo-box-demo"
                     getOptionLabel={getTeacherLabels}
-                    options={slots[0].SlotDatas}
+                    options={subjectTeachers}
                     sx={{ width: drawerWidth - 40 }}
                     renderInput={(params) => <TextField {...params} label="Movie" />}
-                />
+                /> */}
+                <TeacherAutocomplete slotData={slotData} />
+                <SubjectAutocomplete subjects={subjects} slotData={slotData} />
+
             </Drawer>
         </Box>
     );

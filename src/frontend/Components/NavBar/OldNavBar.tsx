@@ -65,7 +65,7 @@ export default function OldNavBar({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         fetchTimetable(setData, options[selectedIndex].url);
     }, []);
-    console.log("Rerendered");
+
     return (
         <TimetableDataContext.Provider value={data as TimetableResponse}>
             <AppBar position="static" color="primary">

@@ -30,7 +30,6 @@ import "./App.css";
 import OldNavBar from "./Components/NavBar/OldNavBar";
 import OldTimetable from "./Components/Timetable/OldTimetable";
 import { PersistentDrawerRight } from "./Components/Sidebar/Drawer";
-import { Sidebar } from "./Components/Sidebar/Sidebar";
 
 export default function App() {
     const data = useContext(TimetableDataContext);
@@ -47,7 +46,6 @@ export default function App() {
                 />
                 <Route path="new" element={<Timetable />} />
                 <Route path="/" element={<Timetable />} />
-                <Route path="sidebar" element={<Sidebar />} />
                 <Route path="drawer" element={<PersistentDrawerRight />} />
             </Routes>
         </Router>

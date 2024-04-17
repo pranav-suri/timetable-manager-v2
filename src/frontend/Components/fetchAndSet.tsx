@@ -1,11 +1,11 @@
 import React from "react";
 import { treaty } from "@elysiajs/eden";
 import { EdenTreaty } from "@elysiajs/eden/treaty";
-type SetFunction = React.Dispatch<React.SetStateAction<any>>;
-export async function fetchAndSet(
-    setFunction: SetFunction,
+type SetFunction<ResponseType> = React.Dispatch<React.SetStateAction<ResponseType>>;
+export async function fetchAndSet<ResponseType>(
+    setFunction: SetFunction<ResponseType>,
     responsePromise: Promise<Omit<EdenTreaty.DetailedResponse, "headers">>,
-    logDataToConsole = false,
+    logDataToConsole = true,
 ) {
     const response = await Promise.resolve(responsePromise);
     const { data, error } = response;
