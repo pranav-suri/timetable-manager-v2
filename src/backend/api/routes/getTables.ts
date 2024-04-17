@@ -187,102 +187,102 @@ const app = new Elysia()
             },
         },
     )
+    // .get(
+    //     "/:timetableSearchBy/:id/timetable",
+    //     async ({ params }) => {
+    //         const timetableSearchTypes = [
+    //             "divisions",
+    //             "subdivisions",
+    //             "teachers",
+    //             "classrooms",
+    //         ] as const;
+    //         const { timetableSearchBy, id } = params;
+    //         if (!timetableSearchTypes.includes(timetableSearchBy)) {
+    //             throw new Error("Invalid search type");
+    //         }
+    //         const { slots } = await getTTNested(id, timetableSearchBy);
+    //         return { timetable: { slots } } as TimetableResponse;
+    //     },
+    //     {
+    //         params: t.Object({
+    //             timetableSearchBy: t.Enum({
+    //                 divisions: "divisions",
+    //                 subdivisions: "subdivisions",
+    //                 teachers: "teachers",
+    //                 classrooms: "classrooms",
+    //             } as const),
+    //             id: t.Numeric(),
+    //         }),
+    //         detail: {
+    //             summary: "Get timetable of a search type",
+    //             tags: ["Timetable"],
+    //         },
+    //     },
+    // )
     .get(
-        "/:timetableSearchBy/:id/timetable",
+        "/divisions/:id/timetable",
         async ({ params }) => {
-            const timetableSearchTypes = [
-                "divisions",
-                "subdivisions",
-                "teachers",
-                "classrooms",
-            ] as const;
-            const { timetableSearchBy, id } = params;
-            if (!timetableSearchTypes.includes(timetableSearchBy)) {
-                throw new Error("Invalid search type");
-            }
-            const { slots } = await getTTNested(id, timetableSearchBy);
-            return { timetable: { slots } } as TimetableResponse;
+            const { id } = params;
+            return { timetable: await getTTNested(id, "divisions") } as TimetableResponse;
         },
         {
             params: t.Object({
-                timetableSearchBy: t.Enum({
-                    divisions: "divisions",
-                    subdivisions: "subdivisions",
-                    teachers: "teachers",
-                    classrooms: "classrooms",
-                } as const),
                 id: t.Numeric(),
             }),
             detail: {
-                summary: "Get timetable of a search type",
+                summary: "Get timetable of a division",
                 tags: ["Timetable"],
             },
         },
     )
-    // .get(
-    //     "/divisions/:id/timetable",
-    //     async ({ params }) => {
-    //         const { id } = params;
-    //         return { timetable: await getTTNested(id, "division") } as TimetableResponse;
-    //     },
-    //     {
-    //         params: t.Object({
-    //             id: t.Numeric(),
-    //         }),
-    //         detail: {
-    //             summary: "Get timetable of a division",
-    //             tags: ["Timetable"],
-    //         },
-    //     },
-    // )
-    // .get(
-    //     "/subdivisions/:id/timetable",
-    //     async ({ params }) => {
-    //         const { id } = params;
-    //         return { timetable: await getTTNested(id, "subdivision") } as TimetableResponse;
-    //     },
-    //     {
-    //         params: t.Object({
-    //             id: t.Numeric(),
-    //         }),
-    //         detail: {
-    //             summary: "Get timetable of a subdivision",
-    //             tags: ["Timetable"],
-    //         },
-    //     },
-    // )
-    // .get(
-    //     "/teachers/:id/timetable",
-    //     async ({ params }) => {
-    //         const { id } = params;
-    //         return { timetable: await getTTNested(id, "teacher") } as TimetableResponse;
-    //     },
-    //     {
-    //         params: t.Object({
-    //             id: t.Numeric(),
-    //         }),
-    //         detail: {
-    //             summary: "Get timetable of a teacher",
-    //             tags: ["Timetable"],
-    //         },
-    //     },
-    // )
-    // .get(
-    //     "/classrooms/:id/timetable",
-    //     async ({ params }) => {
-    //         const { id } = params;
-    //         return { timetable: await getTTNested(id, "classroom") };
-    //     },
-    //     {
-    //         params: t.Object({
-    //             id: t.Numeric(),
-    //         }),
-    //         detail: {
-    //             summary: "Get timetable of a classroom",
-    //             tags: ["Timetable"],
-    //         },
-    //     },
-    // )
+    .get(
+        "/subdivisions/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { timetable: await getTTNested(id, "subdivisions") } as TimetableResponse;
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a subdivision",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/teachers/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { timetable: await getTTNested(id, "teachers") } as TimetableResponse;
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a teacher",
+                tags: ["Timetable"],
+            },
+        },
+    )
+    .get(
+        "/classrooms/:id/timetable",
+        async ({ params }) => {
+            const { id } = params;
+            return { timetable: await getTTNested(id, "classrooms") };
+        },
+        {
+            params: t.Object({
+                id: t.Numeric(),
+            }),
+            detail: {
+                summary: "Get timetable of a classroom",
+                tags: ["Timetable"],
+            },
+        },
+    )
     .get(
         "/subjects/:id/teachers",
         async ({ params }) => {

@@ -17,8 +17,8 @@ import {
     ArrowDropDown as ArrowDropDownIcon,
     ArrowDropUp as ArrowDropUpIcon,
 } from "@mui/icons-material";
-import { TimetableResponse } from "../../backend/api/routes/responseTypes";
-import { TimetableDataContext } from "../context/TimetableDataContext";
+import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
+import { TimetableDataContext } from "../../context/TimetableDataContext";
 
 export default function OldNavBar({ children }: { children: React.ReactNode }) {
     const [open, setOpen] = React.useState(false);
@@ -65,7 +65,7 @@ export default function OldNavBar({ children }: { children: React.ReactNode }) {
     useEffect(() => {
         fetchTimetable(setData, options[selectedIndex].url);
     }, []);
-    console.log("Rerendered");  
+    console.log("Rerendered");
     return (
         <TimetableDataContext.Provider value={data as TimetableResponse}>
             <AppBar position="static" color="primary">
