@@ -1,3 +1,4 @@
+import { t } from "elysia";
 import {
     AcademicYear,
     Batch,
@@ -18,6 +19,24 @@ import {
 import Papa from "papaparse";
 
 // FIXME: #6 @pranav-suri Normalize variable names according to eslint rules
+
+function removeDuplicates<T>(arr: T[]): T[] {
+    const uniqueArray = arr.filter((value, index) => {
+        const _value = JSON.stringify(value);
+        return (
+            index ===
+            arr.findIndex((obj) => {
+                return JSON.stringify(obj) === _value;
+            })
+        );
+    });
+    return uniqueArray;
+}
+
+function areEqual(a: string | undefined, b: string | undefined) {
+    if (!a || !b) return false;
+    return a.trim().toLowerCase() === b.trim().toLowerCase();
+}
 
 const batchAndSubdivisionData = {
     batch_name: "",
@@ -157,7 +176,7 @@ function validateCsvData(
 }
 
 async function parseCsvData<T>(csvData: string) {
-    return Papa.parse<T>(csvData, {
+    const parsedCsv = Papa.parse<T>(csvData, {
         header: true,
         skipEmptyLines: true,
         transform: (value: string, header: string) => {
@@ -169,6 +188,8 @@ async function parseCsvData<T>(csvData: string) {
             return new_header;
         },
     });
+    parsedCsv.data = Array.from(new Set(parsedCsv.data));
+    return parsedCsv;
 }
 
 async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: AcademicYear["id"]) {
@@ -176,6 +197,68 @@ async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: Aca
 
     if (!validateCsvData(parsedCsv, "batchAndSubdivision")) return false;
 
+    // Creating batches
+    let batchCreate = parsedCsv.data.map((row) => {
+        return {
+            batchName: row.batch_name,
+            AcademicYearId: academicYearId,
+        };
+    });
+    batchCreate = removeDuplicates(batchCreate);
+    const batches = await Batch.bulkCreate(batchCreate);
+    // Creating departments
+    let departmentCreate: {
+        departmentName: string;
+        BatchId: number;
+    }[] = [];
+    for (const row of parsedCsv.data) {
+        const { batch_name: batchName, department_name: departmentName } = row;
+        const batch = batches.find(
+            (batch) =>
+                areEqual(batch.batchName, batchName) && batch.AcademicYearId === academicYearId,
+        )!;
+        departmentCreate.push({
+            departmentName,
+            BatchId: batch.id,
+        });
+    }
+    departmentCreate = removeDuplicates(departmentCreate);
+    const departments = await Department.bulkCreate(departmentCreate);
+
+    // Creating divisions
+    let divisionCreate: {
+        divisionName: string;
+        DepartmentId: number;
+    }[] = [];
+    for (const row of parsedCsv.data) {
+        const {
+            batch_name: batchName,
+            department_name: departmentName,
+            division_name: divisionName,
+        } = row;
+
+        const batch = batches.find(
+            (batch) =>
+                areEqual(batch.batchName, batchName) && batch.AcademicYearId === academicYearId,
+        )!;
+        const department = departments.find(
+            (department) =>
+                areEqual(department.departmentName, departmentName) &&
+                department.BatchId === batch.id,
+        )!;
+        divisionCreate.push({
+            divisionName,
+            DepartmentId: department.id,
+        });
+    }
+    divisionCreate = removeDuplicates(divisionCreate);
+    const divisions = await Division.bulkCreate(divisionCreate);
+
+    // Creating subdivisions
+    let subdivisionCreate: {
+        subdivisionName: string;
+        DivisionId: number;
+    }[] = [];
     for (const row of parsedCsv.data) {
         const {
             batch_name: batchName,
@@ -183,22 +266,28 @@ async function uploadBatchAndSubdivsionData(csvData: string, academicYearId: Aca
             division_name: divisionName,
             subdivision_name: subdivisionName,
         } = row;
-        const [batch, isCreatedBatch] = await Batch.findOrCreate({
-            where: { batchName, AcademicYearId: academicYearId },
-        });
-        const [department, isCreatedDepartment] = await Department.findOrCreate({
-            where: { departmentName, BatchId: batch.id },
-        });
-        const [division, isCreatedDivision] = await Division.findOrCreate({
-            where: { divisionName, DepartmentId: department.id },
-        });
-        const [subdivision, isCreatedSubdivision] = await Subdivision.findOrCreate({
-            where: {
-                subdivisionName,
-                DivisionId: division.id,
-            },
+
+        const batch = batches.find(
+            (batch) =>
+                areEqual(batch.batchName, batchName) && batch.AcademicYearId === academicYearId,
+        )!;
+        const department = departments.find(
+            (department) =>
+                areEqual(department.departmentName, departmentName) &&
+                department.BatchId === batch.id,
+        )!;
+        const division = divisions.find(
+            (division) =>
+                areEqual(division.divisionName, divisionName) &&
+                division.DepartmentId === department.id,
+        )!;
+        subdivisionCreate.push({
+            subdivisionName,
+            DivisionId: division.id,
         });
     }
+    subdivisionCreate = removeDuplicates(subdivisionCreate);
+    await Subdivision.bulkCreate(subdivisionCreate);
     return true;
 }
 
@@ -207,17 +296,21 @@ async function uploadClassroomData(csvData: string, academicYearId: AcademicYear
     if (!validateCsvData(parsedCsv, "classroom")) {
         return false;
     }
+    let classroomCreate: {
+        classroomName: string;
+        isLab: boolean;
+        AcademicYearId: number;
+    }[] = [];
     for (const row of parsedCsv.data) {
         const { classroom_name: classroomName, is_lab: isLab } = row;
-
-        const [classroom, isCreatedClassroom] = await Classroom.findOrCreate({
-            where: {
-                classroomName,
-                isLab,
-                AcademicYearId: academicYearId,
-            },
+        classroomCreate.push({
+            classroomName,
+            isLab: Number(isLab) ? true : false,
+            AcademicYearId: academicYearId,
         });
     }
+    classroomCreate = removeDuplicates(classroomCreate);
+    await Classroom.bulkCreate(classroomCreate);
     return true;
 }
 
@@ -226,17 +319,22 @@ async function uploadTestSlotData(csvData: string, academicYearId: AcademicYear[
     if (!validateCsvData(parsedCsv, "slot")) {
         return false;
     }
+    let slotCreate: {
+        day: number;
+        number: number;
+        AcademicYearId: number;
+    }[] = [];
     for (const row of parsedCsv.data) {
         const { day, number } = row;
 
-        const [slot, isCreatedSlot] = await Slot.findOrCreate({
-            where: {
-                day: day,
-                number: number,
-                AcademicYearId: academicYearId,
-            },
+        slotCreate.push({
+            day: Number(day),
+            number: Number(number),
+            AcademicYearId: academicYearId,
         });
     }
+    slotCreate = removeDuplicates(slotCreate);
+    await Slot.bulkCreate(slotCreate);
     return true;
 }
 
@@ -245,6 +343,45 @@ async function uploadSubjectAndTeacherData(csvData: string, academicYearId: Acad
     if (!validateCsvData(parsedCsv, "subjectAndTeacher")) {
         return false;
     }
+
+    let teacherCreate = parsedCsv.data.map((row) => {
+        return {
+            teacherName: row.teacher_name,
+            teacherEmail: row.teacher_email,
+            AcademicYearId: academicYearId,
+        };
+    });
+    teacherCreate = removeDuplicates(teacherCreate);
+    const teachers = await Teacher.bulkCreate(teacherCreate);
+
+    let groupCreate = parsedCsv.data.map((row) => {
+        return {
+            groupName: row.group_name,
+            allowSimultaneous: Number(row.group_allow_simultaneous) ? true : false,
+            AcademicYearId: academicYearId,
+        };
+    });
+    groupCreate = removeDuplicates(groupCreate);
+    const groups = await Group.bulkCreate(groupCreate);
+    const batches = await Batch.findAll({
+        where: {
+            AcademicYearId: academicYearId,
+        },
+    });
+    const departments = await Department.findAll();
+
+    let teachCreate: {
+        TeacherId: number;
+        SubjectId: number;
+    }[] = [];
+
+    let subjectCreate: {
+        subjectName: string;
+        isLab: boolean;
+        DepartmentId: number;
+        GroupId: number;
+    }[] = [];
+
     for (const row of parsedCsv.data) {
         const {
             batch_name: batchName,
@@ -257,55 +394,110 @@ async function uploadSubjectAndTeacherData(csvData: string, academicYearId: Acad
             teacher_name: teacherName,
         } = row;
 
-        const batch = await Batch.findOne({
-            where: { batchName, AcademicYearId: academicYearId },
-        });
+        const batch = batches.find((batch) => areEqual(batch.batchName, batchName));
         if (!batch) {
             console.log(row);
             console.log("Batch not found");
+            throw new Error("Batch not found");
+            continue;
             return false;
         }
-        const department = await Department.findOne({
-            where: { departmentName, BatchId: batch.id },
+        const department = departments.find(
+            (department) =>
+                areEqual(department.departmentName, departmentName) &&
+                department.BatchId === batch.id,
+        );
+        if (!department) {
+            console.log(row);
+            console.log("Department not found");
+            throw new Error("Department not found");
+            continue;
+            return false;
+        }
+
+        const group = groups.find(
+            (group) =>
+                areEqual(group.groupName, groupName) && group.AcademicYearId === academicYearId,
+        );
+
+        if (!group) {
+            console.log(row);
+            console.log("Group not found");
+            throw new Error("Group not found");
+            continue;
+            return false;
+        }
+
+        subjectCreate.push({
+            subjectName,
+            isLab: Number(isLab) ? true : false,
+            DepartmentId: department.id,
+            GroupId: group.id,
+        });
+    }
+    subjectCreate = removeDuplicates(subjectCreate);
+    const subjects = await Subject.bulkCreate(subjectCreate);
+
+    for (const row of parsedCsv.data) {
+        const {
+            batch_name: batchName,
+            department_name: departmentName,
+            group_name: groupName,
+            group_allow_simultaneous: groupAllowSimultaneous,
+            is_lab: isLab,
+            subject_name: subjectName,
+            teacher_email: teacherEmail,
+            teacher_name: teacherName,
+        } = row;
+        const batch = batches.find((batch) => areEqual(batch.batchName, batchName));
+        if (!batch) {
+            console.log(row);
+            console.log("Batch not found");
+            throw new Error("Batch not found");
+            continue;
+            return false;
+        }
+
+        const department = departments.find((department) => {
+            return (
+                areEqual(department.departmentName, departmentName) &&
+                department.BatchId === batch.id
+            );
         });
         if (!department) {
             console.log(row);
             console.log("Department not found");
+            throw new Error("Department not found");
+            continue;
             return false;
         }
 
-        const [group, isCreatedGroup] = await Group.findOrCreate({
-            where: {
-                groupName,
-                allowSimultaneous: groupAllowSimultaneous,
-                AcademicYearId: academicYearId,
-            },
+        const subject = subjects.find((subject) => {
+            return (
+                areEqual(subject.subjectName, subjectName) && subject.DepartmentId === department.id
+            );
         });
 
-        const [subject, isCreatedSubject] = await Subject.findOrCreate({
-            where: {
-                subjectName,
-                isLab,
-                DepartmentId: department.id,
-                GroupId: group.id,
-            },
-        });
+        if (!subject) {
+            // console.log("Subject not found");
+            throw new Error("Subject not found");
+            continue;
+            return false;
+        }
+        const teacher = teachers.find(
+            (teacher) =>
+                areEqual(teacher.teacherName, teacherName) &&
+                areEqual(teacher.teacherEmail, teacherEmail) &&
+                teacher.AcademicYearId === academicYearId,
+        )!;
 
-        const [teacher, isCreatedTeacher] = await Teacher.findOrCreate({
-            where: {
-                teacherName,
-                teacherEmail,
-                AcademicYearId: academicYearId,
-            },
-        });
-
-        const [teach, isCreatedTeach] = await Teach.findOrCreate({
-            where: {
-                TeacherId: teacher.id,
-                SubjectId: subject.id,
-            },
+        teachCreate.push({
+            TeacherId: teacher.id,
+            SubjectId: subject.id,
         });
     }
+    teachCreate = removeDuplicates(teachCreate);
+    await Teach.bulkCreate(teachCreate);
 
     return true;
 }
@@ -316,6 +508,11 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
     if (!validateCsvData(parsedCsv, "unavailability")) {
         return false;
     }
+    let unavailabilityCreate: {
+        TeacherId: number;
+        SlotId: number;
+    }[] = [];
+
     for (const row of parsedCsv.data) {
         const { day, slot_number: slotNumber, teacher_email: teacherEmail } = row;
 
@@ -324,6 +521,7 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
                 teacherEmail,
                 AcademicYearId: academicYearId,
             },
+            attributes: ["id"],
         });
         const slot = await Slot.findOne({
             where: {
@@ -331,6 +529,7 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
                 number: slotNumber,
                 AcademicYearId: academicYearId,
             },
+            attributes: ["id"],
         });
 
         if (!teacher) {
@@ -342,13 +541,13 @@ async function uploadUnavailabilityData(csvData: string, academicYearId: Academi
             return false;
         }
 
-        const [unavailability, isCreatedUnavailability] = await TeacherUnavailable.findOrCreate({
-            where: {
-                TeacherId: teacher.id,
-                SlotId: slot.id,
-            },
+        unavailabilityCreate.push({
+            TeacherId: teacher.id,
+            SlotId: slot.id,
         });
     }
+    unavailabilityCreate = removeDuplicates(unavailabilityCreate);
+    await TeacherUnavailable.bulkCreate(unavailabilityCreate);
     return true;
 }
 
@@ -358,6 +557,64 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
     if (!validateCsvData(parsedCsv, "timetable")) {
         return false;
     }
+
+    let slotDataCreate: {
+        SubjectId: number;
+        TeacherId: number;
+        SlotId: number;
+    }[] = [];
+
+    const teachers = await Teacher.findAll({
+        where: {
+            AcademicYearId: academicYearId,
+        },
+    });
+
+    const classrooms = await Classroom.findAll({
+        where: {
+            AcademicYearId: academicYearId,
+        },
+    });
+
+    const slots = await Slot.findAll({
+        where: {
+            AcademicYearId: academicYearId,
+        },
+    });
+
+    const subjects = await Subject.findAll({
+        include: [
+            {
+                association: "Group",
+                attributes: [],
+                where: { academicYearId: academicYearId },
+                required: true,
+            },
+        ],
+    });
+    const subdivisions = await Subdivision.findAll({
+        include: [
+            {
+                association: "Division",
+                required: true,
+                include: [
+                    {
+                        association: "Department",
+                        required: true,
+                        include: [
+                            {
+                                association: "Batch",
+                                required: true,
+                                where: {
+                                    AcademicYearId: academicYearId,
+                                },
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    });
 
     for (const row of parsedCsv.data) {
         const {
@@ -402,38 +659,12 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
             },
         });
         */
-
-        const subdivision = await Subdivision.findOne({
-            where: {
-                subdivisionName,
-            },
-            include: [
-                {
-                    association: "Division",
-                    required: true,
-
-                    include: [
-                        {
-                            association: "Department",
-                            required: true,
-                            where: {
-                                departmentName,
-                            },
-                            include: [
-                                {
-                                    association: "Batch",
-                                    required: true,
-                                    where: {
-                                        batchName,
-                                        AcademicYearId: academicYearId,
-                                    },
-                                },
-                            ],
-                        },
-                    ],
-                },
-            ],
-        });
+        const subdivision = subdivisions.find(
+            (subdivision) =>
+                areEqual(subdivision.subdivisionName, subdivisionName) &&
+                areEqual(subdivision.Division?.Department?.departmentName, departmentName) &&
+                areEqual(subdivision.Division?.Department?.Batch?.batchName, batchName),
+        );
 
         if (!subdivision) {
             console.log("Subdivision not found");
@@ -442,107 +673,186 @@ async function uploadTimetableData(csvData: string, academicYearId: AcademicYear
                 departmentName,
                 subdivisionName,
             });
-            return false;
+            // throw new Error("Subdivision not found");
+            continue;
         }
-        const subject = await Subject.findOne({
-            where: {
-                subjectName,
-            },
-            include: [
-                {
-                    association: "Department",
-                    required: true,
-                    where: {
-                        departmentName,
-                    },
-                },
-                {
-                    association: "Group",
-                    required: true,
-                    where: {
-                        groupName,
-                        academicYearId: academicYearId,
-                    },
-                },
-            ],
-        });
-        if (!subject) {
-            console.log("Subject not found");
-            console.log({
-                subjectName,
-                departmentName,
-                groupName,
-            });
-            return false;
-        }
-        const teacher = await Teacher.findOne({
-            where: {
-                teacherEmail,
-                AcademicYearId: academicYearId,
-            },
-        });
 
+        const subject = subjects.find(
+            (subject) =>
+                areEqual(subject.subjectName, subjectName) &&
+                subject.DepartmentId === subdivision.Division?.Department?.id,
+        );
+
+        if (!subject) {
+            // console.log("Subject not found");
+            // console.log({
+            //     subjectName,
+            //     departmentName,
+            //     groupName,
+            // });
+            // throw new Error("Subject not found");
+            continue;
+        }
+        const teacher = teachers.find((teacher) => areEqual(teacher.teacherEmail, teacherEmail));
         if (!teacher) {
             console.log("Teacher not found");
             console.log({
                 teacherEmail,
             });
-            return false;
+            // throw new Error("Teacher not found");
+            continue;
         }
 
-        const classroom = await Classroom.findOne({
-            where: {
-                classroomName,
-                AcademicYearId: academicYearId,
-            },
-        });
+        const classroom = classrooms.find((classroom) =>
+            areEqual(classroom.classroomName, classroomName),
+        );
         if (!classroom) {
             console.log("Classroom not found");
             console.log({
                 classroomName,
             });
-            return false;
+            // throw new Error("Classroom not found");
+            continue;
         }
 
-        const slot = await Slot.findOne({
-            where: {
-                day: day,
-                number: slotNumber,
-                AcademicYearId: academicYearId,
-            },
-        });
+        const slot = slots.find(
+            (slot) => slot.day === Number(day) && slot.number === Number(slotNumber),
+        );
         if (!slot) {
             console.log("Slot not found");
             console.log({
                 day,
                 slotNumber,
             });
-            return false;
+            // throw new Error("Slot not found");
+            continue;
         }
 
-        const [slotData, isCreatedSlotData] = await SlotDatas.findOrCreate({
-            where: {
-                SubjectId: subject.id,
-                TeacherId: teacher.id,
-                SlotId: slot.id,
-            },
-        });
-
-        const [slotDataSubdivisions, isCreatedSlotDataSubdivisions] =
-            await SlotDataSubdivisions.findOrCreate({
-                where: {
-                    SlotDataId: slotData.id,
-                    SubdivisionId: subdivision.id,
-                },
-            });
-
-        const [slotDataClasses, isCreatedSlotDataClasses] = await SlotDataClasses.findOrCreate({
-            where: {
-                SlotDataId: slotData.id,
-                ClassroomId: classroom.id,
-            },
+        slotDataCreate.push({
+            SubjectId: subject.id,
+            TeacherId: teacher.id,
+            SlotId: slot.id,
         });
     }
+    slotDataCreate = removeDuplicates(slotDataCreate);
+    const slotDatas = await SlotDatas.bulkCreate(slotDataCreate);
+
+    let slotDataClassesCreate: {
+        SlotDataId: number;
+        ClassroomId: number;
+    }[] = [];
+
+    let slotDataSubdivisionsCreate: {
+        SlotDataId: number;
+        SubdivisionId: number;
+    }[] = [];
+
+    for (const row of parsedCsv.data) {
+        const {
+            day,
+            slot_number: slotNumber,
+            department_name: departmentName,
+            batch_name: batchName,
+            subdivision_name: subdivisionName,
+            subject_name: subjectName,
+            group_name: groupName,
+            teacher_email: teacherEmail,
+            classroom_name: classroomName,
+        } = row;
+        const subdivision = subdivisions.find(
+            (subdivision) =>
+                areEqual(subdivision.subdivisionName, subdivisionName) &&
+                areEqual(subdivision.Division?.Department?.departmentName, departmentName) &&
+                areEqual(subdivision.Division?.Department?.Batch?.batchName, batchName),
+        );
+
+        if (!subdivision) {
+            console.log("Subdivision not found");
+            console.log({
+                batchName,
+                departmentName,
+                subdivisionName,
+            });
+            // throw new Error("Subdivision not found");
+            continue;
+        }
+        const teacher = teachers.find((teacher) => areEqual(teacher.teacherEmail, teacherEmail));
+        if (!teacher) {
+            console.log("Teacher not found");
+            console.log({
+                teacherEmail,
+            });
+            // throw new Error("Teacher not found");
+            continue;
+        }
+
+        const slot = slots.find(
+            (slot) => slot.day === Number(day) && slot.number === Number(slotNumber),
+        );
+
+        if (!slot) {
+            console.log("Slot not found");
+            console.log({
+                day,
+                slotNumber,
+            });
+            // throw new Error("Slot not found");
+            continue;
+        }
+
+        const classroom = classrooms.find((classroom) =>
+            areEqual(classroom.classroomName, classroomName),
+        );
+
+        if (!classroom) {
+            console.log("Classroom not found");
+            console.log({
+                classroomName,
+            });
+            // throw new Error("Classroom not found");
+            continue;
+        }
+
+        const subject = subjects.find(
+            (subject) =>
+                areEqual(subject.subjectName, subjectName) &&
+                subject.DepartmentId === subdivision.Division?.Department?.id,
+        );
+
+        if (!subject) continue;
+
+        const slotData = slotDatas.find(
+            (slotData) =>
+                slotData.TeacherId === teacher.id &&
+                slotData.SubjectId === subject.id &&
+                slotData.SlotId === slot.id,
+        );
+
+        if (!slotData) {
+            console.log("SlotData not found");
+            console.log({
+                subdivisionId: subdivision.Division?.Department?.Batch?.id,
+                TeacherId: teacher.id,
+                SlotId: slot.id,
+            });
+            // throw new Error("SlotData not found");
+            continue;
+        }
+
+        slotDataSubdivisionsCreate.push({
+            SlotDataId: slotData.id,
+            SubdivisionId: subdivision.id,
+        });
+
+        slotDataClassesCreate.push({
+            SlotDataId: slotData.id,
+            ClassroomId: classroom.id,
+        });
+    }
+    slotDataClassesCreate = removeDuplicates(slotDataClassesCreate);
+    slotDataSubdivisionsCreate = removeDuplicates(slotDataSubdivisionsCreate);
+    await SlotDataClasses.bulkCreate(slotDataClassesCreate);
+    await SlotDataSubdivisions.bulkCreate(slotDataSubdivisionsCreate);
 }
 
 export {

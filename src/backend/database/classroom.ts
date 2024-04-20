@@ -16,8 +16,8 @@ class Classroom extends Model<InferAttributes<Classroom>, InferCreationAttribute
     public declare id: CreationOptional<number>;
     public declare classroomName: string;
     public declare isLab: boolean;
-    public declare AcademicYearId: ForeignKey<AcademicYear>;
-    public declare SlotDataClasses: ForeignKey<SlotDataClasses[]>;
+    public declare AcademicYearId: ForeignKey<number>;
+    public declare SlotDataClasses?: ForeignKey<SlotDataClasses[]>;
 }
 
 Classroom.init(

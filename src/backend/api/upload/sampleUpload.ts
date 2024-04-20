@@ -9,7 +9,7 @@ import {
 import sequelize from "../../database/sequelize";
 import { AcademicYear } from "../../database";
 
-    async function sampleDataUpload({syncDatabase} = {syncDatabase: true}) {
+async function sampleDataUpload({ syncDatabase } = { syncDatabase: true }) {
     if (syncDatabase) {
         await sequelize
             .query("SET FOREIGN_KEY_CHECKS = 0")
@@ -17,12 +17,14 @@ import { AcademicYear } from "../../database";
             .then(() => sequelize.query("SET FOREIGN_KEY_CHECKS = 1"))
             .then(() => console.log("Database synchronised."));
     }
-    const [academicYear1, isCreatedAcademicYear1] = await AcademicYear.findOrCreate({
-        where: { year: 2024, name: "ODD" },
+    const academicYear1 = await AcademicYear.create({
+        year: 2024,
+        name: "ODD",
     });
 
-    const [academicYear2, isCreatedAcademicYear2] = await AcademicYear.findOrCreate({
-        where: { year: 2024, name: "EVEN" },
+    const academicYear2 = await AcademicYear.create({
+        year: 2024,
+        name: "EVEN",
     });
 
     /**

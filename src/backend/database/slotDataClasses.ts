@@ -19,7 +19,7 @@ class SlotDataClasses extends Model<
     public declare id: CreationOptional<number>;
     public declare SlotDataId: ForeignKey<number>;
     public declare ClassroomId: ForeignKey<number>;
-    public declare Classroom: ForeignKey<Classroom>;
+    public declare Classroom?: ForeignKey<Classroom>;
 }
 
 SlotDataClasses.init(

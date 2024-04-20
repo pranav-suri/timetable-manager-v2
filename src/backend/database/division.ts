@@ -1,3 +1,4 @@
+import Department from "./department";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -14,6 +15,7 @@ class Division extends Model<InferAttributes<Division>, InferCreationAttributes<
     public declare id: CreationOptional<number>;
     public declare divisionName: string;
     public declare DepartmentId: ForeignKey<number>;
+    public declare Department?: ForeignKey<Department>;
 }
 
 Division.init(

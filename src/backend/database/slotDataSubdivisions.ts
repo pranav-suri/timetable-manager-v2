@@ -20,8 +20,8 @@ class SlotDataSubdivisions extends Model<
     public declare id: CreationOptional<number>;
     public declare SlotDataId: ForeignKey<number>;
     public declare SubdivisionId: ForeignKey<number>;
-    public declare SlotData: ForeignKey<SlotDatas>;
-    public declare Subdivision: ForeignKey<Subdivision>;
+    public declare SlotData?: ForeignKey<SlotDatas>;
+    public declare Subdivision?: ForeignKey<Subdivision>;
 }
 
 SlotDataSubdivisions.init(

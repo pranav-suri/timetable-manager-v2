@@ -18,7 +18,7 @@ class Subject extends Model<InferAttributes<Subject>, InferCreationAttributes<Su
     public declare isLab: boolean;
     public declare DepartmentId: ForeignKey<number>;
     public declare GroupId: ForeignKey<number>;
-    public declare Group: ForeignKey<Group>;
+    public declare Group?: ForeignKey<Group>;
 }
 
 Subject.init(

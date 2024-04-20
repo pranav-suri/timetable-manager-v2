@@ -17,7 +17,7 @@ class Teacher extends Model<InferAttributes<Teacher>, InferCreationAttributes<Te
     public declare teacherName: string;
     public declare teacherEmail: string;
     public declare AcademicYearId: ForeignKey<number>;
-    public declare SlotDatas: ForeignKey<SlotDatas[]>;
+    public declare SlotDatas?: ForeignKey<SlotDatas[]>;
 }
 
 Teacher.init(

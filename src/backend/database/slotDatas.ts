@@ -18,10 +18,10 @@ class SlotDatas extends Model<InferAttributes<SlotDatas>, InferCreationAttribute
     public declare TeacherId: ForeignKey<number | null>;
     public declare SubjectId: ForeignKey<number>;
     public declare SlotId: ForeignKey<number>;
-    public declare Subject: ForeignKey<Subject>;
-    public declare Teacher?: ForeignKey<Teacher | null>;
-    public declare SlotDataSubdivisions: ForeignKey<SlotDataSubdivisions[]>;
-    public declare SlotDataClasses: ForeignKey<SlotDataClasses[]>;
+    public declare Subject?: ForeignKey<Subject>;
+    public declare Teacher?: ForeignKey<Teacher>;
+    public declare SlotDataSubdivisions?: ForeignKey<SlotDataSubdivisions[]>;
+    public declare SlotDataClasses?: ForeignKey<SlotDataClasses[]>;
 }
 
 SlotDatas.init(
