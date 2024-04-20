@@ -62,7 +62,7 @@ async function teacherValidator(slotId: number, timetableType: TimetableType, se
         ],
     });
     // Only contains teachers in more than one slotData of a slot.
-    const teacherCollisions = teachers.filter((teacher) => teacher.SlotDatas.length > 1);
+    const teacherCollisions = teachers.filter((teacher) => teacher.SlotDatas?.length! > 1);
     return { teacherCollisions };
 }
 
@@ -122,7 +122,7 @@ async function classroomValidator(slotId: number, timetableType: TimetableType, 
         ],
     });
     const classroomCollisions = classrooms.filter(
-        (classroom) => classroom.SlotDataClasses.length > 1,
+        (classroom) => classroom.SlotDataClasses?.length! > 1,
     );
     return { classroomCollisions };
 }
@@ -198,22 +198,22 @@ async function subdivisionValidator(
 
     // Only contains subdivisions in more than one slotData of a slot.
     const possibleSubdivCollisions = subdivisions.filter(
-        (subdivision) => subdivision.SlotDataSubdivisions.length > 1,
+        (subdivision) => subdivision.SlotDataSubdivisions?.length! > 1,
     );
 
     // Logic without refactoring
     const subdivCollisions = possibleSubdivCollisions.filter((subdivision) => {
         const groupIdsSet = new Set(
-            subdivision.SlotDataSubdivisions.map((slotDataSubdivision) => {
-                return slotDataSubdivision.SlotData.Subject.Group.id;
+            subdivision.SlotDataSubdivisions?.map((slotDataSubdivision) => {
+                return slotDataSubdivision.SlotData?.Subject?.Group?.id!;
             }),
         );
         // Collision if groupIds are different.
         if (groupIdsSet.size > 1) return true;
 
         // Collision if all groupIds are the same but allowSimultaneous is false.
-        if (!subdivision.SlotDataSubdivisions[0].SlotData.Subject.Group.allowSimultaneous)
-            return true;
+        const slotDataSubdivs = subdivision.SlotDataSubdivisions!;
+        if (!slotDataSubdivs[0].SlotData?.Subject?.Group?.allowSimultaneous!) return true;
     });
     return { subdivisionCollisions: subdivCollisions };
 

@@ -14,6 +14,7 @@ import {
     Subject,
     Teacher,
 } from "../database";
+import { TimetableResponse } from "../api/routes/responseTypes";
 
 async function getTimetableBySubdivision(subdivisionId: number) {
     const slots = await Slot.findAll({
@@ -90,10 +91,7 @@ async function getTimetableBySubdivision(subdivisionId: number) {
         },
     });
     return {
-        slots,
-        slotDatas,
-        slotDataClasses,
-        slotDataSubdivisions,
+        slotsWithData: slotRefactor(slots, slotDatas, slotDataClasses, slotDataSubdivisions),
         classrooms,
         subjects,
         teachers,
@@ -103,6 +101,7 @@ async function getTimetableBySubdivision(subdivisionId: number) {
         batches,
     };
 }
+
 
 async function getTimetableByDivision(divisionId: number) {
     const slots = await Slot.findAll({
@@ -176,10 +175,7 @@ async function getTimetableByDivision(divisionId: number) {
         },
     });
     return {
-        slots,
-        slotDatas,
-        slotDataClasses,
-        slotDataSubdivisions,
+        slotsWithData: slotRefactor(slots, slotDatas, slotDataClasses, slotDataSubdivisions),
         classrooms,
         subjects,
         teachers,
@@ -256,10 +252,7 @@ async function getTimetableByTeacher(teacherId: number) {
         },
     });
     return {
-        slots,
-        slotDatas,
-        slotDataClasses,
-        slotDataSubdivisions,
+        slotsWithData: slotRefactor(slots, slotDatas, slotDataClasses, slotDataSubdivisions),
         classrooms,
         subjects,
         teachers,
@@ -271,6 +264,9 @@ async function getTimetableByTeacher(teacherId: number) {
 }
 
 async function getTimetableByClassroom(classroomId: number) {
+    const classroom = await Classroom.findByPk(classroomId);
+    if (!classroom) throw new Error(`Classroom with id ${classroomId} not found.`);
+    const classrooms = [classroom];
     const slots = await Slot.findAll({
         order: [
             ["day", "ASC"],
@@ -304,7 +300,6 @@ async function getTimetableByClassroom(classroomId: number) {
             id: subjectIds,
         },
     });
-    const classrooms = [await Classroom.findByPk(classroomId)];
     const slotDataSubdivisions = await SlotDataSubdivisions.findAll({
         where: {
             SlotDataId: slotDataIds,
@@ -338,10 +333,7 @@ async function getTimetableByClassroom(classroomId: number) {
     });
 
     return {
-        slots,
-        slotDatas,
-        slotDataClasses,
-        slotDataSubdivisions,
+        slotsWithData: slotRefactor(slots, slotDatas, slotDataClasses, slotDataSubdivisions),
         classrooms,
         subjects,
         teachers,
@@ -352,18 +344,57 @@ async function getTimetableByClassroom(classroomId: number) {
     };
 }
 
-async function getTimetable(
-    searchId: number,
-    searchBy: "subdivision" | "teacher" | "classroom" | "division",
+function slotRefactor(
+    slots: Slot[],
+    slotDatas: SlotDatas[],
+    slotDataClasses: SlotDataClasses[],
+    slotDataSubdivisions: SlotDataSubdivisions[],
 ) {
+    const slotRefactored = slots.map((slot) => {
+        const slotDatasFiltered = slotDatas.filter((slotData) => slotData.SlotId === slot.id);
+        const slotDatasRefactored = slotDatasFiltered.map((slotData) => {
+            const subjectId = slotData.SubjectId as number;
+            const teacherId = slotData.TeacherId as number | null;
+            const slotDataClass = slotDataClasses.filter(
+                (slotDataClass) => slotDataClass.SlotDataId === slotData.id,
+            );
+            const classroomIds = slotDataClass.map((slotDataClass) => slotDataClass.ClassroomId) as number[];
+            const slotDataSubdivision = slotDataSubdivisions.filter(
+                (slotDataSubdivision) => slotDataSubdivision.SlotDataId === slotData.id,
+            );
+            const subdivisionIds = slotDataSubdivision.map(
+                (slotDataSubdivision) => slotDataSubdivision.SubdivisionId,
+            ) as number[];
+            return {
+                slotDataId: slotData.id as number,
+                teacherId,
+                subjectId,
+                classroomIds,
+                subdivisionIds,
+            };
+        });
+        return {
+            slotId: slot.id as number,
+            day: slot.day,
+            number: slot.number,
+            slotDatas: slotDatasRefactored,
+        };
+    });
+    return slotRefactored;
+}
+
+async function getTimetable (
+    searchId: number,
+    searchBy: "subdivisions" | "teachers" | "classrooms" | "divisions",
+)  {
     switch (searchBy) {
-        case "division":
+        case "divisions":
             return await getTimetableByDivision(searchId);
-        case "subdivision":
+        case "subdivisions":
             return await getTimetableBySubdivision(searchId);
-        case "classroom":
+        case "classrooms":
             return await getTimetableByClassroom(searchId);
-        case "teacher":
+        case "teachers":
             return await getTimetableByTeacher(searchId);
         default:
             throw new Error(`Unhandled case in getTimetable function. ${searchBy}`);
