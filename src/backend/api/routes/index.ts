@@ -2,8 +2,10 @@ import getTables from "./getTables";
 import available from "./available";
 import editing from "./editing";
 import validate from "./validate";
+import addCsv from "./addCsv";
 import Elysia from "elysia";
 import cors from "@elysiajs/cors";
+
 import { swagger } from "@elysiajs/swagger";
 import Logger from "../../../utils/logging";
 
@@ -17,6 +19,7 @@ const app = new Elysia()
     .use(available)
     .use(editing)
     .use(validate)
+    .use(addCsv)
     .onError((ctx) => {
         const errorResponse = JSON.stringify({ message: ctx.error.toString(), ...ctx }, null, 2);
 
