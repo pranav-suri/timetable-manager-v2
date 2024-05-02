@@ -1,6 +1,5 @@
 import { Elysia } from "elysia";
 import { t } from "elysia";
-import * as nanoid from "nanoid";
 import {
     uploadBatchAndSubdivsionData,
     uploadClassroomData,
@@ -12,18 +11,18 @@ const baseDir = "/";
 const app = new Elysia({ prefix: "/csv" })
     .post(
         "/subjectAndTeachers",
-        async ({body}) => {
-            // console.log(body);
-            // console.log(body.academicYearId);
-
+        async ({ body }) => {
             uploadSubjectAndTeacherData(await body.file.text(), body.academicYearId);
-            // console.log(await body.file.text())
         },
         {
             body: t.Object({
                 file: t.File(),
                 academicYearId: t.Numeric(),
             }),
+            detail: {
+                summary: "Uploading subject and teachers csv",
+                tags: ["CSV"],
+            },
         },
     )
     .post(
@@ -39,6 +38,10 @@ const app = new Elysia({ prefix: "/csv" })
                 file: t.File(),
                 academicYearId: t.Numeric(),
             }),
+            detail: {
+                summary: "Uploading classroom csv",
+                tags: ["CSV"],
+            },
         },
     )
     .post(
@@ -56,6 +59,10 @@ const app = new Elysia({ prefix: "/csv" })
                 file: t.File(),
                 academicYearId: t.Numeric(),
             }),
+            detail: {
+                summary: "Uploading batch and subdivisions csv",
+                tags: ["CSV"],
+            },
         },
     )
     .listen(3000);
