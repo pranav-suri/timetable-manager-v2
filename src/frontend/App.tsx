@@ -8,7 +8,6 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./App.css";
-import { PersistentDrawerRight } from "./Components/Sidebar/DrawerPage";
 import TimetableNewPage from "./Pages/TimetableNewPage";
 
 export default function App() {
@@ -19,7 +18,6 @@ export default function App() {
                 <Route path="pranavTT" element={<TimetableNewPage />} />
                 <Route path="/new" element={<Timetable />} />
                 <Route path="/" element={<TimetableNewPage />} />
-                <Route path="drawer" element={<PersistentDrawerRight />} />
             </Routes>
         </Router>
     );
