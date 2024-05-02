@@ -1,31 +1,20 @@
 import { SlotDataClasses, SlotDataSubdivisions, SlotDatas } from "../database";
+import addSlotData from "./addSlotData";
 import { addSlotDataClassesAndSubdivs } from "./addSlotDataClassesAndSubdivs";
+import deleteSlotData from "./deleteSlotData";
 
 async function updateSlotData(
-    slotDataId: number,
+    slotDataId: number | null,
     slotId: number,
     subjectId: number,
-    teacherId?: number | null,
-    subdivisionIds?: number[],
-    classroomIds?: number[],
+    teacherId: number | null,
+    subdivisionIds: number[],
+    classroomIds: number[],
 ) {
-    if (!teacherId) teacherId = null;
-    await SlotDatas.update(
-        { SlotId: slotId, SubjectId: subjectId, TeacherId: teacherId },
-        { where: { id: slotDataId } },
-    );
-    await SlotDataClasses.destroy({
-        where: {
-            SlotDataId: slotDataId,
-        },
-    });
-    await SlotDataSubdivisions.destroy({
-        where: {
-            SlotDataId: slotDataId,
-        },
-    });
-
-    await addSlotDataClassesAndSubdivs(slotDataId, subdivisionIds, classroomIds);
+    if (slotDataId) 
+        await deleteSlotData(slotDataId);
+    
+    await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
 }
 
 export default updateSlotData;

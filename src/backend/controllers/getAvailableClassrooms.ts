@@ -1,9 +1,10 @@
 import { Classroom, SlotDatas, SlotDataClasses, Subject, Teacher } from "../database";
+import getAcademicYearId from "./getAcademicYearId";
 //! Fix me
 async function getAvailableClassrooms(slotId: number, subjectId: number) {
     // const testP = await Subject.findByPk(subjectId);
     const labsOrClasses = await Classroom.findAll({
-        where: { isLab: (await Subject.findByPk(subjectId))?.isLab },
+        where: { isLab: (await Subject.findByPk(subjectId))?.isLab, AcademicYearId: await getAcademicYearId("slot", slotId) },
     });
 
     const slotDatas = await SlotDatas.findAll({

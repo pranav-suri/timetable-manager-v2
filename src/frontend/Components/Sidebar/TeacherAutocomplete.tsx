@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { TeacherResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
@@ -8,38 +8,48 @@ import { SubjectAutocomplete } from "./SubjectAutocomplete";
 type Teacher = TeacherResponse["teachers"][0];
 
 interface TeacherAutocompleteProps {
-    slotData?: TimetableResponse["timetable"]["slots"][0]["SlotDatas"][0] | null;
+    slotDatas: TimetableResponse["timetable"]["slots"][0]["SlotDatas"];
+    slotDataIndex: number;
+    updateTeacher: (teacher: Teacher | null, slotDataIndex: number) => void;
 }
 
-export function TeacherAutocomplete({ slotData }: TeacherAutocompleteProps) {
-    const currentTeacher = slotData?.Teacher;
-    const subjectId = slotData?.SubjectId;
-    const slotId = slotData?.SlotId;
+export function TeacherAutocomplete({
+    slotDatas,
+    slotDataIndex,
+    updateTeacher,
+}: TeacherAutocompleteProps) {
+    const slotData = slotDatas![slotDataIndex];
+    const currentTeacher = slotData.Teacher;
+    const subjectId = slotData.Subject!.id;
+    const slotId = slotData.SlotId;
     const [inputValue, setInputValue] = React.useState("");
     const [value, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(
         currentTeacher ?? null,
     );
-    const [subjectTeachersData, setAllTeacherData] = React.useState<TeacherResponse | null>(null);
-    React.useEffect(() => {
-        if (!subjectId || !slotId) return;
+
+    const [availableTeachersData, setAvailableTeachersData] =
+        React.useState<TeacherResponse | null>(null);
+    
+    useEffect(() => {
+        setValue(currentTeacher ?? null);
         fetchAndSet(
-            setAllTeacherData,
+            setAvailableTeachersData,
             api.available.teachers.get({ query: { subjectId, slotId } }),
         );
-    }, []);
-    
-    if (!slotData)
-        return <Autocomplete disabled options={[]} renderInput={(params) => <TextField {...params} label="Teacher" />} />;
-    const subjectTeachers = subjectTeachersData?.teachers ?? [];
+    }, [slotData]);
+
+    const subjectTeachers = availableTeachersData?.teachers ?? [];
     const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
     return (
         <Autocomplete
+            sx={{ margin: "5px" }}
             disablePortal
             autoHighlight
             value={value}
             onChange={(event, newValue) => {
                 // TODO: Update teacher in database. Call parent function here
                 setValue(newValue);
+                updateTeacher(newValue, slotDataIndex);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT TEACHER ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

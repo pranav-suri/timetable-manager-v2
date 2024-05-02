@@ -1,35 +1,54 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import { SubdivisionResponse, SubjectResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
+import {
+    SubdivisionResponse,
+    SubjectResponse,
+    TimetableResponse,
+} from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
 import api from "../..";
 
 // Implementing SubdivisionAutocomplete
-type Subdivision = SubdivisionResponse["subdivisions"][0];
+type Subdivisions = SubdivisionResponse["subdivisions"];
 
 interface SubdivisionAutocompleteProps {
-    subdivisions: SubdivisionResponse["subdivisions"];
-    slotData?: TimetableResponse["timetable"]["slots"][0]["SlotDatas"][0];
+    subdivisions: Subdivisions;
+    slotDatas: TimetableResponse["timetable"]["slots"][0]["SlotDatas"];
+    slotDataIndex: number;
+    updateSubdivisions: (subdivisions: Subdivisions, slotDataIndex: number) => void;
 }
 
-export function SubdivisionAutocomplete({ subdivisions, slotData }: SubdivisionAutocompleteProps) {
-    const currentSubdivisions : Subdivision[] = [];
-    for (const slotDataSubdivision of slotData?.SlotDataSubdivisions ?? []) {
-        currentSubdivisions.push(slotDataSubdivision.Subdivision);
-    }
+export function SubdivisionAutocomplete({
+    subdivisions,
+    slotDatas,
+    slotDataIndex,
+    updateSubdivisions
+}: SubdivisionAutocompleteProps) {
+    const slotData = slotDatas![slotDataIndex];
+    const currentSubdivisions: Subdivisions = slotData.SlotDataSubdivisions!.map(
+        (slotDataSubdivision) => slotDataSubdivision.Subdivision!,
+    );
     const [inputValue, setInputValue] = React.useState("");
-    const [value, setValue] = React.useState<SubdivisionResponse["subdivisions"][0][]>(
+    const [value, setValue] = React.useState<Subdivisions>(
         currentSubdivisions ?? [],
     );
 
+    useEffect(() => {
+        setValue(currentSubdivisions);
+    }, [slotData]);
+
     return (
         <Autocomplete
+            disableCloseOnSelect
             multiple
+            limitTags={2}
+            sx={{margin: "5px"}}
             disablePortal
             autoHighlight
             value={value}
             onChange={(event, newValue) => {
                 setValue(newValue);
+                updateSubdivisions(newValue, slotDataIndex);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {
@@ -38,7 +57,7 @@ export function SubdivisionAutocomplete({ subdivisions, slotData }: SubdivisionA
             options={subdivisions}
             getOptionLabel={(option) => option.subdivisionName}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            renderInput={(params) => <TextField {...params} label="Subdivision" />}
+            renderInput={(params) => <TextField {...params} label="Subdivisions" />}
         />
     );
 }

@@ -1,7 +1,7 @@
 import { AcademicYear, Slot, SlotDataSubdivisions, SlotDatas, Subdivision } from "../database";
 
 async function getAcademicYearId(
-    searchBy: "subdivision" | "teacher" | "classroom" | "division",
+    searchBy: "subdivision" | "teacher" | "classroom" | "division" | "slot",
     searchId: number,
 ): Promise<AcademicYear["id"]> {
     let associationQuery = {};
@@ -55,6 +55,13 @@ async function getAcademicYearId(
         case "classroom":
             associationQuery = {
                 association: "Classroom",
+                where: { id: searchId },
+                required: true,
+            };
+            break;
+        case "slot":
+            associationQuery = {
+                association: "Slot",
                 where: { id: searchId },
                 required: true,
             };

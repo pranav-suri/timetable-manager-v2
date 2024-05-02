@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { TimetableDataContext } from "../../context/TimetableDataContext";
 
@@ -26,7 +26,7 @@ function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
         </React.Fragment>
     ));
 }
-function renderCell(slotDataItem: SlotDatas[0]) {
+function Cell({ slotDataItem }: { slotDataItem: SlotDatas[0] }) {
     return (
         <td>
             {/* Check if teacher exists */}
@@ -37,13 +37,15 @@ function renderCell(slotDataItem: SlotDatas[0]) {
         </td>
     );
 }
-function renderSlot(slotDatas: SlotDatas) {
+function Slot({ slotDatas }: { slotDatas: SlotDatas }) {
     return (
         <React.Fragment>
             <table>
                 <tbody>
-                    {slotDatas.map((dataItem, slotDataIndex: number) => (
-                        <tr key={slotDataIndex}>{renderCell(dataItem)}</tr>
+                    {slotDatas!.map((dataItem, slotDataIndex: number) => (
+                        <tr key={slotDataIndex}>
+                            <Cell slotDataItem={dataItem} />
+                        </tr>
                     ))}
                 </tbody>
             </table>
@@ -51,11 +53,20 @@ function renderSlot(slotDatas: SlotDatas) {
     );
 }
 
-function renderRow(
-    timetable: Timetable,
-    day: number | string,
-    slotNumbers: Set<Slots[0]["number"]>,
-) {
+function Row({
+    timetable,
+    day,
+    slotNumbers,
+    handleDrawerOpen,
+    setSelectedSlotIndex,
+}: {
+    timetable: Timetable;
+    day: number | string;
+    slotNumbers: Set<Slots[0]["number"]>;
+    handleDrawerOpen: () => void;
+    setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) {
+    const slots = timetable.slots;
     return (
         <tr>
             <th>{day}</th>
@@ -66,14 +77,22 @@ function renderRow(
                         (slot) => slot.day == day && slot.number == slotNumber,
                     );
                     return (
-                        <td key={slotNumber}>{renderSlot(timetable.slots[slotIndex].SlotDatas)}</td>
+                        <td
+                            key={slotNumber}
+                            onClick={() => {
+                                handleDrawerOpen();
+                                setSelectedSlotIndex(slotIndex);
+                            }}
+                        >
+                            <Slot slotDatas={timetable.slots[slotIndex].SlotDatas} />
+                        </td>
                     );
                 })}
         </tr>
     );
 }
 
-function renderHeaders(slotNumbers: Set<Slots[0]["number"]>) {
+function Headers({ slotNumbers }: { slotNumbers: Set<Slots[0]["number"]> }) {
     const headers = (
         <>
             <th key="days-slots-header">Days/Slots</th>
@@ -87,29 +106,41 @@ function renderHeaders(slotNumbers: Set<Slots[0]["number"]>) {
     return headers;
 }
 
-const timetableJson = await (await fetch("http://localhost:3000/divisions/2/timetable")).json();
-
-export default function OldTimetable() {
-    const data = useContext(TimetableDataContext) ?? timetableJson;
+export default function OldTimetable({
+    timetableData,
+    handleDrawerOpen,
+    setSelectedSlotIndex,
+}: {
+    timetableData: TimetableResponse | null;
+    handleDrawerOpen: () => void;
+    setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
+}) {
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
-
-    data.timetable.slots.forEach((slot) => {
+    if (!timetableData) return;
+    timetableData.timetable.slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
     });
     return (
         <table>
             <thead>
-                <tr>{renderHeaders(slotNumbers)}</tr>
+                <tr>
+                    <Headers slotNumbers={slotNumbers} />
+                </tr>
             </thead>
             <tbody>
                 {Array.from(slotDays)
                     .sort()
                     .map((day) => (
-                        <React.Fragment key={day}>
-                            {renderRow(data.timetable, day, slotNumbers)}
-                        </React.Fragment>
+                        <Row
+                            key={day}
+                            timetable={timetableData.timetable}
+                            day={day}
+                            slotNumbers={slotNumbers}
+                            handleDrawerOpen={handleDrawerOpen}
+                            setSelectedSlotIndex={setSelectedSlotIndex}
+                        />
                     ))}
             </tbody>
         </table>
