@@ -14,7 +14,7 @@ async function updateSlotData(
     if (slotDataId) 
         await deleteSlotData(slotDataId);
     
-    await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
+    return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
 }
 
 export default updateSlotData;

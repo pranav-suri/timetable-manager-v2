@@ -4,18 +4,28 @@ import { t } from "elysia";
 
 const app = new Elysia({ prefix: "/slotDatas" })
     .post(
-        "/",
+        "/update",
         async ({ body }) => {
-            const { slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
-            return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
+            const { slotDataId, slotId, subjectId, subdivisionIds, teacherId, classroomIds } = body;
+            return {
+                slotData: await updateSlotData(
+                    slotDataId,
+                    slotId,
+                    subjectId,
+                    teacherId,
+                    subdivisionIds,
+                    classroomIds,
+                ),
+            };
         },
         {
             body: t.Object({
+                slotDataId: t.Nullable(t.Numeric()),
                 slotId: t.Numeric(),
                 subjectId: t.Numeric(),
-                teacherId: t.Optional(t.Numeric()),
-                subdivisionIds: t.Optional(t.Array(t.Numeric())),
-                classroomIds: t.Optional(t.Array(t.Numeric())),
+                teacherId: t.Nullable(t.Numeric()),
+                subdivisionIds: t.Array(t.Numeric()),
+                classroomIds: t.Array(t.Numeric()),
             }),
             detail: {
                 summary: "Add slot data",
@@ -60,9 +70,9 @@ const app = new Elysia({ prefix: "/slotDatas" })
             body: t.Object({
                 slotId: t.Numeric(),
                 subjectId: t.Numeric(),
-                teacherId: t.Optional(t.Numeric()),
-                subdivisionIds: t.Optional(t.Array(t.Numeric())),
-                classroomIds: t.Optional(t.Array(t.Numeric())),
+                teacherId: t.Nullable(t.Numeric()),
+                subdivisionIds: t.Array(t.Numeric()),
+                classroomIds: t.Array(t.Numeric()),
             }),
             params: t.Object({
                 id: t.Numeric(),

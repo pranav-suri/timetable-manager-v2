@@ -5,33 +5,33 @@ import { TimetableDataContext } from "../../context/TimetableDataContext";
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
 type SlotDatas = Slots[0]["SlotDatas"];
-type SlotDataClasses = SlotDatas[0]["SlotDataClasses"];
-type SlotDataSubdivisions = SlotDatas[0]["SlotDataSubdivisions"];
+type SlotDataClasses = Exclude<SlotDatas, undefined>[0]["SlotDataClasses"];
+type SlotDataSubdivisions = Exclude<SlotDatas, undefined>[0]["SlotDataSubdivisions"];
 
 function printClasses(slotDataClasses: SlotDataClasses) {
-    return slotDataClasses.map((slotDataClass, slotDataClassIndex) => (
+    return slotDataClasses?.map((slotDataClass, slotDataClassIndex) => (
         <React.Fragment key={slotDataClassIndex}>
             {" "}
-            {slotDataClass.Classroom.classroomName}
+            {slotDataClass.Classroom?.classroomName}
             {","}
         </React.Fragment>
     ));
 }
 function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
-    return slotDataSubdivisions.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
+    return slotDataSubdivisions?.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
         <React.Fragment key={slotDataSubdivisionIndex}>
             {" "}
-            {slotDataSubdivision.Subdivision.subdivisionName}
+            {slotDataSubdivision.Subdivision?.subdivisionName}
             {","}
         </React.Fragment>
     ));
 }
-function Cell({ slotDataItem }: { slotDataItem: SlotDatas[0] }) {
+function Cell({ slotDataItem }: { slotDataItem: Exclude<SlotDatas, undefined>[0] }) {
     return (
         <td>
             {/* Check if teacher exists */}
             {slotDataItem.Teacher?.teacherName} <br />
-            {slotDataItem.Subject.subjectName} <br />
+            {slotDataItem.Subject?.subjectName} <br />
             {printSubdivisions(slotDataItem.SlotDataSubdivisions)} <br />
             {printClasses(slotDataItem.SlotDataClasses)}
         </td>

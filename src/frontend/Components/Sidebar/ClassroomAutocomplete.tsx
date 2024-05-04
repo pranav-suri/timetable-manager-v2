@@ -16,15 +16,17 @@ interface SubdivisionAutocompleteProps {
     slotDatas: TimetableResponse["timetable"]["slots"][0]["SlotDatas"];
     slotDataIndex: number;
     updateClassrooms: (classrooms: Classrooms, slotDataIndex: number) => void;
+    setUpdate: (update: boolean) => void;
 }
 
 export function ClassroomAutocomplete({
     slotDatas,
     slotDataIndex,
     updateClassrooms,
+    setUpdate,
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
-    const subjectId = slotData.SubjectId;
+    const subjectId = slotData.Subject!.id;
     const slotId = slotData.SlotId;
     const currentClassrooms: Classrooms = slotData.SlotDataClasses!.map(
         (slotDataClassroom) => slotDataClassroom.Classroom!,
@@ -35,6 +37,8 @@ export function ClassroomAutocomplete({
         React.useState<ClassroomResponse | null>(null);
 
     useEffect(() => {
+        
+        if (!slotData || !subjectId) return;
         setValue(currentClassrooms);
         fetchAndSet(
             setAvailableClassroomData,
@@ -56,6 +60,7 @@ export function ClassroomAutocomplete({
             onChange={(event, newValue) => {
                 setValue(newValue);
                 updateClassrooms(newValue, slotDataIndex);
+                setUpdate(true);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

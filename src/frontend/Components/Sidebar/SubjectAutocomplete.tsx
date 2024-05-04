@@ -10,14 +10,16 @@ interface SubjectAutocompleteProps {
     subjects: SubjectResponse["subjects"];
     slotDatas: TimetableResponse["timetable"]["slots"][0]["SlotDatas"];
     slotDataIndex: number;
-    updateSubject: (subject: Subject, slotDataIndex: number) => void;
+    updateSubject: (subject: Subject | null, slotDataIndex: number) => void;
+    setUpdate: (update: boolean) => void;
 }
 
 export function SubjectAutocomplete({
     subjects,
     slotDatas,
     slotDataIndex,
-    updateSubject
+    updateSubject,
+    setUpdate
 }: SubjectAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentSubject = slotData.Subject;
@@ -38,6 +40,7 @@ export function SubjectAutocomplete({
             onChange={(event, newValue) => {
                 setValue(newValue);
                 updateSubject(newValue, slotDataIndex);
+                setUpdate(true);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

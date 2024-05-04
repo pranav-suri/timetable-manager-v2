@@ -16,13 +16,15 @@ interface SubdivisionAutocompleteProps {
     slotDatas: TimetableResponse["timetable"]["slots"][0]["SlotDatas"];
     slotDataIndex: number;
     updateSubdivisions: (subdivisions: Subdivisions, slotDataIndex: number) => void;
+    setUpdate: (update: boolean) => void;
 }
 
 export function SubdivisionAutocomplete({
     subdivisions,
     slotDatas,
     slotDataIndex,
-    updateSubdivisions
+    updateSubdivisions,
+    setUpdate
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentSubdivisions: Subdivisions = slotData.SlotDataSubdivisions!.map(
@@ -49,6 +51,7 @@ export function SubdivisionAutocomplete({
             onChange={(event, newValue) => {
                 setValue(newValue);
                 updateSubdivisions(newValue, slotDataIndex);
+                setUpdate(true);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

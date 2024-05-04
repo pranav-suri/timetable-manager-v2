@@ -36,12 +36,13 @@ import {
 } from "../../backend/api/routes/responseTypes";
 import api from "../index";
 import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
+import { Draft as DraftObject } from "immer";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
 type SlotDatas = Slots[0]["SlotDatas"];
-type SlotDataClasses = SlotDatas[0]["SlotDataClasses"];
-type SlotDataSubdivisions = SlotDatas[0]["SlotDataSubdivisions"];
+type SlotDataClasses = Exclude<SlotDatas, undefined>[0]["SlotDataClasses"];
+type SlotDataSubdivisions = Exclude<SlotDatas, undefined>[0]["SlotDataSubdivisions"];
 
 const drawerwidth = 290;
 
@@ -77,7 +78,10 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "drawerState
         position: "relative",
     }),
 );
-
+export type SetTimtableType = (
+    f: TimetableResponse | ((draft: TimetableResponse | DraftObject<TimetableResponse> | null) => void) | null
+) => void;
+  
 export default function TimetableNewPage() {
     const [timetableData, setTimetable] = useImmer<TimetableResponse | null>(null);
     const [drawerState, setDrawerState] = useState(false);
@@ -111,6 +115,7 @@ export default function TimetableNewPage() {
                     setTimetable={setTimetable}
                     drawerwidth={drawerwidth}
                     handleDrawerClose={handleDrawerClose}
+                    setSelectedSlotIndex={setSelectedSlotIndex}
                     drawerState={drawerState}
                     selectedSlotIndex={selectedSlotIndex}
                     timetableData={timetableData}

@@ -24,6 +24,7 @@ import {
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { TimetableDataContext } from "../../context/TimetableDataContext";
 import { useImmer } from "use-immer";
+import { SetTimtableType } from "../../Pages/TimetableNewPage";
 
 interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
@@ -36,14 +37,14 @@ export default function OldNavBar({
 }: {
     drawerState: boolean;
     drawerwidth: number;
-    setTimetable: typeof useImmer<TimetableResponse | null>;
+    setTimetable: SetTimtableType;
 }) {
     const [timetableSelector, setTimetableSelector] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
     const fetchTimetable = (
-        setTimetable: React.Dispatch<React.SetStateAction<TimetableResponse | null>>,
+        setTimetable: SetTimtableType,
         url: string,
     ) => {
         fetch(url)
