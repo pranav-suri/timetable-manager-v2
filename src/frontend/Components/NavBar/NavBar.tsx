@@ -13,7 +13,6 @@ const NavBar = () => {
     // TODO: #7 @MatricalDefunkt Implement the ability to select an academic year, batch, division and thus a timetable
 
     return (
-        <SelectedValuesProvider>
             <AppBar position="fixed" sx={{ padding: "0.5rem" }}>
                 <Toolbar>
                     <AcademicYearButton />
@@ -25,7 +24,6 @@ const NavBar = () => {
                     <ViewButton />
                 </Toolbar>
             </AppBar>
-        </SelectedValuesProvider>
     );
 };
 

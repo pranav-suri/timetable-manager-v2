@@ -11,7 +11,7 @@ import {
     TimetableResponse,
     ClassroomResponse,
 } from "../../../backend/api/routes/responseTypes";
-import { fetchAndSet } from "../fetchAndSet";
+import { checkIfSlotDataExists } from "../fetchAndSet";
 import api from "../../index";
 import { TeacherAutocomplete } from "./TeacherAutocomplete";
 import { SubjectAutocomplete } from "./SubjectAutocomplete";
@@ -54,8 +54,6 @@ export function DrawerRight({
     timetableData: TimetableResponse | null;
 }) {
     const [update, setUpdate] = useState(false);
-    const [subjects, setSubjects] = useState<SubjectResponse>({ subjects: [] });
-    const [subdivisions, setSubdivisions] = useState<SubdivisionResponse>({ subdivisions: [] });
     const [slotDataIndexToUpdate, setSlotDataIndexToUpdate] = useState<number | null>(null);
 
     function updateSubject(subject: SubjectResponse["subjects"][0] | null, slotDataIndex: number) {
@@ -114,13 +112,13 @@ export function DrawerRight({
         const classroomIds = slotData.SlotDataClasses!.map(
             (slotDataClass) => slotDataClass.Classroom!.id,
         );
-        console.log("SlotId: ", slotId);
-        console.log("SlotDataId: ", slotDataId);
-        console.log("SubjectId: ", subjectId);
-        console.log("TeacherId: ", teacherId);
-        console.log("SubdivIds: : ", subdivisionIds);
-        console.log("ClassIds: ", classroomIds);
-        console.log("Rendered");
+        // console.log("SlotId: ", slotId);
+        // console.log("SlotDataId: ", slotDataId);
+        // console.log("SubjectId: ", subjectId);
+        // console.log("TeacherId: ", teacherId);
+        // console.log("SubdivIds: : ", subdivisionIds);
+        // console.log("ClassIds: ", classroomIds);
+        // console.log("Rendered");
 
         // if (!subjectId || !subdivisionIds.length) return;
 
@@ -145,18 +143,12 @@ export function DrawerRight({
 
     const slot = timetableData?.timetable?.slots[selectedSlotIndex!];
     const slotDatas =
-        slot?.SlotDatas?.filter((slotData) => slotData.Subject?.id) || ([] as SlotDatas);
+        slot?.SlotDatas?.filter(checkIfSlotDataExists) || ([] as SlotDatas);
     useEffect(() => {
         if (!update || slotDataIndexToUpdate == null) return;
         updateSlotData(slotDataIndexToUpdate);
         setUpdate(false);
     }, [slotDatas, update, slotDataIndexToUpdate]);
-
-    useEffect(() => {
-        // This has to be changed, department can divisionId must come from props or somewhere
-        fetchAndSet(setSubjects, api.departments({ id: 2 }).subjects.get());
-        fetchAndSet(setSubdivisions, api.divisions({ id: 2 }).subdivisions.get());
-    }, []);
 
     useEffect(() => {
         if (selectedSlotIndex == null || !slot) return;
@@ -215,7 +207,6 @@ export function DrawerRight({
             {slot.SlotDatas!.map((_, index) => (
                 <React.Fragment key={index}>
                     <SubjectAutocomplete
-                        subjects={subjects.subjects}
                         slotDatas={slot.SlotDatas}
                         slotDataIndex={index}
                         updateSubject={updateSubject}
@@ -239,7 +230,7 @@ export function DrawerRight({
                     <SubdivisionAutocomplete
                         slotDatas={slot.SlotDatas}
                         slotDataIndex={index}
-                        subdivisions={subdivisions.subdivisions}
+                        // subdivisions={subdivisions.subdivisions}
                         updateSubdivisions={updateSubdivisions}
                         setSlotDataIndexToUpdate={setSlotDataIndexToUpdate}
                         setUpdate={setUpdate}

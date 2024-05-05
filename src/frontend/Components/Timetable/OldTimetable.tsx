@@ -1,5 +1,6 @@
 import React from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
+import { checkIfSlotDataExists } from "../fetchAndSet";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -37,11 +38,12 @@ function Cell({ slotDataItem }: { slotDataItem: Exclude<SlotDatas, undefined>[0]
     );
 }
 function Slot({ slotDatas }: { slotDatas: SlotDatas }) {
+    const slotDatasFiltered = slotDatas!.filter(checkIfSlotDataExists);
     return (
         <React.Fragment>
             <table>
                 <tbody>
-                    {slotDatas!.map((dataItem, slotDataIndex: number) => (
+                    {slotDatasFiltered!.map((dataItem, slotDataIndex: number) => (
                         <tr key={slotDataIndex}>
                             <Cell slotDataItem={dataItem} />
                         </tr>

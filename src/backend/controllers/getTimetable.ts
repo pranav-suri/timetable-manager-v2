@@ -52,9 +52,10 @@ async function getTimetableBySubdivision(subdivisionId: number) {
         },
     });
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjectIdsFiltered = subjectIds.filter((subjectId) => subjectId) as ForeignKey<number[]>;
     const subjects = await Subject.findAll({
         where: {
-            id: subjectIds,
+            id: subjectIdsFiltered,
         },
     });
 
@@ -141,9 +142,10 @@ async function getTimetableByDivision(divisionId: number) {
     });
 
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjectIdsFiltered = subjectIds.filter((subjectId) => subjectId) as ForeignKey<number[]>;
     const subjects = await Subject.findAll({
         where: {
-            id: subjectIds,
+            id: subjectIdsFiltered,
         },
     });
 
@@ -201,9 +203,10 @@ async function getTimetableByTeacher(teacherId: number) {
     });
     const slotDataIds = slotDatas.map((slotData) => slotData.id);
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjectIdsFiltered = subjectIds.filter((subjectId) => subjectId) as ForeignKey<number[]>;
     const subjects = await Subject.findAll({
         where: {
-            id: subjectIds,
+            id: subjectIdsFiltered,
         },
     });
     const slotDataClasses = await SlotDataClasses.findAll({
@@ -292,9 +295,10 @@ async function getTimetableByClassroom(classroomId: number) {
         },
     });
     const subjectIds = slotDatas.map((slotData) => slotData.SubjectId);
+    const subjectIdsFiltered = subjectIds.filter((subjectId) => subjectId) as ForeignKey<number[]>;
     const subjects = await Subject.findAll({
         where: {
-            id: subjectIds,
+            id: subjectIdsFiltered,
         },
     });
     const slotDataSubdivisions = await SlotDataSubdivisions.findAll({

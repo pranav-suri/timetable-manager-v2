@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { getAvailableClassrooms, getAvailableTeachers } from "../../controllers";
+import { getAvailableClassrooms, getAvailableTeachers, getAvailableSubdivisions } from "../../controllers";
 
 const app = new Elysia({ prefix: "/available" })
     .get(
@@ -43,5 +43,18 @@ const app = new Elysia({ prefix: "/available" })
                 tags: ["Classrooms"],
             },
         },
-    );
+    )
+    .get("/subdivisions", async ({ query }) => {
+        const { slotId, divisionId } = query;
+        return { subdivisions: await getAvailableSubdivisions(slotId, divisionId) };
+    }, {
+        query: t.Object({
+            slotId: t.Numeric(),
+            divisionId: t.Numeric(),
+        }),
+        detail: {
+            summary: "Get available subdivisions",
+            tags: ["Subdivisions"],
+        },
+    });
 export default app;

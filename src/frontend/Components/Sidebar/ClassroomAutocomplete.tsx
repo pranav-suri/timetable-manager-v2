@@ -1,9 +1,6 @@
 import React, { Dispatch, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import {
-    ClassroomResponse,
-    TimetableResponse,
-} from "../../../backend/api/routes/responseTypes";
+import { ClassroomResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { edenFetch } from "../fetchAndSet";
 import api from "../..";
 
@@ -32,8 +29,8 @@ export function ClassroomAutocomplete({
         (slotDataClassroom) => slotDataClassroom.Classroom!,
     );
     const [inputValue, setInputValue] = useState("");
-    const [value, setValue] = useState<Classrooms>([]);
-    const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([]);
+    const [value, setValue] = useState<Classrooms>(currentClassrooms);
+    const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([...currentClassrooms]);
 
     useEffect(() => {
         if (!subjectId) return;
@@ -41,14 +38,14 @@ export function ClassroomAutocomplete({
         edenFetch<ClassroomResponse>(
             api.available.classrooms.get({ query: { subjectId, slotId } }),
         ).then((data) => {
-            const availableClassrooms = data.classrooms ?? [];
-            const allClassrooms = availableClassrooms.concat(currentClassrooms ?? []);
+            const availableClassrooms = data.classrooms;
+            const allClassrooms = availableClassrooms.concat(currentClassrooms);
             setAvailableClassroomData(allClassrooms);
             setValue(currentClassrooms);
         });
         // It is the only needed dependency, other dependencies are not needed
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [slotData]);
+    }, [slotDatas]);
 
     return (
         <Autocomplete

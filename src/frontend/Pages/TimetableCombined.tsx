@@ -6,6 +6,7 @@ import { Box } from "@mui/material";
 import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
 import { NavBar } from "../Components";
 import { TimetableDataContext } from "../context/TimetableDataContext";
+import { SelectedValuesProvider } from "../context/SelectedValuesContext";
 
 const drawerwidth = 300;
 
@@ -51,25 +52,27 @@ export default function TimetableCombined() {
     return (
         <>
             <Box sx={{ display: "flex" }}>
-                <NavBar />
+                <SelectedValuesProvider>
+                    <NavBar />
 
-                <Main drawerState={drawerState} drawerwidth={drawerwidth}>
-                    <DrawerHeader />
-                    <OldTimetable
-                        timetableData={timetable.available ? timetable.timetableData : null}
-                        handleDrawerOpen={handleDrawerOpen}
+                    <Main drawerState={drawerState} drawerwidth={drawerwidth}>
+                        <DrawerHeader />
+                        <OldTimetable
+                            timetableData={timetable.available ? timetable.timetableData : null}
+                            handleDrawerOpen={handleDrawerOpen}
+                            setSelectedSlotIndex={setSelectedSlotIndex}
+                        />
+                    </Main>
+                    <DrawerRight
+                        setTimetable={setTimetable}
+                        drawerwidth={drawerwidth}
+                        handleDrawerClose={handleDrawerClose}
                         setSelectedSlotIndex={setSelectedSlotIndex}
+                        drawerState={drawerState}
+                        selectedSlotIndex={selectedSlotIndex}
+                        timetableData={timetable.available ? timetable.timetableData : null}
                     />
-                </Main>
-                <DrawerRight
-                    setTimetable={setTimetable}
-                    drawerwidth={drawerwidth}
-                    handleDrawerClose={handleDrawerClose}
-                    setSelectedSlotIndex={setSelectedSlotIndex}
-                    drawerState={drawerState}
-                    selectedSlotIndex={selectedSlotIndex}
-                    timetableData={timetable.available ? timetable.timetableData : null}
-                />
+                </SelectedValuesProvider>
             </Box>
         </>
     );

@@ -1,6 +1,8 @@
 import React from "react";
 import { EdenTreaty } from "@elysiajs/eden/treaty";
+import { SlotDatas } from "../../backend/database";
 type SetFunction<ResponseType> = React.Dispatch<React.SetStateAction<ResponseType>>;
+
 export async function fetchAndSet<ResponseType>(
     setFunction: SetFunction<ResponseType>,
     responsePromise: Promise<Omit<EdenTreaty.DetailedResponse, "headers">>,
@@ -40,4 +42,8 @@ export async function edenFetch<ResponseType>(
                 throw error;
         }
     return data as ResponseType;
+}
+
+export function checkIfSlotDataExists(slotData: SlotDatas[][0]) {
+    return slotData.Subject?.id || slotData.Teacher?.id || slotData.SlotDataClasses?.length || slotData.SlotDataSubdivisions?.length;
 }

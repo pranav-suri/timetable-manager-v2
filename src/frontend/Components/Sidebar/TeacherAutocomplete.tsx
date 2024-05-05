@@ -22,14 +22,13 @@ export function TeacherAutocomplete({
     setSlotDataIndexToUpdate,
 }: TeacherAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
-    const currentTeacher = slotData.Teacher;
+    const currentTeacher = slotData.Teacher ?? null;
     const subjectId = slotData.Subject?.id;
     const slotId = slotData.SlotId;
     const [inputValue, setInputValue] = React.useState("");
-    const [value, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(null);
-
+    const [value, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(currentTeacher);
     const [availableTeachersData, setAvailableTeachersData] = useState<TeacherResponse["teachers"]>(
-        [],
+        currentTeacher ? [currentTeacher] : [],
     );
 
     useEffect(() => {
@@ -44,7 +43,7 @@ export function TeacherAutocomplete({
         });
         // It is the only needed dependency, other dependencies are not needed
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [slotData]);
+    }, [slotDatas]);
 
     return (
         <Autocomplete

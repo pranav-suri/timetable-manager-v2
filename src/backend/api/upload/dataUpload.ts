@@ -17,8 +17,6 @@ import {
 } from "../../database";
 import Papa from "papaparse";
 
-// FIXME: #6 @pranav-suri Normalize variable names according to eslint rules
-
 function removeDuplicates<T>(arr: T[]): T[] {
     const uniqueArray = arr.filter((value, index) => {
         const _value = JSON.stringify(value);
