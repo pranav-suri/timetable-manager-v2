@@ -41,15 +41,16 @@ export function SubdivisionAutocomplete({
     // }, [currentSubdivisions]);
 
     useEffect(() => {
-        // console.log(selectedValues)
+        setValue(currentSubdivisions);
+        setAvailableSubdivisionData([...currentSubdivisions]);
         if (!divisionId) return;
         edenFetch<SubdivisionResponse>(
             api.available.subdivisions.get({ query: { slotId, divisionId } }),
         ).then((data) => {
             const subdivisions = data.subdivisions;
             const allSubdivisions = subdivisions.concat(currentSubdivisions ?? []);
-            setAvailableSubdivisionData(allSubdivisions);
             setValue(currentSubdivisions);
+            setAvailableSubdivisionData(allSubdivisions);
         });
         // It is the only needed dependency, other dependencies are not needed
         // eslint-disable-next-line react-hooks/exhaustive-deps

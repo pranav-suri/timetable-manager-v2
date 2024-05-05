@@ -32,14 +32,16 @@ export function TeacherAutocomplete({
     );
 
     useEffect(() => {
+        setValue(currentTeacher);
+        setAvailableTeachersData(currentTeacher ? [currentTeacher] : []);
         if (!subjectId) return;
         edenFetch<TeacherResponse>(
             api.available.teachers.get({ query: { subjectId, slotId } }),
         ).then((data) => {
             const subjectTeachers = data.teachers ?? [];
             const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
+            setValue(currentTeacher);
             setAvailableTeachersData(allTeachers);
-            setValue(currentTeacher ?? null);
         });
         // It is the only needed dependency, other dependencies are not needed
         // eslint-disable-next-line react-hooks/exhaustive-deps

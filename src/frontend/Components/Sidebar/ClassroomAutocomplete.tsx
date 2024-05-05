@@ -30,18 +30,21 @@ export function ClassroomAutocomplete({
     );
     const [inputValue, setInputValue] = useState("");
     const [value, setValue] = useState<Classrooms>(currentClassrooms);
-    const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([...currentClassrooms]);
+    const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([
+        ...currentClassrooms,
+    ]);
 
     useEffect(() => {
+        setValue(currentClassrooms);
+        setAvailableClassroomData([...currentClassrooms]);
         if (!subjectId) return;
-
         edenFetch<ClassroomResponse>(
             api.available.classrooms.get({ query: { subjectId, slotId } }),
         ).then((data) => {
             const availableClassrooms = data.classrooms;
             const allClassrooms = availableClassrooms.concat(currentClassrooms);
-            setAvailableClassroomData(allClassrooms);
             setValue(currentClassrooms);
+            setAvailableClassroomData(allClassrooms);
         });
         // It is the only needed dependency, other dependencies are not needed
         // eslint-disable-next-line react-hooks/exhaustive-deps
