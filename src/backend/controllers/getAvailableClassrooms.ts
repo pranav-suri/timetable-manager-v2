@@ -1,4 +1,4 @@
-import { Classroom, SlotDatas, SlotDataClasses, Subject, Teacher } from "../database";
+import { Classroom, SlotDatas, SlotDataClasses, Subject } from "../database";
 import getAcademicYearId from "./getAcademicYearId";
 //! Fix me
 async function getAvailableClassrooms(slotId: number, subjectId: number) {

@@ -1,6 +1,6 @@
 import { Box, FormControl, MenuItem, TextField } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-import { AcademicYearResponse, BatchResponse } from "../../../backend/api/routes/responseTypes";
+import { BatchResponse } from "../../../backend/api/routes/responseTypes";
 import api from "../..";
 import { SelectedValuesContext } from "../../context/SelectedValuesContext";
 

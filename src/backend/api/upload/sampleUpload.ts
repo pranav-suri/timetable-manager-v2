@@ -3,7 +3,6 @@ import {
     uploadClassroomData,
     uploadTestSlotData,
     uploadSubjectAndTeacherData,
-    uploadUnavailabilityData,
     uploadTimetableData,
 } from "./dataUpload";
 import sequelize from "../../database/sequelize";

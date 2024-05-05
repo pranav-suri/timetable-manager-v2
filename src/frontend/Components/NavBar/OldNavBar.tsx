@@ -55,7 +55,6 @@ export default function OldNavBar({
 
     const AppBar = MuiAppBar;
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const options: { label: string; url: string }[] = [
         { label: "Division", url: "http://localhost:3000/divisions/2/timetable" },
         { label: "Teacher", url: "http://localhost:3000/teachers/1/timetable" },
@@ -85,7 +84,9 @@ export default function OldNavBar({
 
     useEffect(() => {
         fetchTimetable(setTimetable, options[selectedIndex].url);
-    }, [options, selectedIndex, setTimetable]);
+        // Putting options as dependency causes infinite loop
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedIndex, setTimetable]);
 
     return (
         // <AppBar position="fixed" color="primary" open={drawerState}>

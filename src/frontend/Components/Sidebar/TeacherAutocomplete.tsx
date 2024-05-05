@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { TeacherResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
-import { fetchAndSet } from "../fetchAndSet";
+import { edenFetch } from "../fetchAndSet";
 import api from "../../";
 
 type Teacher = TeacherResponse["teachers"][0];
@@ -24,24 +24,25 @@ export function TeacherAutocomplete({
     const subjectId = slotData.Subject?.id;
     const slotId = slotData.SlotId;
     const [inputValue, setInputValue] = React.useState("");
-    const [value, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(
-        currentTeacher ?? null,
+    const [value, setValue] = React.useState<TeacherResponse["teachers"][0] | null>(null);
+
+    const [availableTeachersData, setAvailableTeachersData] = useState<TeacherResponse["teachers"]>(
+        [],
     );
 
-    const [availableTeachersData, setAvailableTeachersData] =
-        React.useState<TeacherResponse | null>(null);
-
     useEffect(() => {
-        if (!slotData || !subjectId) return;
-        setValue(currentTeacher ?? null);
-        fetchAndSet(
-            setAvailableTeachersData,
+        if (!subjectId) return;
+        edenFetch<TeacherResponse>(
             api.available.teachers.get({ query: { subjectId, slotId } }),
-        );
-    }, [currentTeacher, slotData, slotId, subjectId]);
+        ).then((data) => {
+            console.log(data);
+            const subjectTeachers = data.teachers ?? [];
+            const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
+            setAvailableTeachersData(allTeachers);
+            setValue(currentTeacher ?? null);
+        });
+    }, [subjectId, slotId, currentTeacher]);
 
-    const subjectTeachers = availableTeachersData?.teachers ?? [];
-    const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
     return (
         <Autocomplete
             sx={{ margin: "5px" }}
@@ -58,7 +59,7 @@ export function TeacherAutocomplete({
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
             }}
-            options={allTeachers}
+            options={availableTeachersData}
             getOptionLabel={(option) => option.teacherName}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => <TextField {...params} label="Teacher" />}

@@ -29,7 +29,7 @@ export function SubdivisionAutocomplete({
 
     useEffect(() => {
         setValue(currentSubdivisions);
-    }, [currentSubdivisions, slotData]);
+    }, [currentSubdivisions]);
 
     return (
         <Autocomplete

@@ -1,6 +1,6 @@
 import { Box, FormControl, MenuItem, TextField } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-import { DepartmentResponse, DivisionResponse } from "../../../backend/api/routes/responseTypes";
+import { DepartmentResponse } from "../../../backend/api/routes/responseTypes";
 import api from "../..";
 import { SelectedValuesContext } from "../../context/SelectedValuesContext";
 

@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { getAvailableClassrooms, getAvailableTeachers, getTimetable } from "../../controllers";
+import { getAvailableClassrooms, getAvailableTeachers } from "../../controllers";
 
 const app = new Elysia({ prefix: "/available" })
     .get(
@@ -29,7 +29,7 @@ const app = new Elysia({ prefix: "/available" })
     )
     .get(
         "/classrooms",
-        async ({ query, set }) => {
+        async ({ query }) => {
             const { subjectId, slotId } = query;
             return { classrooms: await getAvailableClassrooms(slotId, subjectId) };
         },

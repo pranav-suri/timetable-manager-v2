@@ -6,8 +6,6 @@ import {
     uploadSubjectAndTeacherData,
 } from "../upload/dataUpload";
 
-const baseDir = "/";
-
 const app = new Elysia({ prefix: "/csv" })
     .post(
         "/subjectAndTeachers",

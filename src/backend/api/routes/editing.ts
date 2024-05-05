@@ -1,5 +1,5 @@
 import { Elysia } from "elysia";
-import { deleteSlotData, addSlotData, updateSlotData } from "../../controllers";
+import { deleteSlotData, updateSlotData } from "../../controllers";
 import { t } from "elysia";
 
 const app = new Elysia({ prefix: "/slotDatas" })

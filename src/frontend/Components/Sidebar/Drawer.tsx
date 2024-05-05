@@ -8,19 +8,24 @@ import {
     SubdivisionResponse,
     SubjectResponse,
     TeacherResponse,
-    ClassroomResponse,
     TimetableResponse,
+    ClassroomResponse,
 } from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
 import api from "../../index";
 import { TeacherAutocomplete } from "./TeacherAutocomplete";
 import { SubjectAutocomplete } from "./SubjectAutocomplete";
 import { useEffect, useState } from "react";
+import { Updater } from "use-immer";
 import React from "react";
 import { SubdivisionAutocomplete } from "./SubdivisionAutocomplete";
 import { ClassroomAutocomplete } from "./ClassroomAutocomplete";
-import { SlotDataClasses, SlotDataSubdivisions, Teacher } from "../../../backend/database";
-import { Updater } from "use-immer";
+import { SlotDataClasses, SlotDataSubdivisions, Subject, Teacher } from "../../../backend/database";
+
+type Timetable = TimetableResponse["timetable"];
+type Slots = Timetable["slots"];
+type SlotDatas = Exclude<Slots[0]["SlotDatas"], undefined>;
+type SlotData = Exclude<SlotDatas, undefined>[0];
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -55,15 +60,17 @@ export function DrawerRight({
     function updateSubject(subject: SubjectResponse["subjects"][0] | null, slotDataIndex: number) {
         if (!subject) return;
         setTimetable((draft) => {
-            // TODO: #9 Total rewrite required, type errors embedded deep within code.
-            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject! = subject;
-            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher! = null;
+            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject! =
+                subject as Subject;
+            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher! =
+                undefined as unknown as Teacher;
         });
     }
 
     function updateTeacher(teacher: TeacherResponse["teachers"][0] | null, slotDataIndex: number) {
         setTimetable((draft) => {
-            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher = teacher;
+            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher =
+                teacher as Teacher;
         });
     }
 
@@ -95,9 +102,9 @@ export function DrawerRight({
     }
 
     function updateSlotData(slotDataIndex: number) {
-        console.log(
-            timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id,
-        );
+        // console.log(
+        //     timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id,
+        // );
         const subjectId =
             timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject
                 ?.id;
@@ -123,24 +130,24 @@ export function DrawerRight({
             })
             .then(({ data }) => {
                 const slotDataId = data!.slotData.id;
+                // console.log(slotDataId)
                 setTimetable((draft) => {
                     draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id =
                         slotDataId;
                 });
             });
     }
-    const slot = timetableData?.timetable.slots[selectedSlotIndex!];
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
+    const slot = timetableData?.timetable?.slots[selectedSlotIndex!];
     const slotDatas =
-        slot?.SlotDatas?.filter((slotData) => slotData.Subject?.id !== 0) || ([] as SlotDatas[]);
-
+        slot?.SlotDatas?.filter((slotData) => slotData.Subject?.id) || ([] as SlotDatas);
     useEffect(() => {
         if (!update) return;
         slotDatas?.forEach((_, index) => {
             updateSlotData(index);
         });
         setUpdate(false);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, [update]);
 
     useEffect(() => {
@@ -150,31 +157,33 @@ export function DrawerRight({
     }, []);
 
     useEffect(() => {
-        if (!selectedSlotIndex) return;
+        if (selectedSlotIndex == null || !slot) return;
+        // Create a new slotData
         setTimetable((draft) => {
-            if (!draft?.timetable) return;
             draft!.timetable!.slots[selectedSlotIndex!].SlotDatas = [
                 ...slotDatas,
                 {
                     id: 0,
-                    SlotId: slot?.id,
+                    SlotId: slot!.id,
                     SlotDataClasses: [],
                     SlotDataSubdivisions: [],
-                    Subject: { id: 0, subjectName: "" },
-                    Teacher: { id: null, teacherName: "" },
-                },
+                    Subject: null,
+                    Teacher: null,
+                } as unknown as SlotData,
             ];
         });
-        return () =>
+
+        // Remove extra slotData at the end
+        return () => {
+            if (selectedSlotIndex == null) return;
             setTimetable((draft) => {
-                if (!draft?.timetable) return;
-                draft!.timetable!.slots[selectedSlotIndex!].SlotDatas = slotDatas;
+                draft!.timetable!.slots[selectedSlotIndex!].SlotDatas = slotDatas as SlotDatas;
             });
-    }, [selectedSlotIndex, setTimetable, slot?.id, slotDatas, timetableData]);
+        };
+    }, [selectedSlotIndex, update]);
 
     const theme = useTheme();
-    if (!slot || !timetableData) return null;
-
+    if (!slot) return null;
     return (
         <Drawer
             sx={{
@@ -198,9 +207,9 @@ export function DrawerRight({
                     {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
             </DrawerHeader>
-            Day: {slot.day}, Slot: {slot.number}
+            Day: {slot.day}, Slot: {slot.number}, Index: {selectedSlotIndex}
             <Divider />
-            {slot.SlotDatas!.map((slotData, index) => (
+            {slot.SlotDatas!.map((_, index) => (
                 <React.Fragment key={index}>
                     <SubjectAutocomplete
                         subjects={subjects.subjects}

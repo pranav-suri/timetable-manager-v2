@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import {
     ClassroomResponse,
-    SubdivisionResponse,
-    SubjectResponse,
     TimetableResponse,
 } from "../../../backend/api/routes/responseTypes";
-import { fetchAndSet } from "../fetchAndSet";
+import { edenFetch } from "../fetchAndSet";
 import api from "../..";
 
 // Implementing SubdivisionAutocomplete
@@ -26,28 +24,29 @@ export function ClassroomAutocomplete({
     setUpdate,
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
-    const subjectId = slotData.Subject!.id;
+    const subjectId = slotData.Subject?.id ?? null;
     const slotId = slotData.SlotId;
     const currentClassrooms: Classrooms = slotData.SlotDataClasses!.map(
         (slotDataClassroom) => slotDataClassroom.Classroom!,
     );
     const [inputValue, setInputValue] = useState("");
-    const [value, setValue] = useState<Classrooms>(currentClassrooms ?? []);
-    const [availableClassroomData, setAvailableClassroomData] =
-        React.useState<ClassroomResponse | null>(null);
+    const [value, setValue] = useState<Classrooms>([]);
+    const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([]);
+    // const [allClassrooms, setAllClassrooms] = useState<Classrooms>([]);
 
     useEffect(() => {
-        
-        if (!slotData || !subjectId) return;
-        setValue(currentClassrooms);
-        fetchAndSet(
-            setAvailableClassroomData,
-            api.available.classrooms.get({ query: { subjectId, slotId } }),
-        );
-    }, [slotData]);
+        if (!subjectId) return;
 
-    const availableClassrooms = availableClassroomData?.classrooms ?? [];
-    const allClassrooms = availableClassrooms.concat(currentClassrooms ?? []);
+        edenFetch<ClassroomResponse>(
+            api.available.classrooms.get({ query: { subjectId, slotId } }),
+        ).then((data) => {
+            const availableClassrooms = data.classrooms ?? [];
+            // console.log(slotData.id, availableClassrooms, currentClassrooms)
+            const allClassrooms = availableClassrooms.concat(currentClassrooms ?? []);
+            setAvailableClassroomData(allClassrooms);
+            setValue(currentClassrooms);
+        });
+    }, [subjectId, currentClassrooms, slotId]);
 
     return (
         <Autocomplete
@@ -66,7 +65,7 @@ export function ClassroomAutocomplete({
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
             }}
-            options={allClassrooms}
+            options={availableClassroomData}
             getOptionLabel={(option) => option.classroomName}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             renderInput={(params) => <TextField {...params} label="Classrooms" />}

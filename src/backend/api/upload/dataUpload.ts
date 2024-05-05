@@ -1,4 +1,3 @@
-import { t } from "elysia";
 import {
     AcademicYear,
     Batch,
@@ -179,13 +178,13 @@ async function parseCsvData<T>(csvData: string) {
     const parsedCsv = Papa.parse<T>(csvData, {
         header: true,
         skipEmptyLines: true,
-        transform: (value: string, header: string) => {
+        transform: (value: string) => {
             return value.trim();
         },
         transformHeader: (header: string) => {
             // This will convert the header to lowercase and replace spaces with underscores
-            const new_header = header.trim().toLowerCase().split(" ").join("_");
-            return new_header;
+            const newHeader = header.trim().toLowerCase().split(" ").join("_");
+            return newHeader;
         },
     });
     parsedCsv.data = Array.from(new Set(parsedCsv.data));

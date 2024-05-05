@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import { TimetableResponse } from "../../backend/api/routes/responseTypes";
 import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
 
-const drawerwidth = 290;
+const drawerwidth = 300;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "drawerState" })<{
     drawerState?: boolean;

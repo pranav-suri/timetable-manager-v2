@@ -116,7 +116,7 @@ export default function OldTimetable({
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
     if (!timetableData) return;
-    timetableData.timetable.slots.forEach((slot) => {
+    timetableData.timetable?.slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
     });

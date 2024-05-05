@@ -22,12 +22,10 @@ export function SubjectAutocomplete({
     const slotData = slotDatas![slotDataIndex];
     const currentSubject = slotData.Subject;
     const [inputValue, setInputValue] = React.useState("");
-    const [value, setValue] = React.useState<SubjectResponse["subjects"][0] | null>(
-        currentSubject ?? null,
-    );
+    const [value, setValue] = React.useState<SubjectResponse["subjects"][0] | null>(null);
     useEffect(() => {
         setValue(currentSubject ?? null);
-    }, [currentSubject, slotData]);
+    }, [currentSubject]);
 
     return (
         <Autocomplete
