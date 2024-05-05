@@ -1,31 +1,42 @@
 import { Box, FormControl, MenuItem, TextField } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext } from "react";
+import { SelectedValuesContext } from "../../context/SelectedValuesContext";
 import { AcademicYearResponse } from "../../../backend/api/routes/responseTypes";
 import api from "../..";
 
 export default function AcademicYear() {
     const [data, setData] = React.useState<AcademicYearResponse["academicYears"]>([]);
     const [selectedData, setSelectedData] = React.useState<string | null>(null);
+
+    const { selectedValues, setSelectedValues } = useContext(SelectedValuesContext);
+
     useEffect(() => {
         api.academicYears.get().then(({ data, error }) => {
-            if (error) {
-                throw error;
-            }
+            if (error) return console.log(error);
             setData(data ? data.academicYears : []);
         });
     }, []);
 
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
         setSelectedData(event.target.value as string);
+        setSelectedValues({
+            ...selectedValues,
+            academicYear: { selected: true, value: event.target.value },
+        });
     };
     return (
-        <Box width={200}>
+        <Box width={150} mr={"0.5rem"} ml={"0.5rem"}>
             <FormControl fullWidth>
-                <TextField onChange={handleChange} label="Academic Year" select fullWidth>
-                    {data.map((academicYear) => (
-                        <MenuItem key={academicYear.name} value={academicYear.name}>
-                            {academicYear.id}: {academicYear.name} -{" "}
-                            {new Date(Date.parse(String(academicYear.createdAt))).getFullYear()}
+                <TextField
+                    onChange={handleChange}
+                    label="Academic Year"
+                    select
+                    fullWidth
+                    defaultValue={""}
+                >
+                    {data.map((academicYear, i) => (
+                        <MenuItem key={academicYear.name} value={academicYear.id}>
+                            {i + 1}: {academicYear.name} - {academicYear.year}
                         </MenuItem>
                     ))}
                 </TextField>
