@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useRef } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
+import { useReactToPrint } from "react-to-print";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -115,34 +116,48 @@ export default function OldTimetable({
     handleDrawerOpen: () => void;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
+    const PDFComp = useRef();
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
+    const generatePdf = useReactToPrint({
+        content: () => PDFComp.current,
+        documentTitle: "insert title here",
+    });
+
     if (!timetableData) return;
     timetableData.timetable?.slots.forEach((slot) => {
         slotNumbers.add(slot.number);
         slotDays.add(slot.day);
     });
+
     return (
-        <table>
-            <thead>
-                <tr>
-                    <Headers slotNumbers={slotNumbers} />
-                </tr>
-            </thead>
-            <tbody>
-                {Array.from(slotDays)
-                    .sort()
-                    .map((day) => (
-                        <Row
-                            key={day}
-                            timetable={timetableData.timetable}
-                            day={day}
-                            slotNumbers={slotNumbers}
-                            handleDrawerOpen={handleDrawerOpen}
-                            setSelectedSlotIndex={setSelectedSlotIndex}
-                        />
-                    ))}
-            </tbody>
-        </table>
+        <div ref={PDFComp} style={{ width: "100%" }}>
+            <table>
+                <thead>
+                    <tr>
+                        <Headers slotNumbers={slotNumbers} />
+                    </tr>
+                </thead>
+                <tbody>
+                    {Array.from(slotDays)
+                        .sort()
+                        .map((day) => (
+                            <Row
+                                key={day}
+                                timetable={timetableData.timetable}
+                                day={day}
+                                slotNumbers={slotNumbers}
+                                handleDrawerOpen={handleDrawerOpen}
+                                setSelectedSlotIndex={setSelectedSlotIndex}
+                            />
+                        ))}
+                </tbody>
+            </table>
+            <div className="d-grid d-md-flex justify-content-md-end mb-3">
+                <button className="btn btn-success" onClick={generatePdf}>
+                    Generate PDF
+                </button>
+            </div>
+        </div>
     );
 }
