@@ -9,7 +9,8 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./App.css";
 import TimetableNewPage from "./Pages/TimetableNewPage";
-import TimetableCombined from "./Pages/Timetable Combined";
+import TimetableCombined from "./Pages/TimetableCombined";
+import { InputFileUpload } from "./Components/CSV/FileUpload";
 
 export default function App() {
     return (
@@ -34,6 +35,7 @@ export default function App() {
                     }
                 />
                 <Route path="/" element={<TimetableNewPage />} />
+                <Route path="/upload" element={<InputFileUpload />} />
             </Routes>
         </Router>
     );

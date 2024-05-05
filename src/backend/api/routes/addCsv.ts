@@ -7,16 +7,15 @@ import {
 } from "../upload/dataUpload";
 
 const app = new Elysia({ prefix: "/csv" })
+    // TODO: #11 Change this to proper elysiajs format once eden file uploads are fixed.
     .post(
         "/subjectAndTeachers",
-        async ({ body }) => {
-            uploadSubjectAndTeacherData(await body.file.text(), body.academicYearId);
+        async ({ body }: { body: { file: Blob; academicYearId: number } }) => {
+            console.log(body);
+            uploadSubjectAndTeacherData(await body.file.text(), 1);
         },
         {
-            body: t.Object({
-                file: t.File(),
-                academicYearId: t.Numeric(),
-            }),
+            // body: t.File({ type: "text/csv" }),
             detail: {
                 summary: "Uploading subject and teachers csv",
                 tags: ["CSV"],
