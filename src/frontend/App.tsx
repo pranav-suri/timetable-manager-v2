@@ -9,6 +9,7 @@ import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 import "./App.css";
 import TimetableNewPage from "./Pages/TimetableNewPage";
+import TimetableCombined from "./Pages/Timetable Combined";
 
 export default function App() {
     return (
@@ -21,6 +22,14 @@ export default function App() {
                     element={
                         <TimetableDataContextProvider>
                             <Timetable />
+                        </TimetableDataContextProvider>
+                    }
+                />
+                <Route
+                    path="/combined"
+                    element={
+                        <TimetableDataContextProvider>
+                            <TimetableCombined />
                         </TimetableDataContextProvider>
                     }
                 />

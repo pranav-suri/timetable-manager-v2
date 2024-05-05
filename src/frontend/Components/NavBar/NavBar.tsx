@@ -14,7 +14,7 @@ const NavBar = () => {
 
     return (
         <SelectedValuesProvider>
-            <AppBar position="static" sx={{ padding: "0.5rem" }}>
+            <AppBar position="fixed" sx={{ padding: "0.5rem" }}>
                 <Toolbar>
                     <AcademicYearButton />
                     <BatchButton />

@@ -1,12 +1,13 @@
 import React, { useState, Dispatch } from "react";
 import { TimetableResponse } from "../../backend/api/routes/responseTypes";
+import { Updater, useImmer } from "use-immer";
 
 type TimetableDataContextType = {
     timetable: {
         available: boolean;
         timetableData: TimetableResponse;
     };
-    setTimetable: Dispatch<TimetableResponse>;
+    setTimetable: Updater<TimetableResponse>;
     setAvailable: Dispatch<boolean>;
 };
 
@@ -19,7 +20,7 @@ export const TimetableDataContext = React.createContext<TimetableDataContextType
 });
 
 export const TimetableDataContextProvider = ({ children }: { children: React.ReactNode }) => {
-    const [timetable, setTimetable] = useState<TimetableResponse>();
+    const [timetable, setTimetable] = useImmer<TimetableResponse>(undefined as unknown as TimetableResponse);
     const [available, setAvailable] = useState<boolean>(false);
 
     return (
