@@ -1,11 +1,8 @@
 import React, { useContext, useState } from "react";
-import OldNavBar from "../Components/NavBar/OldNavBar";
 import OldTimetable from "../Components/Timetable/OldTimetable";
 import { styled } from "@mui/material/styles";
-import { useImmer } from "use-immer";
 import { Box } from "@mui/material";
 
-import { TimetableResponse } from "../../backend/api/routes/responseTypes";
 import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
 import { NavBar } from "../Components";
 import { TimetableDataContext } from "../context/TimetableDataContext";
