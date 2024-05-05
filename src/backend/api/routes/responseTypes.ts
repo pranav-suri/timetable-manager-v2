@@ -10,6 +10,7 @@ import {
     Subject,
     Teacher,
 } from "../../database";
+import { getTimetable } from "../../controllers";
 
 export type AcademicYearResponse = {
     academicYears: InferAttributes<AcademicYear, { omit: never }>[];
@@ -47,4 +48,7 @@ export type DepartmentResponse = {
 
 export type DivisionResponse = {
     divisions: InferAttributes<Division, { omit: never }>[];
+};
+export type TimetableUnnestedResponse = {
+    timetable: Awaited<ReturnType<typeof getTimetable>>;
 };

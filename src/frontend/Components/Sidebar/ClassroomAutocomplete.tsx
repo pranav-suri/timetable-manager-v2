@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import {
     ClassroomResponse,
@@ -15,6 +15,7 @@ interface SubdivisionAutocompleteProps {
     slotDataIndex: number;
     updateClassrooms: (classrooms: Classrooms, slotDataIndex: number) => void;
     setUpdate: (update: boolean) => void;
+    setSlotDataIndexToUpdate: Dispatch<number | null>;
 }
 
 export function ClassroomAutocomplete({
@@ -22,6 +23,7 @@ export function ClassroomAutocomplete({
     slotDataIndex,
     updateClassrooms,
     setUpdate,
+    setSlotDataIndexToUpdate,
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const subjectId = slotData.Subject?.id ?? null;
@@ -32,7 +34,6 @@ export function ClassroomAutocomplete({
     const [inputValue, setInputValue] = useState("");
     const [value, setValue] = useState<Classrooms>([]);
     const [availableClassroomData, setAvailableClassroomData] = useState<Classrooms>([]);
-    // const [allClassrooms, setAllClassrooms] = useState<Classrooms>([]);
 
     useEffect(() => {
         if (!subjectId) return;
@@ -41,12 +42,13 @@ export function ClassroomAutocomplete({
             api.available.classrooms.get({ query: { subjectId, slotId } }),
         ).then((data) => {
             const availableClassrooms = data.classrooms ?? [];
-            // console.log(slotData.id, availableClassrooms, currentClassrooms)
             const allClassrooms = availableClassrooms.concat(currentClassrooms ?? []);
             setAvailableClassroomData(allClassrooms);
             setValue(currentClassrooms);
         });
-    }, [subjectId, currentClassrooms, slotId]);
+        // It is the only needed dependency, other dependencies are not needed
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slotData]);
 
     return (
         <Autocomplete
@@ -60,6 +62,7 @@ export function ClassroomAutocomplete({
                 setValue(newValue);
                 updateClassrooms(newValue, slotDataIndex);
                 setUpdate(true);
+                setSlotDataIndexToUpdate(slotDataIndex);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

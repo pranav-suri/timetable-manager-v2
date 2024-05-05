@@ -4,7 +4,7 @@ import deleteSlotData from "./deleteSlotData";
 async function updateSlotData(
     slotDataId: number | null,
     slotId: number,
-    subjectId: number,
+    subjectId: number | null,
     teacherId: number | null,
     subdivisionIds: number[],
     classroomIds: number[],

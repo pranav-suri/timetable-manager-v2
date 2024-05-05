@@ -1,14 +1,13 @@
 import { Slot, SlotDataSubdivisions, SlotDatas, Subdivision } from "../database";
-import { getAcademicYearId } from ".";
 
-async function getTimetableBySubdivision(subdivisionId: number) {
-    const slotsWithData = await Slot.findAll({
+async function getTimetableOfSlotBySubdivision(subdivisionId: number, slotId: number) {
+    const slotsWithData = await Slot.findOne({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId("subdivision", subdivisionId),
+            id: slotId,
         },
         include: [
             {
@@ -45,13 +44,13 @@ async function getTimetableBySubdivision(subdivisionId: number) {
     return { slots: slotsWithData };
 }
 
-async function getTimetableByDivision(divisionId: number) {
+async function getTimetableOfSlotByDivision(divisionId: number, slotId: number) {
     const subdivisions = await Subdivision.findAll({
         where: { DivisionId: divisionId },
     });
     const subdivisionIds = subdivisions.map((subdivision) => subdivision.id);
 
-    const slotsWithData = await Slot.findAll({
+    const slotsWithData = await Slot.findOne({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -64,7 +63,7 @@ async function getTimetableByDivision(divisionId: number) {
             ],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId("division", divisionId),
+            id: slotId,
         },
         include: [
             {
@@ -101,8 +100,8 @@ async function getTimetableByDivision(divisionId: number) {
     return { slots: slotsWithData };
 }
 
-async function getTimetableByTeacher(teacherId: number) {
-    const slotsWithData = await Slot.findAll({
+async function getTimetableOfSlotByTeacher(teacherId: number, slotId: number) {
+    const slotsWithData = await Slot.findOne({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -115,7 +114,7 @@ async function getTimetableByTeacher(teacherId: number) {
             ],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId("teacher", teacherId),
+            id: slotId,
         },
         include: [
             {
@@ -154,8 +153,8 @@ async function getTimetableByTeacher(teacherId: number) {
     return { slots: slotsWithData };
 }
 
-async function getTimetableByClassroom(classroomId: number) {
-    const slotsWithData = await Slot.findAll({
+async function getTimetableOfSlotByClassroom(classroomId: number, slotId: number) {
+    const slotsWithData = await Slot.findOne({
         order: [
             ["day", "ASC"],
             ["number", "ASC"],
@@ -168,7 +167,7 @@ async function getTimetableByClassroom(classroomId: number) {
             ],
         ],
         where: {
-            AcademicYearId: await getAcademicYearId("classroom", classroomId),
+            id: slotId,
         },
         include: [
             {
@@ -207,22 +206,23 @@ async function getTimetableByClassroom(classroomId: number) {
     return { slots: slotsWithData };
 }
 
-async function getTTNested(
+async function getTTOfSlotNested(
     searchId: number,
     searchBy: "subdivisions" | "teachers" | "classrooms" | "divisions",
+    slotId: number
 ) {
     switch (searchBy) {
         case "divisions":
-            return await getTimetableByDivision(searchId);
+            return await getTimetableOfSlotByDivision(searchId, slotId);
         case "subdivisions":
-            return await getTimetableBySubdivision(searchId);
+            return await getTimetableOfSlotBySubdivision(searchId, slotId);
         case "classrooms":
-            return await getTimetableByClassroom(searchId);
+            return await getTimetableOfSlotByClassroom(searchId, slotId);
         case "teachers":
-            return await getTimetableByTeacher(searchId);
+            return await getTimetableOfSlotByTeacher(searchId, slotId);
         default:
-            throw new Error(`Unhandled case in getTTNested function: ${searchBy}`);
+            throw new Error(`Unhandled case in getTTOfSlotNested function: ${searchBy}`);
     }
 }
 
-export default getTTNested;
+export default getTTOfSlotNested;

@@ -22,7 +22,7 @@ const app = new Elysia({ prefix: "/slotDatas" })
             body: t.Object({
                 slotDataId: t.Nullable(t.Numeric()),
                 slotId: t.Numeric(),
-                subjectId: t.Numeric(),
+                subjectId: t.Nullable(t.Numeric()),
                 teacherId: t.Nullable(t.Numeric()),
                 subdivisionIds: t.Array(t.Numeric()),
                 classroomIds: t.Array(t.Numeric()),

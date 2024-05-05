@@ -56,14 +56,14 @@ export function DrawerRight({
     const [update, setUpdate] = useState(false);
     const [subjects, setSubjects] = useState<SubjectResponse>({ subjects: [] });
     const [subdivisions, setSubdivisions] = useState<SubdivisionResponse>({ subdivisions: [] });
+    const [slotDataIndexToUpdate, setSlotDataIndexToUpdate] = useState<number | null>(null);
 
     function updateSubject(subject: SubjectResponse["subjects"][0] | null, slotDataIndex: number) {
-        if (!subject) return;
         setTimetable((draft) => {
             draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject! =
                 subject as Subject;
             draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher! =
-                undefined as unknown as Teacher;
+                null as unknown as Teacher;
         });
     }
 
@@ -102,53 +102,55 @@ export function DrawerRight({
     }
 
     function updateSlotData(slotDataIndex: number) {
-        // console.log(
-        //     timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id,
-        // );
-        const subjectId =
-            timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject
-                ?.id;
-        if (!subjectId) return;
+        const slot = timetableData!.timetable.slots[selectedSlotIndex!];
+        const slotId = slot.id;
+        const slotData = slot.SlotDatas![slotDataIndex];
+        const slotDataId = slotData.id;
+        const subjectId = slotData.Subject?.id ?? null;
+        const teacherId = slotData.Teacher?.id ?? null;
+        const subdivisionIds = slotData.SlotDataSubdivisions!.map(
+            (slotDataSubdiv) => slotDataSubdiv.Subdivision!.id,
+        );
+        const classroomIds = slotData.SlotDataClasses!.map(
+            (slotDataClass) => slotDataClass.Classroom!.id,
+        );
+        console.log("SlotId: ", slotId);
+        console.log("SlotDataId: ", slotDataId);
+        console.log("SubjectId: ", subjectId);
+        console.log("TeacherId: ", teacherId);
+        console.log("SubdivIds: : ", subdivisionIds);
+        console.log("ClassIds: ", classroomIds);
+        console.log("Rendered");
+
+        // if (!subjectId || !subdivisionIds.length) return;
 
         api.slotDatas.update
             .post({
-                slotDataId:
-                    timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id,
-                slotId: timetableData!.timetable.slots[selectedSlotIndex!].id,
-                subjectId: subjectId,
-                teacherId:
-                    timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex]
-                        .Teacher?.id ?? null,
-                subdivisionIds:
-                    timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![
-                        slotDataIndex
-                    ].SlotDataSubdivisions!.map((subdivision) => subdivision.Subdivision!.id) ?? [],
-                classroomIds:
-                    timetableData!.timetable.slots[selectedSlotIndex!].SlotDatas![
-                        slotDataIndex
-                    ].SlotDataClasses!.map((classroom) => classroom.Classroom!.id) ?? [],
+                slotDataId,
+                slotId,
+                subjectId,
+                teacherId,
+                subdivisionIds,
+                classroomIds,
             })
             .then(({ data }) => {
                 const slotDataId = data!.slotData.id;
-                // console.log(slotDataId)
+                // console.log("Updated")
                 setTimetable((draft) => {
                     draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].id =
                         slotDataId;
                 });
             });
     }
-    
+
     const slot = timetableData?.timetable?.slots[selectedSlotIndex!];
     const slotDatas =
         slot?.SlotDatas?.filter((slotData) => slotData.Subject?.id) || ([] as SlotDatas);
     useEffect(() => {
-        if (!update) return;
-        slotDatas?.forEach((_, index) => {
-            updateSlotData(index);
-        });
+        if (!update || slotDataIndexToUpdate == null) return;
+        updateSlotData(slotDataIndexToUpdate);
         setUpdate(false);
-        
-    }, [update]);
+    }, [slotDatas, update, slotDataIndexToUpdate]);
 
     useEffect(() => {
         // This has to be changed, department can divisionId must come from props or somewhere
@@ -172,6 +174,7 @@ export function DrawerRight({
                 } as unknown as SlotData,
             ];
         });
+        setUpdate(false);
 
         // Remove extra slotData at the end
         return () => {
@@ -216,18 +219,21 @@ export function DrawerRight({
                         slotDatas={slot.SlotDatas}
                         slotDataIndex={index}
                         updateSubject={updateSubject}
+                        setSlotDataIndexToUpdate={setSlotDataIndexToUpdate}
                         setUpdate={setUpdate}
                     />
                     <TeacherAutocomplete
                         slotDatas={slot.SlotDatas}
                         slotDataIndex={index}
                         updateTeacher={updateTeacher}
+                        setSlotDataIndexToUpdate={setSlotDataIndexToUpdate}
                         setUpdate={setUpdate}
                     />
                     <ClassroomAutocomplete
                         slotDatas={slot.SlotDatas}
                         slotDataIndex={index}
                         updateClassrooms={updateClassrooms}
+                        setSlotDataIndexToUpdate={setSlotDataIndexToUpdate}
                         setUpdate={setUpdate}
                     />
                     <SubdivisionAutocomplete
@@ -235,6 +241,7 @@ export function DrawerRight({
                         slotDataIndex={index}
                         subdivisions={subdivisions.subdivisions}
                         updateSubdivisions={updateSubdivisions}
+                        setSlotDataIndexToUpdate={setSlotDataIndexToUpdate}
                         setUpdate={setUpdate}
                     />
                     <Divider sx={{ margin: "20px" }} />

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Dispatch, useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { SubdivisionResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 
@@ -11,6 +11,7 @@ interface SubdivisionAutocompleteProps {
     slotDataIndex: number;
     updateSubdivisions: (subdivisions: Subdivisions, slotDataIndex: number) => void;
     setUpdate: (update: boolean) => void;
+    setSlotDataIndexToUpdate: Dispatch<number | null>;
 }
 
 export function SubdivisionAutocomplete({
@@ -19,6 +20,8 @@ export function SubdivisionAutocomplete({
     slotDataIndex,
     updateSubdivisions,
     setUpdate,
+    setSlotDataIndexToUpdate,
+
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentSubdivisions: Subdivisions = slotData.SlotDataSubdivisions!.map(
@@ -44,6 +47,7 @@ export function SubdivisionAutocomplete({
                 setValue(newValue);
                 updateSubdivisions(newValue, slotDataIndex);
                 setUpdate(true);
+                setSlotDataIndexToUpdate(slotDataIndex);
             }}
             inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
             onInputChange={(event, newInputValue) => {

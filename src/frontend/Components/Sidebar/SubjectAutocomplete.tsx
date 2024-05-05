@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { Dispatch, useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { SubjectResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 
@@ -10,6 +10,7 @@ interface SubjectAutocompleteProps {
     slotDataIndex: number;
     updateSubject: (subject: Subject | null, slotDataIndex: number) => void;
     setUpdate: (update: boolean) => void;
+    setSlotDataIndexToUpdate: Dispatch<number | null>; 
 }
 
 export function SubjectAutocomplete({
@@ -17,6 +18,7 @@ export function SubjectAutocomplete({
     slotDatas,
     slotDataIndex,
     updateSubject,
+    setSlotDataIndexToUpdate,
     setUpdate,
 }: SubjectAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
@@ -37,8 +39,9 @@ export function SubjectAutocomplete({
                 setValue(newValue);
                 updateSubject(newValue, slotDataIndex);
                 setUpdate(true);
+                setSlotDataIndexToUpdate(slotDataIndex);
             }}
-            inputValue={inputValue} // CHANGE TO CURRENT SUBJECT ONCE PARENT FUNCTION CALLBACK IS ADDED
+            inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
             }}

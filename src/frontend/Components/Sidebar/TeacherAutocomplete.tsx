@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { TeacherResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { edenFetch } from "../fetchAndSet";
@@ -11,6 +11,7 @@ interface TeacherAutocompleteProps {
     slotDataIndex: number;
     updateTeacher: (teacher: Teacher | null, slotDataIndex: number) => void;
     setUpdate: (update: boolean) => void;
+    setSlotDataIndexToUpdate: Dispatch<number | null>;
 }
 
 export function TeacherAutocomplete({
@@ -18,6 +19,7 @@ export function TeacherAutocomplete({
     slotDataIndex,
     updateTeacher,
     setUpdate,
+    setSlotDataIndexToUpdate,
 }: TeacherAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentTeacher = slotData.Teacher;
@@ -35,13 +37,14 @@ export function TeacherAutocomplete({
         edenFetch<TeacherResponse>(
             api.available.teachers.get({ query: { subjectId, slotId } }),
         ).then((data) => {
-            console.log(data);
             const subjectTeachers = data.teachers ?? [];
             const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
             setAvailableTeachersData(allTeachers);
             setValue(currentTeacher ?? null);
         });
-    }, [subjectId, slotId, currentTeacher]);
+        // It is the only needed dependency, other dependencies are not needed
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [slotData]);
 
     return (
         <Autocomplete
@@ -54,8 +57,9 @@ export function TeacherAutocomplete({
                 setValue(newValue);
                 updateTeacher(newValue, slotDataIndex);
                 setUpdate(true);
+                setSlotDataIndexToUpdate(slotDataIndex);
             }}
-            inputValue={inputValue} // CHANGE TO CURRENT TEACHER ONCE PARENT FUNCTION CALLBACK IS ADDED
+            inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
             }}

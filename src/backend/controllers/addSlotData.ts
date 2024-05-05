@@ -3,7 +3,7 @@ import { addSlotDataClassesAndSubdivs } from "./addSlotDataClassesAndSubdivs";
 
 async function addSlotData(
     slotId: number,
-    subjectId: number,
+    subjectId: number | null,
     teacherId: number | null,
     subdivisionIds: number[],
     classroomIds: number[],
