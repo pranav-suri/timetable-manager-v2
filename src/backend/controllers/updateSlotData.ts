@@ -1,6 +1,4 @@
-import { SlotDataClasses, SlotDataSubdivisions, SlotDatas } from "../database";
 import addSlotData from "./addSlotData";
-import { addSlotDataClassesAndSubdivs } from "./addSlotDataClassesAndSubdivs";
 import deleteSlotData from "./deleteSlotData";
 
 async function updateSlotData(

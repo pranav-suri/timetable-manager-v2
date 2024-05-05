@@ -1,42 +1,26 @@
 import { styled, useTheme } from "@mui/material/styles";
+import { Drawer, Divider, IconButton } from "@mui/material";
 import {
-    Drawer,
-    AppBar as MuiAppBar,
-    AppBarProps as MuiAppBarProps,
-    Divider,
-    IconButton,
-} from "@mui/material";
-import {
-    Menu as MenuIcon,
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
-    MoveToInbox as InboxIcon,
-    Mail as MailIcon,
 } from "@mui/icons-material";
 import {
     SubdivisionResponse,
     SubjectResponse,
     TeacherResponse,
-    TimetableResponse,
     ClassroomResponse,
+    TimetableResponse,
 } from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
 import api from "../../index";
-import OldTimetable from "../Timetable/OldTimetable";
-import OldNavBar from "../NavBar/OldNavBar";
 import { TeacherAutocomplete } from "./TeacherAutocomplete";
 import { SubjectAutocomplete } from "./SubjectAutocomplete";
 import { useEffect, useState } from "react";
-import { useImmer } from "use-immer";
 import React from "react";
 import { SubdivisionAutocomplete } from "./SubdivisionAutocomplete";
 import { ClassroomAutocomplete } from "./ClassroomAutocomplete";
-import { SlotDataClasses, SlotDataSubdivisions } from "../../../backend/database";
-import { SetTimtableType } from "../../Pages/TimetableNewPage";
-
-type Timetable = TimetableResponse["timetable"];
-type Slots = Timetable["slots"];
-type SlotDatas = Slots[0]["SlotDatas"];
+import { SlotDataClasses, SlotDataSubdivisions, Teacher } from "../../../backend/database";
+import { Updater } from "use-immer";
 
 export const DrawerHeader = styled("div")(({ theme }) => ({
     display: "flex",
@@ -59,7 +43,7 @@ export function DrawerRight({
     drawerwidth: number;
     handleDrawerClose: () => void;
     drawerState: boolean;
-    setTimetable: SetTimtableType;
+    setTimetable: Updater<TimetableResponse>;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
     selectedSlotIndex: number | null;
     timetableData: TimetableResponse | null;
@@ -71,9 +55,9 @@ export function DrawerRight({
     function updateSubject(subject: SubjectResponse["subjects"][0] | null, slotDataIndex: number) {
         if (!subject) return;
         setTimetable((draft) => {
+            // TODO: #9 Total rewrite required, type errors embedded deep within code.
             draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Subject! = subject;
-            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher! =
-                null;
+            draft!.timetable.slots[selectedSlotIndex!].SlotDatas![slotDataIndex].Teacher! = null;
         });
     }
 
@@ -146,6 +130,7 @@ export function DrawerRight({
             });
     }
     const slot = timetableData?.timetable.slots[selectedSlotIndex!];
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const slotDatas =
         slot?.SlotDatas?.filter((slotData) => slotData.Subject?.id !== 0) || ([] as SlotDatas[]);
 
@@ -155,6 +140,7 @@ export function DrawerRight({
             updateSlotData(index);
         });
         setUpdate(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [update]);
 
     useEffect(() => {
@@ -184,7 +170,7 @@ export function DrawerRight({
                 if (!draft?.timetable) return;
                 draft!.timetable!.slots[selectedSlotIndex!].SlotDatas = slotDatas;
             });
-    }, [selectedSlotIndex, timetableData]);
+    }, [selectedSlotIndex, setTimetable, slot?.id, slotDatas, timetableData]);
 
     const theme = useTheme();
     if (!slot || !timetableData) return null;

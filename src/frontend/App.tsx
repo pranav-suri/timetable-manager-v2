@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Timetable from "./Pages/Timetable";
-import { TimetableDataContext, TimetableDataContextProvider } from "./context/TimetableDataContext";
+import { TimetableDataContextProvider } from "./context/TimetableDataContext";
 
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
@@ -11,7 +11,6 @@ import "./App.css";
 import TimetableNewPage from "./Pages/TimetableNewPage";
 
 export default function App() {
-    const data = useContext(TimetableDataContext);
     return (
         <Router>
             <Routes>

@@ -23,6 +23,7 @@ const SelectedValuesContext = createContext<SelectedValuesContextType>({
         teacher: { selected: false, value: "" },
         subject: { selected: false, value: "" },
     },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setSelectedValues: () => {},
 });
 

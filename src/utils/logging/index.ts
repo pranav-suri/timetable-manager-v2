@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import fs from "fs";
 
 export type LogLevel = "INFO" | "ERROR" | "WARN" | "DEBUG";
@@ -32,7 +33,10 @@ export default class Logger {
             path = path.replace(/\\/g, "/");
         }
         const srcPosition = path.split("/").indexOf("src");
-        const srcPath = path.split("/").slice(srcPosition + 1, path.length).join("/");
+        const srcPath = path
+            .split("/")
+            .slice(srcPosition + 1, path.length)
+            .join("/");
         const messagePrefix = `[${new Date().toISOString()}] : ${srcPath} => `;
         switch (logLevel) {
             case "INFO": {
@@ -66,7 +70,7 @@ export default class Logger {
      * @param sqlString
      * @param timing
      */
-    static sqlLog(sqlString: string, _timing?: number) {
+    static sqlLog(sqlString: string, timing?: number) {
         Logger.log(`${sqlString}`, "DEBUG", true, "src/backend/database/sequelize.ts");
     }
 }

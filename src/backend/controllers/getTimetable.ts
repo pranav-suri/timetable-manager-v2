@@ -1,7 +1,6 @@
 import { ForeignKey } from "sequelize";
 import { getAcademicYearId } from ".";
 import {
-    AcademicYear,
     Slot,
     Subdivision,
     Batch,
@@ -14,7 +13,6 @@ import {
     Subject,
     Teacher,
 } from "../database";
-import { TimetableResponse } from "../api/routes/responseTypes";
 
 async function getTimetableBySubdivision(subdivisionId: number) {
     const slots = await Slot.findAll({
@@ -101,7 +99,6 @@ async function getTimetableBySubdivision(subdivisionId: number) {
         batches,
     };
 }
-
 
 async function getTimetableByDivision(divisionId: number) {
     const slots = await Slot.findAll({
@@ -358,7 +355,9 @@ function slotRefactor(
             const slotDataClass = slotDataClasses.filter(
                 (slotDataClass) => slotDataClass.SlotDataId === slotData.id,
             );
-            const classroomIds = slotDataClass.map((slotDataClass) => slotDataClass.ClassroomId) as number[];
+            const classroomIds = slotDataClass.map(
+                (slotDataClass) => slotDataClass.ClassroomId,
+            ) as number[];
             const slotDataSubdivision = slotDataSubdivisions.filter(
                 (slotDataSubdivision) => slotDataSubdivision.SlotDataId === slotData.id,
             );
@@ -383,10 +382,10 @@ function slotRefactor(
     return slotRefactored;
 }
 
-async function getTimetable (
+async function getTimetable(
     searchId: number,
     searchBy: "subdivisions" | "teachers" | "classrooms" | "divisions",
-)  {
+) {
     switch (searchBy) {
         case "divisions":
             return await getTimetableByDivision(searchId);

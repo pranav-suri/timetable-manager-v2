@@ -1,21 +1,12 @@
 import React, { useContext, useState } from "react";
 import { NavBar } from "../Components";
 import OldTimetable from "../Components/Timetable/OldTimetable";
-import { TimetableResponse } from "../../backend/api/routes/responseTypes";
-import { useImmer } from "use-immer";
 import { TimetableDataContext } from "../context/TimetableDataContext";
 
 export default function Timetable() {
-    const [drawerState, setDrawerState] = useState(false);
-    const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
-    const { timetable, setTimetable, setAvailable } = useContext(TimetableDataContext);
-    const handleDrawerOpen = () => {
-        setDrawerState(true);
-    };
-
-    const handleDrawerClose = () => {
-        setDrawerState(false);
-    };
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, setSelectedSlotIndex] = useState<number | null>(null);
+    const { timetable } = useContext(TimetableDataContext);
 
     return (
         <React.Fragment>

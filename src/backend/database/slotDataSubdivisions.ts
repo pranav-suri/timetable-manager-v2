@@ -6,7 +6,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 import SlotDatas from "./slotDatas";
 import { Subdivision } from ".";

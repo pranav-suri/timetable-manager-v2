@@ -7,7 +7,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 
 class Subject extends Model<InferAttributes<Subject>, InferCreationAttributes<Subject>> {

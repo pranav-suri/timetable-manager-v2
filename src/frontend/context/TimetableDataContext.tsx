@@ -1,6 +1,5 @@
 import React, { useState, Dispatch } from "react";
 import { TimetableResponse } from "../../backend/api/routes/responseTypes";
-import { To } from "react-router-dom";
 
 type TimetableDataContextType = {
     timetable: {
@@ -13,7 +12,9 @@ type TimetableDataContextType = {
 
 export const TimetableDataContext = React.createContext<TimetableDataContextType>({
     timetable: { available: false, timetableData: {} as TimetableResponse },
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setTimetable: () => {},
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     setAvailable: () => {},
 });
 

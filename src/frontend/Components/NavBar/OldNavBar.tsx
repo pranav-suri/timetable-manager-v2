@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { styled, useTheme } from "@mui/material/styles";
+import React, { useEffect } from "react";
 import {
     AppBar as MuiAppBar,
-    AppBarProps as MuiAppBarProps,
     Button,
-    CircularProgress,
     Toolbar,
     ButtonGroup,
     Paper,
@@ -14,39 +11,26 @@ import {
     Popper,
     Grow,
     Typography,
-    IconButton,
 } from "@mui/material";
 import {
     ArrowDropDown as ArrowDropDownIcon,
     ArrowDropUp as ArrowDropUpIcon,
-    Menu as MenuIcon,
 } from "@mui/icons-material";
+import { Updater } from "use-immer";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
-import { TimetableDataContext } from "../../context/TimetableDataContext";
-import { useImmer } from "use-immer";
-import { SetTimtableType } from "../../Pages/TimetableNewPage";
-
-interface AppBarProps extends MuiAppBarProps {
-    open?: boolean;
-}
 
 export default function OldNavBar({
     setTimetable,
-    drawerState,
-    drawerwidth,
 }: {
     drawerState: boolean;
     drawerwidth: number;
-    setTimetable: SetTimtableType;
+    setTimetable: Updater<TimetableResponse>;
 }) {
     const [timetableSelector, setTimetableSelector] = React.useState(false);
     const anchorRef = React.useRef<HTMLDivElement>(null);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-    const fetchTimetable = (
-        setTimetable: SetTimtableType,
-        url: string,
-    ) => {
+    const fetchTimetable = (setTimetable: Updater<TimetableResponse>, url: string) => {
         fetch(url)
             .then((response) => response.json())
             .then((data) => setTimetable(data));
@@ -71,6 +55,7 @@ export default function OldNavBar({
 
     const AppBar = MuiAppBar;
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     const options: { label: string; url: string }[] = [
         { label: "Division", url: "http://localhost:3000/divisions/2/timetable" },
         { label: "Teacher", url: "http://localhost:3000/teachers/1/timetable" },
@@ -100,7 +85,7 @@ export default function OldNavBar({
 
     useEffect(() => {
         fetchTimetable(setTimetable, options[selectedIndex].url);
-    }, []);
+    }, [options, selectedIndex, setTimetable]);
 
     return (
         // <AppBar position="fixed" color="primary" open={drawerState}>
@@ -135,9 +120,9 @@ export default function OldNavBar({
                     transition
                     disablePortal
                 >
-                    {({ TransitionProps, placement }) => (
+                    {({ TransitionProps: transitionProps, placement }) => (
                         <Grow
-                            {...TransitionProps}
+                            {...transitionProps}
                             style={{
                                 transformOrigin:
                                     placement === "bottom" ? "center top" : "center bottom",

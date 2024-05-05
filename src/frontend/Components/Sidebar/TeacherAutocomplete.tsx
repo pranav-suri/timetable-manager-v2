@@ -3,7 +3,6 @@ import { Autocomplete, TextField } from "@mui/material";
 import { TeacherResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { fetchAndSet } from "../fetchAndSet";
 import api from "../../";
-import { SubjectAutocomplete } from "./SubjectAutocomplete";
 
 type Teacher = TeacherResponse["teachers"][0];
 
@@ -31,16 +30,16 @@ export function TeacherAutocomplete({
 
     const [availableTeachersData, setAvailableTeachersData] =
         React.useState<TeacherResponse | null>(null);
-    
+
     useEffect(() => {
-        if (!slotData || !subjectId ) return;
+        if (!slotData || !subjectId) return;
         setValue(currentTeacher ?? null);
         fetchAndSet(
             setAvailableTeachersData,
             api.available.teachers.get({ query: { subjectId, slotId } }),
         );
-    }, [slotData]);
-    
+    }, [currentTeacher, slotData, slotId, subjectId]);
+
     const subjectTeachers = availableTeachersData?.teachers ?? [];
     const allTeachers = subjectTeachers.concat(currentTeacher ?? []);
     return (

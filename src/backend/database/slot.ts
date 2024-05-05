@@ -7,7 +7,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 
 class Slot extends Model<InferAttributes<Slot>, InferCreationAttributes<Slot>> {

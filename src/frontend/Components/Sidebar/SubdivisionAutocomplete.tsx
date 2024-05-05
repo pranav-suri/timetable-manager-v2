@@ -1,12 +1,6 @@
 import React, { useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
-import {
-    SubdivisionResponse,
-    SubjectResponse,
-    TimetableResponse,
-} from "../../../backend/api/routes/responseTypes";
-import { fetchAndSet } from "../fetchAndSet";
-import api from "../..";
+import { SubdivisionResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
 
 // Implementing SubdivisionAutocomplete
 type Subdivisions = SubdivisionResponse["subdivisions"];
@@ -24,27 +18,25 @@ export function SubdivisionAutocomplete({
     slotDatas,
     slotDataIndex,
     updateSubdivisions,
-    setUpdate
+    setUpdate,
 }: SubdivisionAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentSubdivisions: Subdivisions = slotData.SlotDataSubdivisions!.map(
         (slotDataSubdivision) => slotDataSubdivision.Subdivision!,
     );
     const [inputValue, setInputValue] = React.useState("");
-    const [value, setValue] = React.useState<Subdivisions>(
-        currentSubdivisions ?? [],
-    );
+    const [value, setValue] = React.useState<Subdivisions>(currentSubdivisions ?? []);
 
     useEffect(() => {
         setValue(currentSubdivisions);
-    }, [slotData]);
+    }, [currentSubdivisions, slotData]);
 
     return (
         <Autocomplete
             disableCloseOnSelect
             multiple
             limitTags={2}
-            sx={{margin: "5px"}}
+            sx={{ margin: "5px" }}
             disablePortal
             autoHighlight
             value={value}

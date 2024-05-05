@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { SubjectResponse, TimetableResponse } from "../../../backend/api/routes/responseTypes";
-import { fetchAndSet } from "../fetchAndSet";
-import api from "../..";
 
 type Subject = SubjectResponse["subjects"][0];
 
@@ -19,7 +17,7 @@ export function SubjectAutocomplete({
     slotDatas,
     slotDataIndex,
     updateSubject,
-    setUpdate
+    setUpdate,
 }: SubjectAutocompleteProps) {
     const slotData = slotDatas![slotDataIndex];
     const currentSubject = slotData.Subject;
@@ -29,7 +27,7 @@ export function SubjectAutocomplete({
     );
     useEffect(() => {
         setValue(currentSubject ?? null);
-    }, [slotData]);
+    }, [currentSubject, slotData]);
 
     return (
         <Autocomplete

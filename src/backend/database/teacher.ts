@@ -7,7 +7,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 
 class Teacher extends Model<InferAttributes<Teacher>, InferCreationAttributes<Teacher>> {

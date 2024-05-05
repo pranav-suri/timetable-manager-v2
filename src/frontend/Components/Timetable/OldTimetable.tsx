@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
-import { TimetableDataContext } from "../../context/TimetableDataContext";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -66,7 +65,6 @@ function Row({
     handleDrawerOpen: () => void;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
-    const slots = timetable.slots;
     return (
         <tr>
             <th>{day}</th>

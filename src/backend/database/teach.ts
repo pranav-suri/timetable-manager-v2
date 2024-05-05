@@ -6,7 +6,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 import Subject from "./subject";
 

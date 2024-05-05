@@ -1,4 +1,4 @@
-import { AcademicYear, SlotDataClasses } from ".";
+import { SlotDataClasses } from ".";
 import sequelize from "./sequelize";
 import {
     CreationOptional,
@@ -7,7 +7,6 @@ import {
     InferAttributes,
     InferCreationAttributes,
     Model,
-    NonAttribute,
 } from "sequelize";
 
 class Classroom extends Model<InferAttributes<Classroom>, InferCreationAttributes<Classroom>> {

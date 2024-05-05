@@ -1,5 +1,4 @@
 import React from "react";
-import { treaty } from "@elysiajs/eden";
 import { EdenTreaty } from "@elysiajs/eden/treaty";
 type SetFunction<ResponseType> = React.Dispatch<React.SetStateAction<ResponseType>>;
 export async function fetchAndSet<ResponseType>(
