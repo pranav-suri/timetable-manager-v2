@@ -13,6 +13,7 @@ import TimetableCombined from "./Pages/TimetableCombined";
 import BatchAndSubdiviionUpload from "./Components/CSV/BatchAndSubdivision";
 import ClassroomUpload from "./Components/CSV/Classrooms";
 import SubjectAndTeacherUpload from "./Components/CSV/SubjectAndTeacers";
+import LandingPage from "./Pages/LandingPage";
 
 export default function App() {
     return (
@@ -33,6 +34,14 @@ export default function App() {
                     element={
                         <TimetableDataContextProvider>
                             <TimetableCombined />
+                        </TimetableDataContextProvider>
+                    }
+                />
+                <Route
+                    path="/landing"
+                    element={
+                        <TimetableDataContextProvider>
+                            <LandingPage />
                         </TimetableDataContextProvider>
                     }
                 />
