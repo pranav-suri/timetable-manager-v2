@@ -4,5 +4,18 @@ import Department from "./Department";
 import Division from "./Division";
 import View from "./View";
 import Generate from "./Generate";
+import TimetableType from "./TimetableType";
+import Teacher from "./Teacher";
+import Classroom from "./Classroom";
 
-export { AcademicYear, Batch, Department, Division, View, Generate};
+export {
+    AcademicYear,
+    Batch,
+    Department,
+    Division,
+    View,
+    TimetableType,
+    Generate,
+    Teacher,
+    Classroom,
+};

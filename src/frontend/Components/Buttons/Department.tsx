@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { DepartmentResponse } from "../../../backend/api/routes/responseTypes";
 import api from "../..";
 import { SelectedValuesContext } from "../../context/SelectedValuesContext";
+import { TimetableType } from "../../../utils/types";
 
 export default function Department() {
     const [data, setData] = React.useState<DepartmentResponse["departments"]>([]);
@@ -30,7 +31,17 @@ export default function Department() {
     };
 
     return (
-        <Box width={150} mr={"0.5rem"} ml={"0.5rem"}>
+        <Box
+            width={150}
+            mr={"0.5rem"}
+            ml={"0.5rem"}
+            sx={{
+                display:
+                    selectedValues.timetableType.value === TimetableType.DIVISION
+                        ? "block"
+                        : "none",
+            }}
+        >
             <FormControl fullWidth>
                 <TextField
                     onChange={handleChange}

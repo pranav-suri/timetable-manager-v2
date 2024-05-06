@@ -16,13 +16,13 @@ export default function Generate() {
         edenFetch(api.generateTT.department({ id: departmentId }).get()).then((data) => {
             console.log(data);
             api.divisions({ id: divisionId })
-            .timetable.get()
-            .then(({ data, error }) => {
-                if (error) return console.log(error);
-                setTimetable(data ?? ({} as TimetableResponse));
-                setAvailable(true);
-            });
-        })
+                .timetable.get()
+                .then(({ data, error }) => {
+                    if (error) return console.log(error);
+                    setTimetable(data ?? ({} as TimetableResponse));
+                    setAvailable(true);
+                });
+        });
     };
     return (
         <Button variant="contained" sx={{ height: "3rem" }} onClick={handleClick}>

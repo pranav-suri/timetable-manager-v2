@@ -6,7 +6,6 @@ import api from "../..";
 
 export default function AcademicYear() {
     const [data, setData] = React.useState<AcademicYearResponse["academicYears"]>([]);
-    const [selectedData, setSelectedData] = React.useState<string | null>(null);
 
     const { selectedValues, setSelectedValues } = useContext(SelectedValuesContext);
 
@@ -18,7 +17,6 @@ export default function AcademicYear() {
     }, []);
 
     const handleChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
-        setSelectedData(event.target.value as string);
         setSelectedValues({
             ...selectedValues,
             academicYear: { selected: true, value: event.target.value },

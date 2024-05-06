@@ -1,12 +1,12 @@
 import { Box, FormControl, MenuItem, TextField } from "@mui/material";
 import React, { useContext, useEffect } from "react";
-import { BatchResponse } from "../../../backend/api/routes/responseTypes";
+import { TeacherResponse } from "../../../backend/api/routes/responseTypes";
 import api from "../..";
 import { SelectedValuesContext } from "../../context/SelectedValuesContext";
 import { TimetableType } from "../../../utils/types";
 
-export default function Batch() {
-    const [data, setData] = React.useState<BatchResponse["batches"]>([]);
+export default function Teacher() {
+    const [data, setData] = React.useState<TeacherResponse["teachers"]>([]);
     const { selectedValues, setSelectedValues } = useContext(SelectedValuesContext);
 
     useEffect(() => {
@@ -15,10 +15,10 @@ export default function Batch() {
             return;
         }
         api.academicYears({ id })
-            .batches.get()
+            .teachers.get()
             .then(({ data, error }) => {
                 if (error) return console.log(error);
-                setData(data.batches);
+                setData(data.teachers);
             });
     }, [selectedValues.academicYear.value]);
 
@@ -26,7 +26,7 @@ export default function Batch() {
         const selectedValue = event.target.value as string;
         setSelectedValues({
             ...selectedValues,
-            batch: { selected: true, value: selectedValue },
+            teacher: { selected: true, value: selectedValue },
         });
     };
 
@@ -37,23 +37,21 @@ export default function Batch() {
             ml={"0.5rem"}
             sx={{
                 display:
-                    selectedValues.timetableType.value === TimetableType.DIVISION
-                        ? "block"
-                        : "none",
+                    selectedValues.timetableType.value === TimetableType.TEACHER ? "block" : "none",
             }}
         >
             <FormControl fullWidth>
                 <TextField
                     onChange={handleChange}
-                    label="Batch"
+                    label="Teacher"
                     select
                     fullWidth
                     disabled={!selectedValues.academicYear.selected}
-                    value={selectedValues.batch.value || ""}
+                    value={selectedValues.teacher.value || ""}
                 >
-                    {data.map((batch, i) => (
-                        <MenuItem key={batch.batchName} value={batch.id}>
-                            {i + 1}: {batch.batchName}
+                    {data.map((teacher, i) => (
+                        <MenuItem key={teacher.teacherName} value={teacher.id}>
+                            {i + 1}: {teacher.teacherName}
                         </MenuItem>
                     ))}
                 </TextField>

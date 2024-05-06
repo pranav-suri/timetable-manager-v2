@@ -116,11 +116,11 @@ export default function OldTimetable({
     handleDrawerOpen: () => void;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
-    const PDFComp = useRef();
+    const PDFComp = useRef<HTMLDivElement>(null); // Add type annotation to the useRef call
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
     const generatePdf = useReactToPrint({
-        content: () => PDFComp.current,
+        content: () => PDFComp.current, // Access the current property of the ref
         documentTitle: "insert title here",
     });
 
