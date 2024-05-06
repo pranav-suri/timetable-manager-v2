@@ -9,6 +9,7 @@ import {
     TimetableType as TimetableTypeButton,
     Teacher as TeacherButton,
     Classroom as ClassroomButton,
+    Generate as GenerateButton
 } from "../Buttons";
 
 const NavBar = () => {
@@ -24,9 +25,10 @@ const NavBar = () => {
                 <BatchButton />
                 <DepartmentButton />
                 <DivisionButton />
+                <ViewButton />
                 {/* Spacer element to push the next elements to the right */}
                 <div style={{ flexGrow: 1 }}></div>
-                <ViewButton />
+                <GenerateButton />
             </Toolbar>
         </AppBar>
     );

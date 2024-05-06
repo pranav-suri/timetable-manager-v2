@@ -15,7 +15,6 @@ sy,cs,a1,Engineering Mathematics III,core,ramkishun.lodhi@sitpune.edu.in,401,2,4
 sy,cs,a2,Engineering Mathematics III,core,ramkishun.lodhi@sitpune.edu.in,401,2,4,,
 sy,cs,a3,Engineering Mathematics III,core,ramkishun.lodhi@sitpune.edu.in,401,2,4,,
 sy,cs,a1,Data Base Management Systems Lab,core,vijayshri.khedkar@sitpune.edu.in,DBMS Lab,1,1,,`
-sy,cs,a2,Data Base Management Systems Lab,core,shubhangi.deokar@sitpune.edu.in,DBMS Lab,1,1,,
 sy,cs,a3,Data Base Management Systems Lab,core,rupali.gangarde@sitpune.edu.in,DBMS Lab,2,1,,
 sy,cs,a1,Engineering Mathematics III Tut,core,ramkishun.lodhi@sitpune.edu.in,Tut Room,3,1,,
 sy,cs,a2,Engineering Mathematics III Tut,core,ramkishun.lodhi@sitpune.edu.in,Tut Room,2,1,,
@@ -33,7 +32,6 @@ sy,cs,a1,FlexiCredit Course OOPs with JAVA,core,sushank.dahiwadkar.vf@sitpune.ed
 sy,cs,a2,FlexiCredit Course OOPs with JAVA,core,sushank.dahiwadkar.vf@sitpune.edu.in,CL 02,4,1,,
 sy,cs,a3,FlexiCredit Course OOPs with JAVA,core,sushank.dahiwadkar.vf@sitpune.edu.in,CL 02,4,1,,
 sy,cs,a1,Data Base Management Systems Lab,core,vijayshri.khedkar@sitpune.edu.in,DBMS Lab,1,2,,
-sy,cs,a2,Data Base Management Systems Lab,core,shubhangi.deokar@sitpune.edu.in,DBMS Lab,1,2,,
 sy,cs,a3,Operating Systems Lab,core,nilima.zade@sitpune.edu.in,OS Lab,1,2,,
 sy,cs,a1,Basic German Div 1,elective,rasika.lanke.vf@sitpune.edu.in,401,1,7,,
 sy,cs,a2,Basic German Div 1,elective,rasika.lanke.vf@sitpune.edu.in,401,1,7,,
@@ -57,9 +55,9 @@ sy,cs,a1,Engineering Mathematics III Tut,core,ramkishun.lodhi@sitpune.edu.in,Tut
 sy,cs,a1,Operating Systems,core,nilima.zade@sitpune.edu.in,401,3,4,,
 sy,cs,a2,Operating Systems,core,nilima.zade@sitpune.edu.in,401,3,4,,
 sy,cs,a3,Operating Systems,core,nilima.zade@sitpune.edu.in,401,3,4,,
-sy,cs,a1,Data Base Management Systems Lab,core,vijayshri.khedkar@sitpune.edu.in,DBMS Lab,3,6,,`
+,,,,,,,,,,
 sy,cs,a2,Data Base Management Systems Lab,core,shubhangi.deokar@sitpune.edu.in,DBMS Lab,3,6,,
-sy,cs,a1,Data Base Management Systems Lab,core,vijayshri.khedkar@sitpune.edu.in,DBMS Lab,3,7,,`
+,,,,,,,,,,
 sy,cs,a2,Data Base Management Systems Lab,core,shubhangi.deokar@sitpune.edu.in,DBMS Lab,3,7,,
 sy,cs,a1,FlexiCredit Course OOPs with JAVA,core,sushank.dahiwadkar.vf@sitpune.edu.in,CL 02,2,6,,
 sy,cs,a2,FlexiCredit Course OOPs with JAVA,core,sushank.dahiwadkar.vf@sitpune.edu.in,CL 02,2,6,,

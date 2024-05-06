@@ -40,9 +40,11 @@ export function SubjectAutocomplete({
     useEffect(() => {
         // This has to be changed, department can divisionId must come from props or somewhere
         if (!departmentId) return;
-        edenFetch<SubjectResponse>(api.departments({ id: 2 }).subjects.get()).then((data) => {
-            setSubjects(data.subjects);
-        });
+        edenFetch<SubjectResponse>(api.departments({ id: departmentId }).subjects.get()).then(
+            (data) => {
+                setSubjects(data.subjects);
+            },
+        );
     }, [departmentId]);
 
     return (
