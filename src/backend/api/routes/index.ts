@@ -3,6 +3,7 @@ import available from "./available";
 import editing from "./editing";
 import validate from "./validate";
 import addCsv from "./addCsv";
+import generate from './generate';
 import Elysia from "elysia";
 import cors from "@elysiajs/cors";
 
@@ -20,6 +21,7 @@ const app = new Elysia()
     .use(editing)
     .use(validate)
     .use(addCsv)
+    .use(generate)
     .onError((ctx) => {
         const errorResponse = JSON.stringify({ message: ctx.error.toString(), ...ctx }, null, 2);
 

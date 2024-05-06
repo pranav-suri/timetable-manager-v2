@@ -1,7 +1,7 @@
 import { AcademicYear } from "../database";
 
 export default async function getAcademicYearId(
-    searchBy: "subdivision" | "teacher" | "classroom" | "division" | "slot",
+    searchBy: "subdivision" | "teacher" | "classroom" | "division" | "slot" | "department",
     searchId: number,
 ): Promise<AcademicYear["id"]> {
     let associationQuery = {};
@@ -64,6 +64,18 @@ export default async function getAcademicYearId(
                 association: "Slot",
                 where: { id: searchId },
                 required: true,
+            };
+            break;
+        case "department":
+            associationQuery = {
+                association: "Batch",
+                include: [
+                    {
+                        association: "Department",
+                        where: { id: searchId },
+                        required: true,
+                    },
+                ],
             };
             break;
         default:
