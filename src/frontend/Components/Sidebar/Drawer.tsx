@@ -1,5 +1,5 @@
 import { styled, useTheme } from "@mui/material/styles";
-import { Drawer, Divider, IconButton } from "@mui/material";
+import { Drawer, Divider, IconButton, Typography } from "@mui/material";
 import {
     ChevronLeft as ChevronLeftIcon,
     ChevronRight as ChevronRightIcon,
@@ -202,7 +202,9 @@ export function DrawerRight({
                     {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
             </DrawerHeader>
-            Day: {slot.day}, Slot: {slot.number}, Index: {selectedSlotIndex}
+            <Typography variant="h6" sx={{ fontWeight: "bold", marginLeft: "10px", marginTop: "10px" }}>
+                Day: {slot.day}, Slot: {slot.number}, Index: {selectedSlotIndex}
+            </Typography>
             <Divider />
             {slot.SlotDatas!.map((_, index) => (
                 <React.Fragment key={index}>

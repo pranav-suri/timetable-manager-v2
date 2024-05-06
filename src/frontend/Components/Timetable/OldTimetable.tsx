@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
 import { useReactToPrint } from "react-to-print";
+import Button from "@mui/material/Button";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -153,11 +154,14 @@ export default function OldTimetable({
                         ))}
                 </tbody>
             </table>
+
             <div className="d-grid d-md-flex justify-content-md-end mb-3">
-                <button className="btn btn-success" onClick={generatePdf}>
+                <Button variant="contained" color="primary" size="large" onClick={generatePdf} sx={{ borderRadius: "10px", fontWeight: "bold", boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)", top: "50px" }}>
                     Generate PDF
-                </button>
+                </Button>
             </div>
+
+
         </div>
     );
 }
