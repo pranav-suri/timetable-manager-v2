@@ -10,10 +10,8 @@ import "@fontsource/roboto/700.css";
 import "./App.css";
 import TimetableNewPage from "./Pages/TimetableNewPage";
 import TimetableCombined from "./Pages/TimetableCombined";
-import BatchAndSubdiviionUpload from "./Components/CSV/BatchAndSubdivision";
-import ClassroomUpload from "./Components/CSV/Classrooms";
-import SubjectAndTeacherUpload from "./Components/CSV/SubjectAndTeacers";
 import LandingPage from "./Pages/LandingPage";
+import DataUpload from "./Pages/DataUpload";
 
 export default function App() {
     return (
@@ -50,10 +48,16 @@ export default function App() {
                     path="/upload"
                     element={
                         <>
-                            <BatchAndSubdiviionUpload /> <br />
-                            <ClassroomUpload />
-                            <br />
-                            <SubjectAndTeacherUpload /> <br />
+                            <div
+                                style={{
+                                    minHeight: "100vh",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <DataUpload />
+                            </div>
                         </>
                     }
                 />

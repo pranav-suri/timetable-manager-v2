@@ -15,14 +15,14 @@ const VisuallyHiddenInput = styled("input")({
     width: 1,
 });
 
-export default function InputFileUpload() {
+export default function SubjectAndTeacherUpload() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] ?? null;
         if (file === null) return;
         const formData = new FormData();
         formData.append("file", file);
         formData.append("academicYearId", "1");
-        fetch("http://localhost:3000/csv/batchAndSubdivisions", {
+        fetch("http://localhost:3000/csv/subjectAndTeachers", {
             method: "POST",
             body: formData,
         });
@@ -34,9 +34,9 @@ export default function InputFileUpload() {
             variant="contained"
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
-            sx={{margin: "0.5rem"}}
+            sx={{ margin: "0.5rem" }}
         >
-            Batch And Subdivision Upload
+            Subject And Teacher Upload
             <VisuallyHiddenInput type="file" accept=".csv" onChange={handleFileChange} />
         </Button>
     );
