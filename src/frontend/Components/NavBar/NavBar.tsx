@@ -17,7 +17,14 @@ const NavBar = () => {
     // TODO: #7 @MatricalDefunkt Implement the ability to select an academic year, batch, division and thus a timetable
     // TODO: #8 @MatricalDefunkt Add the feature to remove selected values if a previous value is changed
     return (
-        <AppBar position="fixed" sx={{ padding: "0.5rem" }}>
+        <AppBar
+            position="fixed"
+            sx={{
+                padding: "0.5rem",
+                backdropFilter: "blur(16px)",
+            }}
+            color="transparent"
+        >
             <Toolbar>
                 <TimetableTypeButton />
                 <AcademicYearButton />
