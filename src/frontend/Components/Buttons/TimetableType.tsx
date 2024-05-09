@@ -26,7 +26,7 @@ export default function TimetableType() {
                     label="Timetable Type"
                     select
                     fullWidth
-                    defaultValue={""}
+                    defaultValue={selectedValues.timetableType.value ?? ETimetableType.DIVISION}
                 >
                     {data.map((timetableType, i) => (
                         <MenuItem key={timetableType.name} value={timetableType.value}>
