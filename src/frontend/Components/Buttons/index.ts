@@ -7,6 +7,7 @@ import Generate from "./Generate";
 import TimetableType from "./TimetableType";
 import Teacher from "./Teacher";
 import Classroom from "./Classroom";
+import ToggleAllData from "./ToggleAllData";
 
 export {
     AcademicYear,
@@ -18,4 +19,5 @@ export {
     Generate,
     Teacher,
     Classroom,
+    ToggleAllData,
 };

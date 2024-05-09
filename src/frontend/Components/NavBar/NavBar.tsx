@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Toolbar, Grid } from "@mui/material";
+import { AppBar, Toolbar } from "@mui/material";
 import {
     AcademicYear as AcademicYearButton,
     Batch as BatchButton,
@@ -9,9 +9,9 @@ import {
     TimetableType as TimetableTypeButton,
     Teacher as TeacherButton,
     Classroom as ClassroomButton,
-    Generate as GenerateButton
+    Generate as GenerateButton,
+    ToggleAllData as AllDataSwitch,
 } from "../Buttons";
-import Generate from "../Buttons/Generate"; // Import the Generate component from the correct file path
 
 const NavBar = () => {
     // TODO: #7 @MatricalDefunkt Implement the ability to select an academic year, batch, division and thus a timetable
@@ -36,9 +36,8 @@ const NavBar = () => {
                 <ViewButton />
                 {/* Spacer element to push the next elements to the right */}
                 <div style={{ flexGrow: 1 }}></div>
-                {/* <GenerateButton />
-                Render the Generate component */}
-                <Generate />
+                <GenerateButton />
+                <AllDataSwitch />
             </Toolbar>
         </AppBar>
     );

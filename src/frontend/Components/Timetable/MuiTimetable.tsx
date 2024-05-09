@@ -1,19 +1,23 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
 import { useReactToPrint } from "react-to-print";
+import PrintIcon from "@mui/icons-material/Print";
 import {
     Divider,
+    IconButton,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
     TableHead,
-    TablePagination,
     TableRow,
+    Tooltip,
+    Box,
 } from "@mui/material";
-import Button from "@mui/material/Button";
+import { ViewAllDataContext } from "../../context/ViewAllDataContext";
+import getPastelColor from "../../../utils/pastelColor";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -21,25 +25,42 @@ type SlotDatas = Slots[0]["SlotDatas"];
 type SlotDataClasses = Exclude<SlotDatas, undefined>[0]["SlotDataClasses"];
 type SlotDataSubdivisions = Exclude<SlotDatas, undefined>[0]["SlotDataSubdivisions"];
 
+const getInitials = (name: string) => {
+    // get all initials (eg: Dr. Nilima Zade = DNZ)
+    const initials = name.match(/\b\w/g) || [];
+    return initials.map((initial) => initial.toUpperCase()).join("");
+};
+
 function printClasses(slotDataClasses: SlotDataClasses) {
     return slotDataClasses?.map((slotDataClass, slotDataClassIndex) => (
         <React.Fragment key={slotDataClassIndex}>
             {" "}
             {slotDataClass.Classroom?.classroomName}
-            {","}
+            {slotDataClassIndex !== slotDataClasses.length - 1 && ","}
         </React.Fragment>
     ));
 }
-function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
-    return slotDataSubdivisions?.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
-        <React.Fragment key={slotDataSubdivisionIndex}>
-            {" "}
-            {slotDataSubdivision.Subdivision?.subdivisionName}
-            {","}
-        </React.Fragment>
-    ));
+function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions, viewAllData: boolean) {
+    return viewAllData ? (
+        slotDataSubdivisions?.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
+            <React.Fragment key={slotDataSubdivisionIndex}>
+                {" "}
+                {slotDataSubdivision.Subdivision?.subdivisionName}
+                {slotDataSubdivisionIndex !== slotDataSubdivisions.length - 1 && ","}
+            </React.Fragment>
+        ))
+    ) : (
+        <></>
+    );
 }
-function Cell({ slotDataItem }: { slotDataItem: Exclude<SlotDatas, undefined>[0] }) {
+
+function Cell({
+    slotDataItem,
+    viewAllData,
+}: {
+    slotDataItem: Exclude<SlotDatas, undefined>[0];
+    viewAllData: boolean;
+}) {
     return (
         <Box
             sx={{
@@ -47,15 +68,21 @@ function Cell({ slotDataItem }: { slotDataItem: Exclude<SlotDatas, undefined>[0]
             }}
         >
             {/* Check if teacher exists */}
-            {slotDataItem.Teacher?.teacherName} <br />
-            {slotDataItem.Subject?.subjectName} <br />
-            {printSubdivisions(slotDataItem.SlotDataSubdivisions)} <br />
+            {viewAllData ? slotDataItem.Teacher?.teacherName : ""}
+            {viewAllData ? <br /> : ""}
+            {viewAllData
+                ? slotDataItem.Subject?.subjectName
+                : getInitials(slotDataItem.Subject?.subjectName || "")}{" "}
+            <br />
+            {printSubdivisions(slotDataItem.SlotDataSubdivisions, viewAllData)}{" "}
+            {viewAllData ? <br /> : <></>}
             {printClasses(slotDataItem.SlotDataClasses)}
-            <Divider/>
-        </div>
+            <Divider />
+        </Box>
     );
 }
-function Slot({ slotDatas }: { slotDatas: SlotDatas }) {
+
+function Slot({ slotDatas, viewAllData }: { slotDatas: SlotDatas; viewAllData: boolean }) {
     const slotDatasFiltered = slotDatas!.filter(checkIfSlotDataExists);
     return (
         <React.Fragment>
@@ -63,7 +90,7 @@ function Slot({ slotDatas }: { slotDatas: SlotDatas }) {
             {/* <TableBody> */}
             {slotDatasFiltered!.map((dataItem, slotDataIndex: number) => (
                 // <TableRow key={slotDataIndex}>
-                <Cell slotDataItem={dataItem} />
+                <Cell key={slotDataIndex} slotDataItem={dataItem} viewAllData={viewAllData} />
                 // </TableRow>
             ))}
             {/* </TableBody> */}
@@ -76,12 +103,14 @@ function Row({
     timetable,
     day,
     slotNumbers,
+    viewAllData,
     handleDrawerOpen,
     setSelectedSlotIndex,
 }: {
     timetable: Timetable;
     day: number | string;
     slotNumbers: Set<Slots[0]["number"]>;
+    viewAllData: boolean;
     handleDrawerOpen: () => void;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
@@ -105,7 +134,10 @@ function Row({
                                 setSelectedSlotIndex(slotIndex);
                             }}
                         >
-                            <Slot slotDatas={timetable.slots[slotIndex].SlotDatas} />
+                            <Slot
+                                slotDatas={timetable.slots[slotIndex].SlotDatas}
+                                viewAllData={viewAllData}
+                            />
                         </TableCell>
                     );
                 })}
@@ -139,6 +171,7 @@ export default function MuiTimetable({
     const PDFComp = useRef<HTMLDivElement>(null); // Add type annotation to the useRef call
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
+    const { viewAllData } = useContext(ViewAllDataContext);
     const generatePdf = useReactToPrint({
         content: () => PDFComp.current, // Access the current property of the ref
         documentTitle: "insert title here",
@@ -170,6 +203,7 @@ export default function MuiTimetable({
                                     slotNumbers={slotNumbers}
                                     handleDrawerOpen={handleDrawerOpen}
                                     setSelectedSlotIndex={setSelectedSlotIndex}
+                                    viewAllData={viewAllData}
                                 />
                             ))}
                     </TableBody>
@@ -177,20 +211,19 @@ export default function MuiTimetable({
             </TableContainer>
 
             <div className="d-grid d-md-flex justify-content-md-end mb-3">
-                <Button
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    onClick={generatePdf}
-                    sx={{
-                        borderRadius: "10px",
-                        fontWeight: "bold",
-                        boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-                        top: "50px",
-                    }}
-                >
-                    Generate PDF
-                </Button>
+                <Tooltip title="Generate PDF">
+                    <IconButton
+                        onClick={generatePdf}
+                        sx={{
+                            borderRadius: "10px",
+                            fontWeight: "bold",
+                            boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+                            top: "50px",
+                        }}
+                    >
+                        <PrintIcon />
+                    </IconButton>
+                </Tooltip>
             </div>
         </div>
     );
