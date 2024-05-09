@@ -7,6 +7,7 @@ import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
 import { NavBar } from "../Components";
 import { TimetableDataContext } from "../context/TimetableDataContext";
 import { SelectedValuesProvider } from "../context/SelectedValuesContext";
+import MuiTimetable from "../Components/Timetable/MuiTimetable";
 
 const drawerwidth = 300;
 
@@ -57,7 +58,7 @@ export default function TimetableCombined() {
 
                     <Main drawerState={drawerState} drawerwidth={drawerwidth}>
                         <DrawerHeader />
-                        <OldTimetable
+                        <MuiTimetable
                             timetableData={timetable.available ? timetable.timetableData : null}
                             handleDrawerOpen={handleDrawerOpen}
                             setSelectedSlotIndex={setSelectedSlotIndex}
