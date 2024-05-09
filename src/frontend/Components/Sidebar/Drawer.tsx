@@ -142,12 +142,12 @@ export function DrawerRight({
     }
 
     const slot = timetableData?.timetable?.slots[selectedSlotIndex!];
-    const slotDatas =
-        slot?.SlotDatas?.filter(checkIfSlotDataExists) || ([] as SlotDatas);
+    const slotDatas = slot?.SlotDatas?.filter(checkIfSlotDataExists) || ([] as SlotDatas);
     useEffect(() => {
         if (!update || slotDataIndexToUpdate == null) return;
         updateSlotData(slotDataIndexToUpdate);
         setUpdate(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slotDatas, update, slotDataIndexToUpdate]);
 
     useEffect(() => {
@@ -175,6 +175,7 @@ export function DrawerRight({
                 draft!.timetable!.slots[selectedSlotIndex!].SlotDatas = slotDatas as SlotDatas;
             });
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedSlotIndex, update]);
 
     const theme = useTheme();
@@ -202,7 +203,10 @@ export function DrawerRight({
                     {theme.direction === "rtl" ? <ChevronLeftIcon /> : <ChevronRightIcon />}
                 </IconButton>
             </DrawerHeader>
-            <Typography variant="h6" sx={{ fontWeight: "bold", marginLeft: "10px", marginTop: "10px" }}>
+            <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", marginLeft: "10px", marginTop: "10px" }}
+            >
                 Day: {slot.day}, Slot: {slot.number}, Index: {selectedSlotIndex}
             </Typography>
             <Divider />

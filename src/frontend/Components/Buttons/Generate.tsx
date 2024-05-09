@@ -46,7 +46,7 @@
 //     );
 // }
 import { IconButton, Tooltip } from "@mui/material";
-import AutoModeIcon from '@mui/icons-material/AutoMode';
+import AutoModeIcon from "@mui/icons-material/AutoMode";
 import { SelectedValuesContext } from "../../context/SelectedValuesContext";
 import React, { useContext, useEffect, useRef } from "react";
 import api from "../..";

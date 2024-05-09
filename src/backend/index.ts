@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import sampleDataUpload from "./api/upload/sampleUpload";
 import app from "./api/routes";
 

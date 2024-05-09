@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useContext, useEffect } from "react";
+import React, { SyntheticEvent, useContext } from "react";
 import Switch from "@mui/material/Switch";
 import { FormControlLabel } from "@mui/material";
 import { ViewAllDataContext } from "../../context/ViewAllDataContext";

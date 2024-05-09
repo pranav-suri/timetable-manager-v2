@@ -24,7 +24,7 @@ const app = new Elysia({ prefix: "/generateTT" })
     )
     .get(
         "/loading",
-        async ({ body }) => {
+        async () => {
             return await fetch(`${PYTHON_SERVER_URL}/loading`);
         },
         {

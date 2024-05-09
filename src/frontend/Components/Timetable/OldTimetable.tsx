@@ -3,7 +3,7 @@ import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
 import { useReactToPrint } from "react-to-print";
 import { IconButton, Tooltip } from "@mui/material";
-import PrintIcon from '@mui/icons-material/Print';
+import PrintIcon from "@mui/icons-material/Print";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];

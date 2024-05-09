@@ -3,7 +3,7 @@ import available from "./available";
 import editing from "./editing";
 import validate from "./validate";
 import addCsv from "./addCsv";
-import generate from './generate';
+import generate from "./generate";
 import Elysia from "elysia";
 import cors from "@elysiajs/cors";
 

@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import { Box, Button, Typography, Container, Grid, Paper } from "@mui/material";
+import { Button, Typography, Container, Grid, Paper } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Main = styled("main", {
-    shouldForwardProp: (prop) => prop !== "drawerState"
+    shouldForwardProp: (prop) => prop !== "drawerState",
 })<{
     drawerState?: boolean;
     drawerwidth: number;
@@ -13,15 +13,15 @@ const Main = styled("main", {
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
+        duration: theme.transitions.duration.leavingScreen,
     }),
     marginRight: -drawerwidth,
     ...(drawerState && {
         transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen
+            duration: theme.transitions.duration.enteringScreen,
         }),
-        marginRight: 0
+        marginRight: 0,
     }),
     position: "relative",
     backgroundColor: "#f7f7f7",
@@ -40,9 +40,9 @@ const FancyButton = styled(Button)({
     color: "white",
     height: 48,
     padding: "0 30px",
-    '&:hover': {
+    "&:hover": {
         background: "#1976d2",
-    }
+    },
 });
 
 const ButtonContainer = styled("div")({
@@ -56,10 +56,12 @@ const ButtonContainer = styled("div")({
 export default function LandingPage() {
     const [drawerState, setDrawerState] = useState(false);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleDrawerOpen = () => {
         setDrawerState(true);
     };
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const handleDrawerClose = () => {
         setDrawerState(false);
     };
@@ -74,19 +76,26 @@ export default function LandingPage() {
                                 Time Table Generator
                             </Typography>
                             <Typography variant="body1" paragraph>
-                                Effortlessly create tailor-made timetables for your university with just one click, enhancing organization and efficiency instantly.
+                                Effortlessly create tailor-made timetables for your university with
+                                just one click, enhancing organization and efficiency instantly.
                             </Typography>
                         </Grid>
                         <Grid item xs={12} md={6}>
                             <Paper elevation={3}>
-                                <img src="src/icons/3895889.jpg" alt="placeholder" style={{ width: "100%" }} />
+                                <img
+                                    src="src/icons/3895889.jpg"
+                                    alt="placeholder"
+                                    style={{ width: "100%" }}
+                                />
                                 <ButtonContainer>
-                                    <Link to="/upload"> {/* Link to Upload.tsx */}
-                                        <FancyButton variant="contained">
-                                            Upload CSV
-                                        </FancyButton>
+                                    <Link to="/upload">
+                                        {" "}
+                                        {/* Link to Upload.tsx */}
+                                        <FancyButton variant="contained">Upload CSV</FancyButton>
                                     </Link>
-                                    <Link to="/combined"> {/* Link to TimetableCombined.tsx */}
+                                    <Link to="/combined">
+                                        {" "}
+                                        {/* Link to TimetableCombined.tsx */}
                                         <FancyButton variant="contained">
                                             Generate or Edit
                                         </FancyButton>
