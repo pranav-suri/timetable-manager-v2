@@ -53,6 +53,7 @@ import api from "../..";
 import { TimetableDataContext } from "../../context/TimetableDataContext";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { edenFetch } from "../fetchAndSet";
+import { TimetableType } from "../../../utils/types";
 
 export default function Generate() {
     const isDisabled = useRef(true);
@@ -76,12 +77,29 @@ export default function Generate() {
     };
 
     useEffect(() => {
-        if (!selectedValues.division.value || !selectedValues.department.value) {
-            isDisabled.current = true;
-        } else {
-            isDisabled.current = false;
+        if (selectedValues.timetableType.value === TimetableType.CLASSROOM) {
+            if (!selectedValues.academicYear.selected || !selectedValues.classroom.selected) {
+                isDisabled.current = true;
+            } else isDisabled.current = false;
+        } else if (selectedValues.timetableType.value === TimetableType.DIVISION) {
+            if (
+                !selectedValues.academicYear.selected ||
+                !selectedValues.batch.selected ||
+                !selectedValues.department.selected ||
+                !selectedValues.division.selected
+            ) {
+                isDisabled.current = true;
+            } else {
+                isDisabled.current = false;
+            }
+        } else if (selectedValues.timetableType.value === TimetableType.TEACHER) {
+            if (!selectedValues.academicYear.selected || !selectedValues.teacher.selected) {
+                isDisabled.current = true;
+            } else {
+                isDisabled.current = false;
+            }
         }
-    }, [selectedValues.division.value, selectedValues.department.value]);
+    }, [selectedValues]);
 
     return (
         <Tooltip title="Generate New">
@@ -97,4 +115,3 @@ export default function Generate() {
         </Tooltip>
     );
 }
-
