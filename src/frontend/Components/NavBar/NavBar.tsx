@@ -11,9 +11,11 @@ import {
     Classroom as ClassroomButton,
     Generate as GenerateButton,
     ToggleAllData as AllDataSwitch,
+    Print as PrintButton,
+    DarkMode as DarkModeSwitch,
 } from "../Buttons";
 
-const NavBar = () => {
+export const NavBar = ({ pdfComponent }: { pdfComponent: React.RefObject<HTMLDivElement> }) => {
     // TODO: #7 @MatricalDefunkt Implement the ability to select an academic year, batch, division and thus a timetable
     // TODO: #8 @MatricalDefunkt Add the feature to remove selected values if a previous value is changed
     return (
@@ -37,6 +39,7 @@ const NavBar = () => {
                 {/* Spacer element to push the next elements to the right */}
                 <div style={{ flexGrow: 1 }}></div>
                 <GenerateButton />
+                <PrintButton pdfComponent={pdfComponent} />
                 <AllDataSwitch />
             </Toolbar>
         </AppBar>

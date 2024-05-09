@@ -79,13 +79,11 @@ const drawerwidth = 300;
 //         </>
 //     );
 // }
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { styled } from "@mui/material/styles";
 import { Box } from "@mui/material";
 import { DrawerHeader, DrawerRight } from "../Components/Sidebar/Drawer";
-import { NavBar } from "../Components"; // Import the updated NavBar component
-
-// Rest of the code...
+import { NavBar } from "../Components/NavBar/NavBar";
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "drawerState" })<{
     drawerState?: boolean;
@@ -118,6 +116,7 @@ export default function TimetableCombined() {
     const [drawerState, setDrawerState] = useState(false);
     const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(null);
     const { timetable, setTimetable } = useContext(TimetableDataContext);
+    const pdfComponent = useRef<HTMLDivElement>(null);
     const handleDrawerOpen = () => {
         setDrawerState(true);
     };
@@ -131,13 +130,14 @@ export default function TimetableCombined() {
             <Box sx={{ display: "flex" }}>
                 <SelectedValuesProvider>
                     <ViewAllDataProvider>
-                        <NavBar />
+                        <NavBar pdfComponent={pdfComponent} />
                         <Main drawerState={drawerState} drawerwidth={drawerwidth}>
                             <DrawerHeader />
                             <MuiTimetable
                                 timetableData={timetable.available ? timetable.timetableData : null}
                                 handleDrawerOpen={handleDrawerOpen}
                                 setSelectedSlotIndex={setSelectedSlotIndex}
+                                pdfComponent={pdfComponent}
                             />
                         </Main>
                     </ViewAllDataProvider>
