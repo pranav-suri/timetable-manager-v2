@@ -13,5 +13,18 @@ tr {
     border: 1px solid black;
     border-collapse: collapse;
     padding: 15px;
-    /* color: hsl(63, 100%, 85%); */
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-corner {
+    background-color: #0000;
 }
