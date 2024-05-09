@@ -41,7 +41,11 @@ function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions) {
 }
 function Cell({ slotDataItem }: { slotDataItem: Exclude<SlotDatas, undefined>[0] }) {
     return (
-        <div>
+        <Box
+            sx={{
+                backgroundColor: getPastelColor(slotDataItem.Subject?.subjectName ?? ""),
+            }}
+        >
             {/* Check if teacher exists */}
             {slotDataItem.Teacher?.teacherName} <br />
             {slotDataItem.Subject?.subjectName} <br />

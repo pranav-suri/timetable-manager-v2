@@ -7,6 +7,7 @@
 //import { NavBar } from "../Components";
 import { TimetableDataContext } from "../context/TimetableDataContext";
 import { SelectedValuesProvider } from "../context/SelectedValuesContext";
+import { ViewAllDataProvider } from "../context/ViewAllDataContext";
 import MuiTimetable from "../Components/Timetable/MuiTimetable";
 
 const drawerwidth = 300;
@@ -130,15 +131,17 @@ export default function TimetableCombined() {
         <>
             <Box sx={{ display: "flex" }}>
                 <SelectedValuesProvider>
-                    <NavBar /> {/* Render the updated NavBar component */}
-                    <Main drawerState={drawerState} drawerwidth={drawerwidth}>
-                        <DrawerHeader />
-                        <MuiTimetable
-                            timetableData={timetable.available ? timetable.timetableData : null}
-                            handleDrawerOpen={handleDrawerOpen}
-                            setSelectedSlotIndex={setSelectedSlotIndex}
-                        />
-                    </Main>
+                    <ViewAllDataProvider>
+                        <NavBar />
+                        <Main drawerState={drawerState} drawerwidth={drawerwidth}>
+                            <DrawerHeader />
+                            <MuiTimetable
+                                timetableData={timetable.available ? timetable.timetableData : null}
+                                handleDrawerOpen={handleDrawerOpen}
+                                setSelectedSlotIndex={setSelectedSlotIndex}
+                            />
+                        </Main>
+                    </ViewAllDataProvider>
                     <DrawerRight
                         setTimetable={setTimetable}
                         drawerwidth={drawerwidth}
