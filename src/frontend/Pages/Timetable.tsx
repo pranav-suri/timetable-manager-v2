@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { NavBar } from "../Components";
+// import { NavBar } from "../Components/NavBar/NavBar";
 import OldTimetable from "../Components/Timetable/OldTimetable";
 import { TimetableDataContext } from "../context/TimetableDataContext";
 import { DrawerHeader } from "../Components/Sidebar/Drawer";
@@ -11,7 +11,7 @@ export default function Timetable() {
 
     return (
         <React.Fragment>
-            <NavBar />
+            {/* <NavBar /> */}
             <DrawerHeader />
             <OldTimetable
                 handleDrawerOpen={() => console.log("Called handler")}
