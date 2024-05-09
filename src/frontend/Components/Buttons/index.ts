@@ -8,6 +8,8 @@ import TimetableType from "./TimetableType";
 import Teacher from "./Teacher";
 import Classroom from "./Classroom";
 import ToggleAllData from "./ToggleAllData";
+import Print from "./Print";
+import DarkMode from "./ToggleDarkMode";
 
 export {
     AcademicYear,
@@ -20,4 +22,6 @@ export {
     Teacher,
     Classroom,
     ToggleAllData,
+    Print,
+    DarkMode,
 };

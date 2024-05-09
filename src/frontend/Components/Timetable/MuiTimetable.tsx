@@ -1,11 +1,8 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
-import { useReactToPrint } from "react-to-print";
-import PrintIcon from "@mui/icons-material/Print";
 import {
     Divider,
-    IconButton,
     Paper,
     Table,
     TableBody,
@@ -13,11 +10,13 @@ import {
     TableContainer,
     TableHead,
     TableRow,
-    Tooltip,
-    Box,
+    Card,
+    CardHeader,
+    CardContent,
 } from "@mui/material";
 import { ViewAllDataContext } from "../../context/ViewAllDataContext";
-import getPastelColor from "../../../utils/pastelColor";
+import getColor from "../../../utils/getColor";
+import { ThemeModeContext } from "../../context/ThemeModeContext";
 
 type Timetable = TimetableResponse["timetable"];
 type Slots = Timetable["slots"];
@@ -61,24 +60,31 @@ function Cell({
     slotDataItem: Exclude<SlotDatas, undefined>[0];
     viewAllData: boolean;
 }) {
+    const { themeMode } = useContext(ThemeModeContext);
     return (
-        <Box
+        <Card
             sx={{
-                backgroundColor: getPastelColor(slotDataItem.Subject?.subjectName ?? ""),
+                backgroundColor: getColor(slotDataItem.Subject?.subjectName ?? "", themeMode),
+                margin: "0.5rem",
             }}
         >
-            {/* Check if teacher exists */}
-            {viewAllData ? slotDataItem.Teacher?.teacherName : ""}
-            {viewAllData ? <br /> : ""}
-            {viewAllData
-                ? slotDataItem.Subject?.subjectName
-                : getInitials(slotDataItem.Subject?.subjectName || "")}{" "}
-            <br />
-            {printSubdivisions(slotDataItem.SlotDataSubdivisions, viewAllData)}{" "}
-            {viewAllData ? <br /> : <></>}
-            {printClasses(slotDataItem.SlotDataClasses)}
-            <Divider />
-        </Box>
+            <CardHeader
+                title={
+                    viewAllData
+                        ? slotDataItem.Subject?.subjectName
+                        : getInitials(slotDataItem.Subject?.subjectName || "")
+                }
+                titleTypographyProps={{ fontWeight: "500", fontSize: "1rem" }}
+                sx={{ padding: 0, margin: "8px" }}
+            />
+            <CardContent sx={{ padding: 0, margin: "8px" }} style={{ padding: 0 }}>
+                {viewAllData ? slotDataItem.Teacher?.teacherName : ""}
+                {viewAllData ? <br /> : ""}
+                {printSubdivisions(slotDataItem.SlotDataSubdivisions, viewAllData)}{" "}
+                {viewAllData ? <br /> : <></>}
+                {printClasses(slotDataItem.SlotDataClasses)}
+            </CardContent>
+        </Card>
     );
 }
 
@@ -161,21 +167,19 @@ function Headers({ slotNumbers }: { slotNumbers: Set<Slots[0]["number"]> }) {
 
 export default function MuiTimetable({
     timetableData,
+    pdfComponent,
     handleDrawerOpen,
     setSelectedSlotIndex,
 }: {
     timetableData: TimetableResponse | null;
+    pdfComponent: React.RefObject<HTMLDivElement>;
     handleDrawerOpen: () => void;
+
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
-    const PDFComp = useRef<HTMLDivElement>(null); // Add type annotation to the useRef call
     const slotNumbers = new Set<Slots[0]["number"]>();
     const slotDays = new Set<Slots[0]["day"]>();
     const { viewAllData } = useContext(ViewAllDataContext);
-    const generatePdf = useReactToPrint({
-        content: () => PDFComp.current, // Access the current property of the ref
-        documentTitle: "insert title here",
-    });
 
     if (!timetableData) return;
     timetableData.timetable?.slots.forEach((slot) => {
@@ -184,7 +188,7 @@ export default function MuiTimetable({
     });
 
     return (
-        <div ref={PDFComp} style={{ width: "100%" }}>
+        <div ref={pdfComponent} style={{ width: "100%" }}>
             <TableContainer component={Paper}>
                 <Table>
                     <TableHead>

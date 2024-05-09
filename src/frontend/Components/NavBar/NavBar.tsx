@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { AppBar, Toolbar } from "@mui/material";
 import {
     AcademicYear as AcademicYearButton,
@@ -14,16 +14,19 @@ import {
     Print as PrintButton,
     DarkMode as DarkModeSwitch,
 } from "../Buttons";
+import { ThemeModeContext } from "../../context/ThemeModeContext";
 
 export const NavBar = ({ pdfComponent }: { pdfComponent: React.RefObject<HTMLDivElement> }) => {
     // TODO: #7 @MatricalDefunkt Implement the ability to select an academic year, batch, division and thus a timetable
     // TODO: #8 @MatricalDefunkt Add the feature to remove selected values if a previous value is changed
+    const { themeMode } = useContext(ThemeModeContext);
     return (
         <AppBar
             position="fixed"
             sx={{
                 padding: "0.5rem",
                 backdropFilter: "blur(16px)",
+                backgroundColor: `hsla(0, 0%, ${themeMode === "dark" ? "13%" : "80%"}, 20%)`,
             }}
             color="transparent"
         >
@@ -41,9 +44,8 @@ export const NavBar = ({ pdfComponent }: { pdfComponent: React.RefObject<HTMLDiv
                 <GenerateButton />
                 <PrintButton pdfComponent={pdfComponent} />
                 <AllDataSwitch />
+                <DarkModeSwitch />
             </Toolbar>
         </AppBar>
     );
 };
-
-export default NavBar;

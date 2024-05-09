@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
+import { ThemeModeContextProvider } from "./context/ThemeModeContext.tsx";
 
 interface ErrorBoundaryState {
     hasError: boolean;
@@ -39,7 +40,9 @@ class ErrorBoundary extends React.Component {
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <ErrorBoundary>
-            <App />
+            <ThemeModeContextProvider>
+                <App />
+            </ThemeModeContextProvider>
         </ErrorBoundary>
     </React.StrictMode>,
 );
