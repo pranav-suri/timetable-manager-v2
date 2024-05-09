@@ -3,11 +3,11 @@
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
-    "start": "bun run start:frontend & bun run start:backend",
+    "start": "if command -v pm2 &> /dev/null; then (pm2 describe backend-dist > /dev/null && pm2 restart backend-dist) || pm2 start bun --name backend-dist -- run start:backend; (pm2 describe frontend-dist > /dev/null && pm2 restart frontend-dist) || pm2 start bun --name frontend-dist -- run start:frontend; else bun add -g pm2 && bun run dev; fi",
     "start:frontend": "bunx --bun vite",
     "start:backend": "bun run src/backend/index.ts",
     "dev": "if command -v pm2 &> /dev/null; then (pm2 describe backend > /dev/null && pm2 restart backend) || pm2 start bun --name backend -- run dev:backend; (pm2 describe frontend > /dev/null && pm2 restart frontend) || pm2 start bun --name frontend -- run dev:frontend; else bun add -g pm2 && bun run dev; fi",
-    "stop": "if command -v pm2 &> /dev/null; then pm2 stop backend & pm2 stop frontend; fi",
+    "stop": "if command -v pm2 &> /dev/null; then pm2 stop backend & pm2 stop frontend & pm2 stop backend-dist & pm2 stop frontend-dist; fi",
     "dev:frontend": "bunx --bun vite",
     "dev:backend": "bun run --hot src/backend/index.ts",
     "build": "bun lint && tsc && vite build",
