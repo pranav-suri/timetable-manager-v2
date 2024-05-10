@@ -26,7 +26,7 @@ export const NavBar = ({ pdfComponent }: { pdfComponent: React.RefObject<HTMLDiv
             sx={{
                 padding: "0.5rem",
                 backdropFilter: "blur(16px)",
-                backgroundColor: `hsla(0, 0%, ${themeMode === "dark" ? "13%" : "80%"}, 20%)`,
+                backgroundColor: `hsla(0, 0%, ${themeMode === "dark" ? "30%" : "60%"}, 50%)`,
             }}
             color="transparent"
         >
