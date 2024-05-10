@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import { TimetableResponse } from "../../../backend/api/routes/responseTypes";
 import { checkIfSlotDataExists } from "../fetchAndSet";
 import {
-    Divider,
     Paper,
     Table,
     TableBody,
@@ -91,17 +90,11 @@ function Cell({
 function Slot({ slotDatas, viewAllData }: { slotDatas: SlotDatas; viewAllData: boolean }) {
     const slotDatasFiltered = slotDatas!.filter(checkIfSlotDataExists);
     return (
-        <React.Fragment>
-            {/* <Table> */}
-            {/* <TableBody> */}
+        <div>
             {slotDatasFiltered!.map((dataItem, slotDataIndex: number) => (
-                // <TableRow key={slotDataIndex}>
                 <Cell key={slotDataIndex} slotDataItem={dataItem} viewAllData={viewAllData} />
-                // </TableRow>
             ))}
-            {/* </TableBody> */}
-            {/* </Table> */}
-        </React.Fragment>
+        </div>
     );
 }
 
@@ -153,14 +146,14 @@ function Row({
 
 function Headers({ slotNumbers }: { slotNumbers: Set<Slots[0]["number"]> }) {
     const headers = (
-        <>
+        <React.Fragment>
             <TableCell key="days-slots-header">Days/Slots</TableCell>
             {Array.from(slotNumbers)
                 .sort()
                 .map((slotNumber) => (
                     <TableCell key={slotNumber}>{slotNumber}</TableCell>
                 ))}
-        </>
+        </React.Fragment>
     );
     return headers;
 }
@@ -188,9 +181,9 @@ export default function MuiTimetable({
     });
 
     return (
-        <div ref={pdfComponent} style={{ width: "100%" }}>
-            <TableContainer component={Paper}>
-                <Table>
+        <TableContainer component={Paper} className="printable">
+            <div ref={pdfComponent}>
+                <Table size="small">
                     <TableHead>
                         <TableRow>
                             <Headers slotNumbers={slotNumbers} />
@@ -212,7 +205,7 @@ export default function MuiTimetable({
                             ))}
                     </TableBody>
                 </Table>
-            </TableContainer>
-        </div>
+            </div>
+        </TableContainer>
     );
 }

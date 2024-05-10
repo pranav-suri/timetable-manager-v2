@@ -28,3 +28,7 @@ tr {
 ::-webkit-scrollbar-corner {
     background-color: #0000;
 }
+
+@page {
+    size: A3 landscape;
+}

@@ -40,11 +40,11 @@ const getName = (selectedValues: {
     };
 }) => {
     if (selectedValues.timetableType.value === TimetableType.DIVISION) {
-        return `${selectedValues.academicYear}-${selectedValues.batch}-${selectedValues.department}-${selectedValues.division}-timetable`;
+        return `${selectedValues.academicYear.value}-${selectedValues.batch.value}-${selectedValues.department.value}-${selectedValues.division.value}-timetable`;
     } else if (selectedValues.timetableType.value === TimetableType.TEACHER) {
-        return `${selectedValues.academicYear}-${selectedValues.teacher}-timetable`;
+        return `${selectedValues.academicYear.value}-${selectedValues.teacher.value}-timetable`;
     } else if (selectedValues.timetableType.value === TimetableType.CLASSROOM) {
-        return `${selectedValues.academicYear}-${selectedValues.classroom}-timetable`;
+        return `${selectedValues.academicYear.value}-${selectedValues.classroom.value}-timetable`;
     } else return "Insert Name Here";
 };
 

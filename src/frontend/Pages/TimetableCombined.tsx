@@ -92,13 +92,13 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "drawerState
     flexGrow: 1,
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.sharp,
+        easing: theme.transitions.easing.easeInOut,
         duration: theme.transitions.duration.leavingScreen,
     }),
     marginRight: -drawerwidth,
     ...(drawerState && {
         transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.easeOut,
+            easing: theme.transitions.easing.easeInOut,
             duration: theme.transitions.duration.enteringScreen,
         }),
         marginRight: 0,
@@ -126,32 +126,30 @@ export default function TimetableCombined() {
     };
 
     return (
-        <>
-            <Box sx={{ display: "flex" }}>
-                <SelectedValuesProvider>
-                    <ViewAllDataProvider>
-                        <NavBar pdfComponent={pdfComponent} />
-                        <Main drawerState={drawerState} drawerwidth={drawerwidth}>
-                            <DrawerHeader />
-                            <MuiTimetable
-                                timetableData={timetable.available ? timetable.timetableData : null}
-                                handleDrawerOpen={handleDrawerOpen}
-                                setSelectedSlotIndex={setSelectedSlotIndex}
-                                pdfComponent={pdfComponent}
-                            />
-                        </Main>
-                    </ViewAllDataProvider>
-                    <DrawerRight
-                        setTimetable={setTimetable}
-                        drawerwidth={drawerwidth}
-                        handleDrawerClose={handleDrawerClose}
-                        setSelectedSlotIndex={setSelectedSlotIndex}
-                        drawerState={drawerState}
-                        selectedSlotIndex={selectedSlotIndex}
-                        timetableData={timetable.available ? timetable.timetableData : null}
-                    />
-                </SelectedValuesProvider>
-            </Box>
-        </>
+        <Box sx={{ display: "flex" }}>
+            <SelectedValuesProvider>
+                <ViewAllDataProvider>
+                    <NavBar pdfComponent={pdfComponent} />
+                    <Main drawerState={drawerState} drawerwidth={drawerwidth} className="main">
+                        <DrawerHeader />
+                        <MuiTimetable
+                            timetableData={timetable.available ? timetable.timetableData : null}
+                            handleDrawerOpen={handleDrawerOpen}
+                            setSelectedSlotIndex={setSelectedSlotIndex}
+                            pdfComponent={pdfComponent}
+                        />
+                    </Main>
+                </ViewAllDataProvider>
+                <DrawerRight
+                    setTimetable={setTimetable}
+                    drawerwidth={drawerwidth}
+                    handleDrawerClose={handleDrawerClose}
+                    setSelectedSlotIndex={setSelectedSlotIndex}
+                    drawerState={drawerState}
+                    selectedSlotIndex={selectedSlotIndex}
+                    timetableData={timetable.available ? timetable.timetableData : null}
+                />
+            </SelectedValuesProvider>
+        </Box>
     );
 }
