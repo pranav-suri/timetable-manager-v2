@@ -39,17 +39,13 @@ function printClasses(slotDataClasses: SlotDataClasses) {
     ));
 }
 function printSubdivisions(slotDataSubdivisions: SlotDataSubdivisions, viewAllData: boolean) {
-    return viewAllData ? (
-        slotDataSubdivisions?.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
-            <React.Fragment key={slotDataSubdivisionIndex}>
-                {" "}
-                {slotDataSubdivision.Subdivision?.subdivisionName}
-                {slotDataSubdivisionIndex !== slotDataSubdivisions.length - 1 && ","}
-            </React.Fragment>
-        ))
-    ) : (
-        <></>
-    );
+    return slotDataSubdivisions?.map((slotDataSubdivision, slotDataSubdivisionIndex) => (
+        <React.Fragment key={slotDataSubdivisionIndex}>
+            {" "}
+            {slotDataSubdivision.Subdivision?.subdivisionName}
+            {slotDataSubdivisionIndex !== slotDataSubdivisions.length - 1 && ","}
+        </React.Fragment>
+    ));
 }
 
 function Cell({
@@ -107,16 +103,18 @@ function Row({
     setSelectedSlotIndex,
 }: {
     timetable: Timetable;
-    day: number | string;
+    day: number;
     slotNumbers: Set<Slots[0]["number"]>;
     viewAllData: boolean;
     handleDrawerOpen: () => void;
     setSelectedSlotIndex: React.Dispatch<React.SetStateAction<number | null>>;
 }) {
+    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
     return (
         <TableRow>
             {/* <TableHead> */}
-            <TableCell>{day}</TableCell>
+            <TableCell>{DAYS[day - 1]}</TableCell>
             {/* </TableHead> */}
 
             {Array.from(slotNumbers)

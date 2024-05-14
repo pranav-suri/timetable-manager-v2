@@ -180,6 +180,9 @@ export function DrawerRight({
 
     const theme = useTheme();
     if (!slot) return null;
+
+    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
     return (
         <Drawer
             sx={{
@@ -207,7 +210,10 @@ export function DrawerRight({
                 variant="h6"
                 sx={{ fontWeight: "bold", marginLeft: "10px", marginTop: "10px" }}
             >
-                Day: {slot.day}, Slot: {slot.number}, Index: {selectedSlotIndex}
+                {DAYS[slot.day - 1]}, Slot: {slot.number}
+                <br />
+                <br />
+                {/* , Index: {selectedSlotIndex} */}
             </Typography>
             <Divider />
             {slot.SlotDatas!.map((_, index) => (
