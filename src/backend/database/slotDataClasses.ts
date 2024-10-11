@@ -34,7 +34,7 @@ SlotDataClasses.init(
     {
         sequelize,
         tableName: "SlotDataClasses",
-    }
+    },
 );
 
 export default SlotDataClasses;

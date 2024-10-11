@@ -30,5 +30,5 @@ export {
     TeacherUnavailable,
     SlotDatas,
     SlotDataClasses,
-    SlotDataSubdivisions
+    SlotDataSubdivisions,
 };

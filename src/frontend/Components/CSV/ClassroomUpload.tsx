@@ -34,8 +34,7 @@ export default function ClassroomUpload() {
             variant="contained"
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
-            sx={{margin: "0.5rem"}}
-
+            sx={{ margin: "0.5rem" }}
         >
             Classroom Upload
             <VisuallyHiddenInput type="file" accept=".csv" onChange={handleFileChange} />

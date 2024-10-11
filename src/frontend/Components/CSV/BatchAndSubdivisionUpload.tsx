@@ -34,7 +34,7 @@ export default function BatchAndSubdivisionUpload() {
             variant="contained"
             tabIndex={-1}
             startIcon={<CloudUploadIcon />}
-            sx={{margin: "0.5rem"}}
+            sx={{ margin: "0.5rem" }}
         >
             Batch And Subdivision Upload
             <VisuallyHiddenInput type="file" accept=".csv" onChange={handleFileChange} />

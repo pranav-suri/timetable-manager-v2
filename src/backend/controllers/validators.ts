@@ -212,7 +212,8 @@ async function subdivisionValidator(
         if (groupIdsSet.size > 1) return true;
 
         // Collision if all groupIds are the same but allowSimultaneous is false.
-        if (!subdivision.SlotDataSubdivisions![0].SlotData!.Subject!.Group!.allowSimultaneous) return true;
+        if (!subdivision.SlotDataSubdivisions![0].SlotData!.Subject!.Group!.allowSimultaneous)
+            return true;
     });
     return { subdivisionCollisions: subdivCollisions };
 

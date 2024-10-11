@@ -7,7 +7,7 @@ import addSlotData from "./addSlotData";
 import deleteSlotData from "./deleteSlotData";
 import updateSlotData from "./updateSlotData.ts";
 import getAcademicYearId from "./getAcademicYearId.ts";
-import getAvailableSubdivisions from "./getAvailableSubdivisions.ts"; 
+import getAvailableSubdivisions from "./getAvailableSubdivisions.ts";
 import { timetableValidator, slotValidator } from "./validators.ts";
 
 export {

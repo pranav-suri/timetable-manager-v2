@@ -4,7 +4,10 @@ import getAcademicYearId from "./getAcademicYearId";
 async function getAvailableClassrooms(slotId: number, subjectId: number) {
     // const testP = await Subject.findByPk(subjectId);
     const labsOrClasses = await Classroom.findAll({
-        where: { isLab: (await Subject.findByPk(subjectId))?.isLab, AcademicYearId: await getAcademicYearId("slot", slotId) },
+        where: {
+            isLab: (await Subject.findByPk(subjectId))?.isLab,
+            AcademicYearId: await getAcademicYearId("slot", slotId),
+        },
     });
 
     const slotDatas = await SlotDatas.findAll({
@@ -25,7 +28,7 @@ async function getAvailableClassrooms(slotId: number, subjectId: number) {
     });
 
     const availableClassrooms = labsOrClasses.filter(
-        (labOrClass) => !classesInUse.some((classesInUse) => classesInUse.id === labOrClass.id)
+        (labOrClass) => !classesInUse.some((classesInUse) => classesInUse.id === labOrClass.id),
     );
 
     return availableClassrooms;

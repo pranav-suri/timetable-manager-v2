@@ -8,7 +8,6 @@ async function addSlotData(
     subdivisionIds: number[],
     classroomIds: number[],
 ) {
-
     const [slotData] = await SlotDatas.findOrCreate({
         where: { SubjectId: subjectId, SlotId: slotId, TeacherId: teacherId },
     });

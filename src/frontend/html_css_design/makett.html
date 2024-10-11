@@ -1,203 +1,210 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Timetable</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #001D3D;
-            color: #FFC300;
-            margin: 0;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #FFC300;
-        }
-
-        select {
-            width: 200px;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin: 5px;
-            font-size: 16px;
-            background-color: #003566;
-            color: #FFC300;
-        }
-
-        table {
-            margin-top: 2rem;
-            width: 100%;
-            border-collapse: collapse;
-            transition: width 0.3s ease;
-            /* Added transition for smooth resize */
-        }
-
-        .timetable {
-            min-width: 800px;
-            overflow-x: scroll;
-        }
-
-        th,
-        td {
-            border: 1px solid #FFC300;
-            padding: 10px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .plus-sign {
-            color: #FFC300;
-        }
-
-        .sidebar {
-            position: fixed;
-            top: 0;
-            right: 0;
-            height: 100%;
-            width: 220px;
-            background-color: #003566;
-            padding: 20px;
-            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease-in-out;
-            transform: translateX(100%);
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-
-        /* New class for shrunk table style */
-        .shrink-table {
-            width: calc(100vw - 300px);
-            /* Sidebar width is 300px */
-            transition: width 0.3s ease;
-            /* Added transition for smooth resize */
-        }
-
-        button {
-            background-color: white;
-            color: #003566;
-            font-weight: 300;
-            font-size: medium;
-            border: 2px;
-            border-radius: 5px;
-            padding: 10px 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #F7BD33;
-        }
-    </style>
-</head>
-
-<body>
-    <h1>Create Timetable</h1>
-
-    <div id="dropdowns">
-        <select id="departmentDropdown">
-            <option value="">Select Department</option>
-            <!-- Add department options here -->
-        </select>
-        <select id="batchDropdown">
-            <option value="">Select Batch</option>
-            <!-- Add batch options here -->
-        </select>
-        <select id="divisionDropdown">
-            <option value="">Select Division</option>
-            <!-- Add division options here -->
-        </select>
-        <button onclick="generateTimetable()">Generate Timetable</button>
-    </div>
-
-    <table class="timetable">
-        <thead>
-            <tr>
-                <th></th> <!-- Empty cell for spacing -->
-                <th>Slot 1</th> <!-- Cells for slots -->
-                <th>Slot 2</th>
-                <th>Slot 3</th>
-                <th>Slot 4</th>
-                <th>Slot 5</th>
-                <th>Slot 6</th>
-                <th>Slot 7</th>
-                <th>Slot 8</th>
-                <th>Slot 9</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Loop to generate rows -->
-            <!-- Each cell has an id like cell-1-1, cell-1-2, etc. -->
-            <!-- Plus sign is placed inside a span with class plus-sign -->
-        </tbody>
-    </table>
-
-    <div id="sidebar" class="sidebar">
-        <h2>Add Schedule</h2>
-        <select id="subjectDropdown">
-            <option value="">Select Subject</option>
-            <!-- Add subject options here -->
-        </select>
-        <select id="teacherDropdown">
-            <option value="">Select Teacher</option>
-            <!-- Add teacher options here -->
-        </select>
-        <select id="classroomDropdown">
-            <option value="">Select Classroom/Lab</option>
-            <!-- Add classroom/lab options here -->
-        </select>
-        <br>
-        <br>
-        <button onclick="saveSchedule()">Save</button>
-    </div>
-
-    <script>
-        function generateTimetable() {
-            // Your logic to generate timetable based on selected options
-            // This function will fill the timetable cells with appropriate data
-        }
-
-        function saveSchedule() {
-            // Your logic to save schedule when user clicks save button in the sidebar
-        }
-
-        // Toggle sidebar and adjust table position
-        // function showSidebar() {
-        //     document.getElementById('sidebar').classList.toggle('show');
-        //     document.querySelector('.timetable').classList.toggle('shift-table');
-        // }
-
-        function showSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const table = document.querySelector('.timetable');
-            sidebar.classList.toggle('show');
-            table.classList.toggle('shrink-table');
-        }
-
-
-        // Loop to generate plus signs and cells
-        const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-        for (let i = 0; i < daysOfWeek.length; i++) {
-            const row = document.createElement('tr');
-            const dayCell = document.createElement('td');
-            dayCell.textContent = daysOfWeek[i];
-            row.appendChild(dayCell);
-            for (let j = 0; j < 9; j++) {
-                const cell = document.createElement('td');
-                cell.id = `cell-${i}-${j}`;
-                cell.innerHTML = '<span class="plus-sign">+</span>';
-                cell.onclick = showSidebar;
-                row.appendChild(cell);
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Create Timetable</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #001d3d;
+                color: #ffc300;
+                margin: 0;
+                padding: 20px;
             }
-            document.querySelector('tbody').appendChild(row);
-        }
-    </script>
-</body>
 
+            h1 {
+                color: #ffc300;
+            }
+
+            select {
+                width: 200px;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                margin: 5px;
+                font-size: 16px;
+                background-color: #003566;
+                color: #ffc300;
+            }
+
+            table {
+                margin-top: 2rem;
+                width: 100%;
+                border-collapse: collapse;
+                transition: width 0.3s ease;
+                /* Added transition for smooth resize */
+            }
+
+            .timetable {
+                min-width: 800px;
+                overflow-x: scroll;
+            }
+
+            th,
+            td {
+                border: 1px solid #ffc300;
+                padding: 10px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .plus-sign {
+                color: #ffc300;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100%;
+                width: 220px;
+                background-color: #003566;
+                padding: 20px;
+                box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease-in-out;
+                transform: translateX(100%);
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            /* New class for shrunk table style */
+            .shrink-table {
+                width: calc(100vw - 300px);
+                /* Sidebar width is 300px */
+                transition: width 0.3s ease;
+                /* Added transition for smooth resize */
+            }
+
+            button {
+                background-color: white;
+                color: #003566;
+                font-weight: 300;
+                font-size: medium;
+                border: 2px;
+                border-radius: 5px;
+                padding: 10px 20px;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+            }
+
+            button:hover {
+                background-color: #f7bd33;
+            }
+        </style>
+    </head>
+
+    <body>
+        <h1>Create Timetable</h1>
+
+        <div id="dropdowns">
+            <select id="departmentDropdown">
+                <option value="">Select Department</option>
+                <!-- Add department options here -->
+            </select>
+            <select id="batchDropdown">
+                <option value="">Select Batch</option>
+                <!-- Add batch options here -->
+            </select>
+            <select id="divisionDropdown">
+                <option value="">Select Division</option>
+                <!-- Add division options here -->
+            </select>
+            <button onclick="generateTimetable()">Generate Timetable</button>
+        </div>
+
+        <table class="timetable">
+            <thead>
+                <tr>
+                    <th></th>
+                    <!-- Empty cell for spacing -->
+                    <th>Slot 1</th>
+                    <!-- Cells for slots -->
+                    <th>Slot 2</th>
+                    <th>Slot 3</th>
+                    <th>Slot 4</th>
+                    <th>Slot 5</th>
+                    <th>Slot 6</th>
+                    <th>Slot 7</th>
+                    <th>Slot 8</th>
+                    <th>Slot 9</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Loop to generate rows -->
+                <!-- Each cell has an id like cell-1-1, cell-1-2, etc. -->
+                <!-- Plus sign is placed inside a span with class plus-sign -->
+            </tbody>
+        </table>
+
+        <div id="sidebar" class="sidebar">
+            <h2>Add Schedule</h2>
+            <select id="subjectDropdown">
+                <option value="">Select Subject</option>
+                <!-- Add subject options here -->
+            </select>
+            <select id="teacherDropdown">
+                <option value="">Select Teacher</option>
+                <!-- Add teacher options here -->
+            </select>
+            <select id="classroomDropdown">
+                <option value="">Select Classroom/Lab</option>
+                <!-- Add classroom/lab options here -->
+            </select>
+            <br />
+            <br />
+            <button onclick="saveSchedule()">Save</button>
+        </div>
+
+        <script>
+            function generateTimetable() {
+                // Your logic to generate timetable based on selected options
+                // This function will fill the timetable cells with appropriate data
+            }
+
+            function saveSchedule() {
+                // Your logic to save schedule when user clicks save button in the sidebar
+            }
+
+            // Toggle sidebar and adjust table position
+            // function showSidebar() {
+            //     document.getElementById('sidebar').classList.toggle('show');
+            //     document.querySelector('.timetable').classList.toggle('shift-table');
+            // }
+
+            function showSidebar() {
+                const sidebar = document.getElementById("sidebar");
+                const table = document.querySelector(".timetable");
+                sidebar.classList.toggle("show");
+                table.classList.toggle("shrink-table");
+            }
+
+            // Loop to generate plus signs and cells
+            const daysOfWeek = [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday",
+                "Saturday",
+                "Sunday",
+            ];
+            for (let i = 0; i < daysOfWeek.length; i++) {
+                const row = document.createElement("tr");
+                const dayCell = document.createElement("td");
+                dayCell.textContent = daysOfWeek[i];
+                row.appendChild(dayCell);
+                for (let j = 0; j < 9; j++) {
+                    const cell = document.createElement("td");
+                    cell.id = `cell-${i}-${j}`;
+                    cell.innerHTML = '<span class="plus-sign">+</span>';
+                    cell.onclick = showSidebar;
+                    row.appendChild(cell);
+                }
+                document.querySelector("tbody").appendChild(row);
+            }
+        </script>
+    </body>
 </html>

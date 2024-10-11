@@ -9,11 +9,9 @@ async function updateSlotData(
     subdivisionIds: number[],
     classroomIds: number[],
 ) {
-    if (slotDataId) 
-        await deleteSlotData(slotDataId);
-    
+    if (slotDataId) await deleteSlotData(slotDataId);
+
     return await addSlotData(slotId, subjectId, teacherId, subdivisionIds, classroomIds);
 }
 
 export default updateSlotData;
-

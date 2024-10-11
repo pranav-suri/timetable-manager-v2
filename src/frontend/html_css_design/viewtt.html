@@ -1,255 +1,251 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>View Timetable</title>
+        <style>
+            /* CSS styles using the provided color palette */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #001d3d;
+                color: #ffc300;
+                margin: 0;
+                padding: 20px;
+            }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Timetable</title>
-    <style>
-        /* CSS styles using the provided color palette */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #001D3D;
-            color: #FFC300;
-            margin: 0;
-            padding: 20px;
-        }
+            h1 {
+                color: #ffc300;
+            }
 
-        h1 {
-            color: #FFC300;
-        }
+            button {
+                background-color: #003566;
+                color: #ffc300;
+                border: none;
+                padding: 10px 20px;
+                margin: 5px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-size: 22px;
+            }
 
-        button {
-            background-color: #003566;
-            color: #FFC300;
-            border: none;
-            padding: 10px 20px;
-            margin: 5px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 22px;
-        }
+            select {
+                width: 200px;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+                margin: 5px;
+                font-size: 16px;
+                background-color: #003566;
+                color: #ffc300;
+            }
 
-        select {
-            width: 200px;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin: 5px;
-            font-size: 16px;
-            background-color: #003566;
-            color: #FFC300;
-        }
+            .timetable {
+                margin-top: 20px;
+            }
 
-        .timetable {
-            margin-top: 20px;
-        }
+            .timetable table {
+                width: 100%;
+                border-collapse: collapse;
+            }
 
-        .timetable table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+            .timetable th,
+            .timetable td {
+                border: 1px solid #ffc300;
+                padding: 10px;
+                text-align: center;
+            }
 
-        .timetable th,
-        .timetable td {
-            border: 1px solid #FFC300;
-            padding: 10px;
-            text-align: center;
-        }
+            .timetable th {
+                background-color: #003566;
+            }
 
-        .timetable th {
-            background-color: #003566;
-        }
+            .timetable td {
+                background-color: #466981;
+                color: #ffc300;
+            }
+        </style>
+    </head>
 
-        .timetable td {
-            background-color: #466981;
-            color: #FFC300;
-        }
-    </style>
-</head>
+    <body>
+        <h1>View Timetable</h1>
 
-<body>
-    <h1>View Timetable</h1>
+        <!-- Division Button -->
+        <button onclick="showDivisionDropdowns()">Division</button>
 
-    <!-- Division Button -->
-    <button onclick="showDivisionDropdowns()">Division</button>
+        <!-- Teacher Button -->
+        <button onclick="showTeacherDropdown()">Teacher</button>
 
-    <!-- Teacher Button -->
-    <button onclick="showTeacherDropdown()">Teacher</button>
+        <!-- Class/Lab Button -->
+        <button onclick="showClassLabDropdowns()">Classroom/Lab</button>
 
-    <!-- Class/Lab Button -->
-    <button onclick="showClassLabDropdowns()">Classroom/Lab</button>
+        <!-- Division Dropdowns -->
+        <div id="divisionDropdowns" style="display: none">
+            <select id="departmentDropdown">
+                <option value="">Select Department</option>
+                <!-- Add department options here -->
+            </select>
+            <select id="batchDropdown">
+                <option value="">Select Batch</option>
+                <!-- Add batch options here -->
+            </select>
+            <select id="divisionDropdown">
+                <option value="">Select Division</option>
+                <!-- Add division options here -->
+            </select>
+        </div>
 
-    <!-- Division Dropdowns -->
-    <div id="divisionDropdowns" style="display: none;">
-        <select id="departmentDropdown">
-            <option value="">Select Department</option>
-            <!-- Add department options here -->
-        </select>
-        <select id="batchDropdown">
-            <option value="">Select Batch</option>
-            <!-- Add batch options here -->
-        </select>
-        <select id="divisionDropdown">
-            <option value="">Select Division</option>
-            <!-- Add division options here -->
-        </select>
-    </div>
+        <!-- Teacher Dropdown -->
+        <div id="teacherDropdown" style="display: none">
+            <select id="teacherNameDropdown">
+                <option value="">Select Teacher Name</option>
+                <!-- Add teacher name options here -->
+            </select>
+        </div>
 
-    <!-- Teacher Dropdown -->
-    <div id="teacherDropdown" style="display: none;">
-        <select id="teacherNameDropdown">
-            <option value="">Select Teacher Name</option>
-            <!-- Add teacher name options here -->
-        </select>
-    </div>
+        <!-- Class/Lab Dropdowns -->
+        <div id="classLabDropdowns" style="display: none">
+            <select id="classroomDropdown">
+                <option value="">Select Classroom</option>
+                <!-- Add classroom options here -->
+            </select>
+            <select id="labDropdown">
+                <option value="">Select Lab</option>
+                <!-- Add lab options here -->
+            </select>
+        </div>
+        <!-- Show Timetable Button -->
+        <button onclick="showTimetable()">Show Timetable</button>
 
-    <!-- Class/Lab Dropdowns -->
-    <div id="classLabDropdowns" style="display: none;">
-        <select id="classroomDropdown">
-            <option value="">Select Classroom</option>
-            <!-- Add classroom options here -->
-        </select>
-        <select id="labDropdown">
-            <option value="">Select Lab</option>
-            <!-- Add lab options here -->
-        </select>
-    </div>
-    <!-- Show Timetable Button -->
-    <button onclick="showTimetable()">Show Timetable</button>
+        <!-- Timetable -->
+        <div id="timetable" class="timetable" style="display: none">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Day</th>
+                        <th>Slot 1</th>
+                        <th>Slot 2</th>
+                        <th>Slot 3</th>
+                        <th>Slot 4</th>
+                        <th>Slot 5</th>
+                        <th>Slot 6</th>
+                        <th>Slot 7</th>
+                        <th>Slot 8</th>
+                        <th>Slot 9</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Monday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Tuesday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Wednesday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Thursday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Friday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Saturday</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Sunday</td>
+                        <td colspan="9"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <!-- Timetable -->
-    <div id="timetable" class="timetable" style="display:none;">
-        <table>
-            <thead>
-                <tr>
-                    <th>Day</th>
-                    <th>Slot 1</th>
-                    <th>Slot 2</th>
-                    <th>Slot 3</th>
-                    <th>Slot 4</th>
-                    <th>Slot 5</th>
-                    <th>Slot 6</th>
-                    <th>Slot 7</th>
-                    <th>Slot 8</th>
-                    <th>Slot 9</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Monday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Tuesday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Wednesday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Thursday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Friday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Saturday</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
-                <tr>
-                    <td>Sunday</td>
-                    <td colspan="9"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        <script>
+            function showDivisionDropdowns() {
+                // Hide other dropdowns
+                document.getElementById("teacherDropdown").style.display = "none";
+                document.getElementById("classLabDropdowns").style.display = "none";
 
+                // Show division dropdowns
+                document.getElementById("divisionDropdowns").style.display = "block";
+            }
 
-    <script>
-        function showDivisionDropdowns() {
-            // Hide other dropdowns
-            document.getElementById('teacherDropdown').style.display = 'none';
-            document.getElementById('classLabDropdowns').style.display = 'none';
+            function showTeacherDropdown() {
+                // Hide other dropdowns
+                document.getElementById("divisionDropdowns").style.display = "none";
+                document.getElementById("classLabDropdowns").style.display = "none";
 
-            // Show division dropdowns
-            document.getElementById('divisionDropdowns').style.display = 'block';
-        }
+                // Show teacher dropdown
+                document.getElementById("teacherDropdown").style.display = "block";
+            }
 
-        function showTeacherDropdown() {
-            // Hide other dropdowns
-            document.getElementById('divisionDropdowns').style.display = 'none';
-            document.getElementById('classLabDropdowns').style.display = 'none';
+            function showClassLabDropdowns() {
+                // Hide other dropdowns
+                document.getElementById("divisionDropdowns").style.display = "none";
+                document.getElementById("teacherDropdown").style.display = "none";
 
-            // Show teacher dropdown
-            document.getElementById('teacherDropdown').style.display = 'block';
-        }
+                // Show class/lab dropdowns
+                document.getElementById("classLabDropdowns").style.display = "block";
+            }
 
-        function showClassLabDropdowns() {
-            // Hide other dropdowns
-            document.getElementById('divisionDropdowns').style.display = 'none';
-            document.getElementById('teacherDropdown').style.display = 'none';
-
-            // Show class/lab dropdowns
-            document.getElementById('classLabDropdowns').style.display = 'block';
-        }
-
-        function showTimetable() {
-            document.getElementById('timetable').style.display = 'block';
-        }
-
-    </script>
-</body>
-
+            function showTimetable() {
+                document.getElementById("timetable").style.display = "block";
+            }
+        </script>
+    </body>
 </html>

@@ -1,6 +1,10 @@
 import { SlotDataClasses, SlotDataSubdivisions } from "../database";
 
-export async function addSlotDataClassesAndSubdivs(slotDataId: number, subdivisionIds?: number[], classroomIds?: number[]) {
+export async function addSlotDataClassesAndSubdivs(
+    slotDataId: number,
+    subdivisionIds?: number[],
+    classroomIds?: number[],
+) {
     if (subdivisionIds) {
         for (const subdivisionId of subdivisionIds) {
             await SlotDataSubdivisions.findOrCreate({

@@ -45,5 +45,10 @@ export async function edenFetch<ResponseType>(
 }
 
 export function checkIfSlotDataExists(slotData: SlotDatas[][0]) {
-    return slotData.Subject?.id || slotData.Teacher?.id || slotData.SlotDataClasses?.length || slotData.SlotDataSubdivisions?.length;
+    return (
+        slotData.Subject?.id ||
+        slotData.Teacher?.id ||
+        slotData.SlotDataClasses?.length ||
+        slotData.SlotDataSubdivisions?.length
+    );
 }

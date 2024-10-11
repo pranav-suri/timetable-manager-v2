@@ -1,6 +1,6 @@
 import { Subdivision } from "../database";
 
-export default async function availableSubdivisions(slotId: number,  divisionId: number) {
+export default async function availableSubdivisions(slotId: number, divisionId: number) {
     const subdivisions = await Subdivision.findAll({
         where: { DivisionId: divisionId },
     });
@@ -25,7 +25,9 @@ export default async function availableSubdivisions(slotId: number,  divisionId:
     });
     const availableSubdivisions = subdivisions.filter(
         (availableSubdivision) =>
-            !busySubdivisions.some((busySubdivision) => busySubdivision.id === availableSubdivision.id),
+            !busySubdivisions.some(
+                (busySubdivision) => busySubdivision.id === availableSubdivision.id,
+            ),
     );
     return availableSubdivisions;
 }

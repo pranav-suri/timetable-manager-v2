@@ -209,7 +209,7 @@ async function getTimetableOfSlotByClassroom(classroomId: number, slotId: number
 async function getTTOfSlotNested(
     searchId: number,
     searchBy: "subdivisions" | "teachers" | "classrooms" | "divisions",
-    slotId: number
+    slotId: number,
 ) {
     switch (searchBy) {
         case "divisions":

@@ -15,7 +15,7 @@ class Department extends Model<InferAttributes<Department>, InferCreationAttribu
     public declare id: CreationOptional<number>;
     public declare departmentName: string;
     public declare BatchId: ForeignKey<number>;
-    public declare Batch ?: ForeignKey<Batch>;
+    public declare Batch?: ForeignKey<Batch>;
 }
 
 Department.init(
