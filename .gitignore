@@ -1,5 +1,8 @@
 **/node_modules
+**/.env
 
 /server/dist
+/server/prisma/*
+!/server/prisma/schema
 
 /client/dist
