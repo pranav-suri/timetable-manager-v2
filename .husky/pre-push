@@ -1,0 +1,4 @@
+cd server
+npx prettier . --write
+
+# exit 1

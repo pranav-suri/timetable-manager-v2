@@ -1,0 +1,6 @@
+cd server
+# npx prettier . --write
+
+cd ..
+cd client
+
