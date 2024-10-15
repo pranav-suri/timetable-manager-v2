@@ -1,11 +1,12 @@
 model Teacher {
-  id          Int                  @id @default(autoincrement())
-  name        String
-  timetableId Int
-  timetable   Timetable            @relation(fields: [timetableId], references: [id])
-  slots       TeacherUnavailable[]
-  tags        TeacherTag[]
-  lectures    Lecture[]
+  id                Int                  @id @default(autoincrement())
+  name              String
+  timetableId       Int
+  timetable         Timetable            @relation(fields: [timetableId], references: [id])
+  slots             TeacherUnavailable[]
+  tags              TeacherTag[]
+  lectures          Lecture[]
+  subjectToTeachers SubjectToTeacher[]
 }
 
 model TeacherUnavailable {
