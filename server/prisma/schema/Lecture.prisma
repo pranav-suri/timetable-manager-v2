@@ -5,6 +5,7 @@ model Lecture {
   count        Int                  @default(1)
   teacher      Teacher              @relation(fields: [teacherId], references: [id])
   subject      Subject              @relation(fields: [subjectId], references: [id])
+  createdAt    DateTime             @default(now())
   subdivisions LectureSubdivision[]
   classrooms   LectureClassroom[]
   slotDatas    SlotData[]
