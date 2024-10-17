@@ -8,16 +8,25 @@ export const prisma = new PrismaClient({
 });
 
 async function main() {
-    const b = await prisma.timetable.create({
+    await prisma.timetable.create({
         data: {
             name: "Timetable 1",
         },
     });
-    const a = await prisma.classroom.findFirst({
-        include: {
-            types: true,
+
+    // Inner Join,
+    const a = await prisma.timetable.findFirst({
+        where: {
+            classrooms: {
+                some: {},
+            },
         },
     });
+
+    const b = await prisma.timetable.findFirst();
+
+    console.log(a);
+    console.log(b);
 }
 
 main()
@@ -28,7 +37,6 @@ main()
         console.error(e);
         console.log("Error: Disconnecting Prisma Client");
         await prisma.$disconnect();
-        process.exit(1);
     });
 
 export type { AppRouter } from "./trpc/appRouter";
