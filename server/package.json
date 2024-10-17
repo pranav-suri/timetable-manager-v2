@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "prisma migrate dev && tsx watch --clear-screen=false src/index.ts",
+    "dev": "prisma migrate dev && bun --hot src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
