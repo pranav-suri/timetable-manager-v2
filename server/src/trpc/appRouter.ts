@@ -3,18 +3,18 @@ import { t } from "./main";
 import z from "zod";
 
 export const appRouter = t.router({
-  teachers: t.procedure
-    .input(z.object({ timetableId: z.number() }))
-    .query(async () => {
-      const teachers = await prisma.teacher.findMany();
-      return { teachers };
-    }),
-  subjects: t.procedure
-    .input(z.object({ timetableId: z.number() }))
-    .query(async () => {
-      const subjects = await prisma.subject.findMany();
-      return { subjects };
-    }),
+    teachers: t.procedure
+        .input(z.object({ timetableId: z.number() }))
+        .query(async () => {
+            const teachers = await prisma.teacher.findMany();
+            return { teachers };
+        }),
+    subjects: t.procedure
+        .input(z.object({ timetableId: z.number() }))
+        .query(async () => {
+            const subjects = await prisma.subject.findMany();
+            return { subjects };
+        }),
 });
 
 // Export only the type of a router!
