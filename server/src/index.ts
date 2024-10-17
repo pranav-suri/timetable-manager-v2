@@ -1,13 +1,24 @@
 import "source-map-support/register";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
+import "./express";
 
-const prisma = new PrismaClient({
+export const prisma = new PrismaClient({
   log: ["query", "info", "warn", "error"],
 });
 
 async function main() {
-  console.log("Hello World");
+  const b = await prisma.timetable
+    .create({
+      data: {
+        name: "Timetable 1",
+      },
+    })
+  const a = await prisma.classroom.findFirst({
+    include: {
+      types: true,
+    },
+  });
 }
 
 main()
@@ -20,3 +31,5 @@ main()
     await prisma.$disconnect();
     process.exit(1);
   });
+
+export type { AppRouter } from "./trpc/appRouter";
