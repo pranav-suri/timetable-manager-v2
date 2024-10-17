@@ -1,0 +1,47 @@
+model Timetable {
+  id           Int           @id @default(autoincrement())
+  name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  slots        Slot[]
+  groups       Group[]
+  subdivisions Subdivision[]
+  tags         Tag[]
+  types        Type[]
+  teachers     Teacher[]
+  classrooms   Classroom[]
+}
+
+model Slot {
+  id                      Int                      @id @default(autoincrement())
+  day                     Int
+  number                  Int
+  timetableId             Int
+  createdAt               DateTime                 @default(now())
+  timetable               Timetable                @relation(fields: [timetableId], references: [id])
+  teacherUnavailables     TeacherUnavailable[]
+  subdivisionUnavailables SubdivisionUnavailable[]
+  classroomUnavailables   ClassroomUnavailable[]
+  slotDatas               SlotData[]
+}
+
+model Tag {
+  id           Int              @id @default(autoincrement())
+  name         String
+  timetableId  Int
+  timetable    Timetable        @relation(fields: [timetableId], references: [id])
+  createdAt    DateTime         @default(now())
+  subjectTags  SubjectTag[]
+  subdivisions SubdivisionTag[]
+  teacherTags  TeacherTag[]
+}
+
+model Type {
+  id             Int             @id @default(autoincrement())
+  name           String
+  timetableId    Int
+  createAt       DateTime        @default(now())
+  timetable      Timetable       @relation(fields: [timetableId], references: [id])
+  subjectTypes   SubjectType[]
+  slassroomTypes ClassroomType[]
+}

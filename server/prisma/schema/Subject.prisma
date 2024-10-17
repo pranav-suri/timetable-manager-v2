@@ -1,0 +1,38 @@
+model Group {
+  id                Int       @id @default(autoincrement())
+  name              String
+  allowSimultaneous Int
+  timetableId       Int
+  timetable         Timetable @relation(fields: [timetableId], references: [id])
+  subjects          Subject[]
+}
+
+model Subject {
+  id                Int                @id @default(autoincrement())
+  name              String
+  duration          Int
+  groupId           Int
+  group             Group              @relation(fields: [groupId], references: [id])
+  tags              SubjectTag[]
+  classroomTypes    SubjectType[]
+  lectures          Lecture[]
+  subjectToTeachers SubjectToTeacher[]
+}
+
+model SubjectTag {
+  tagId     Int
+  subjectId Int
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id])
+
+  @@id([tagId, subjectId])
+}
+
+model SubjectType {
+  typeId    Int
+  subjectId Int
+  type      Type    @relation(fields: [typeId], references: [id])
+  subject   Subject @relation(fields: [subjectId], references: [id])
+
+  @@id([typeId, subjectId])
+}

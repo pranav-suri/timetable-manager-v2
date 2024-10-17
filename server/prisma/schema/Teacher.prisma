@@ -1,0 +1,28 @@
+model Teacher {
+  id                Int                  @id @default(autoincrement())
+  name              String
+  timetableId       Int
+  timetable         Timetable            @relation(fields: [timetableId], references: [id])
+  slots             TeacherUnavailable[]
+  tags              TeacherTag[]
+  lectures          Lecture[]
+  subjectToTeachers SubjectToTeacher[]
+}
+
+model TeacherUnavailable {
+  slotId    Int
+  teacherId Int
+  slot      Slot    @relation(fields: [slotId], references: [id])
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  @@id([slotId, teacherId])
+}
+
+model TeacherTag {
+  teacherId Int
+  tagId     Int
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  @@id([teacherId, tagId])
+}
