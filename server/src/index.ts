@@ -8,9 +8,15 @@ export const prisma = new PrismaClient({
 });
 
 async function main() {
-    await prisma.timetable.create({
-        data: {
+    // Create a new timetable if it doesn't exist
+    await prisma.timetable.upsert({
+        create: {
+            id: 1,
             name: "Timetable 1",
+        },
+        update: {},
+        where: {
+            id: 1,
         },
     });
 

@@ -6,6 +6,9 @@ model Classroom {
   types       ClassroomType[]
   slots       ClassroomUnavailable[]
   lectures    LectureClassroom[]
+  subjectClassroom SubjectClassroom[]
+
+  @@unique([name, timetableId])
 }
 
 model ClassroomType {

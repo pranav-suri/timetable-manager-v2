@@ -9,8 +9,6 @@ model Lecture {
   subdivisions LectureSubdivision[]
   classrooms   LectureClassroom[]
   slotDatas    SlotData[]
-
-  @@unique([teacherId, subjectId])
 }
 
 model LectureSubdivision {

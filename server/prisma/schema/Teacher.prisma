@@ -7,6 +7,8 @@ model Teacher {
   tags              TeacherTag[]
   lectures          Lecture[]
   subjectToTeachers SubjectToTeacher[]
+
+  @@unique([name, timetableId])
 }
 
 model TeacherUnavailable {
