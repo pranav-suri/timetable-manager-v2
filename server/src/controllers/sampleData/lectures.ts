@@ -15,7 +15,7 @@ export async function uploadTimetableData(
     for (const row of parsedCsv.data) {
         // Step 1: Lookup existing related entities by their unique identifiers
         const { classroom, slot, subdivision, subject, teacher } =
-            await fetchInformation(row, timetableId);
+            await fetchInformation(row, timetableId, await prefetchTimetableData(timetableId));
 
         // Step 2: Check if the Lecture entry with subject and teacher
         const lecture = await prisma.lecture.findFirst({
@@ -80,7 +80,84 @@ export async function uploadTimetableData(
     return true;
 }
 
-async function fetchInformation(row: TimetableData, timetableId: number) {
+// Pre-fetch all data into memory
+async function prefetchTimetableData(timetableId: number) {
+    const teachers = await prisma.teacher.findMany({
+        where: { timetableId },
+    });
+    const groups = await prisma.group.findMany({
+        where: { timetableId },
+    });
+    const subjects = await prisma.subject.findMany({
+        where: { group: { timetableId } },
+    });
+    const slots = await prisma.slot.findMany({
+        where: { timetableId },
+    });
+    const subdivisions = await prisma.subdivision.findMany({
+        where: { timetableId },
+    });
+    const classrooms = await prisma.classroom.findMany({
+        where: { timetableId },
+    });
+
+    // Convert each list to a Map for quick lookup
+    const teacherMap = new Map(
+        teachers.map((teacher) => [
+            `${teacher.email}_${teacher.timetableId}`,
+            teacher,
+        ]),
+    );
+    const groupMap = new Map(
+        groups.map((group) => [`${group.name}_${group.timetableId}`, group]),
+    );
+    const subjectMap = new Map(
+        subjects.map((subject) => [
+            `${subject.name}_${subject.groupId}`,
+            subject,
+        ]),
+    );
+    const slotMap = new Map(
+        slots.map((slot) => [
+            `${slot.day}_${slot.number}_${slot.timetableId}`,
+            slot,
+        ]),
+    );
+    const subdivisionMap = new Map(
+        subdivisions.map((subdivision) => [
+            `${subdivision.name}_${subdivision.timetableId}`,
+            subdivision,
+        ]),
+    );
+    const classroomMap = new Map(
+        classrooms.map((classroom) => [
+            `${classroom.name}_${classroom.timetableId}`,
+            classroom,
+        ]),
+    );
+
+    return {
+        teacherMap,
+        groupMap,
+        subjectMap,
+        slotMap,
+        subdivisionMap,
+        classroomMap,
+    };
+}
+
+async function fetchInformation(
+    row: TimetableData,
+    timetableId: number,
+    {
+        teacherMap,
+        groupMap,
+        subjectMap,
+        slotMap,
+        subdivisionMap,
+        classroomMap,
+    }: Awaited<ReturnType<typeof prefetchTimetableData>>,
+) {
     const {
         day,
         slot_number: slotNumber,
@@ -93,46 +170,23 @@ async function fetchInformation(row: TimetableData, timetableId: number) {
         classroom_name: classroomName,
     } = row;
 
+    // Step 1: Lookup existing related entities by their unique identifiers
     const joinedSubdivisionName = joinSubdivisionName({
         batchName,
         departmentName,
         subdivisionName,
     });
 
-    // Step 1: Lookup existing related entities by their unique identifiers
-    const teacher = await prisma.teacher.findUnique({
-        where: { email_timetableId: { email: teacherEmail, timetableId } },
-    });
-    const group = await prisma.group.findUnique({
-        where: { name_timetableId: { name: groupName, timetableId } },
-    });
-
-    if (!group) {
-        console.error("Missing group data for row:", row);
-        throw new Error();
-    }
-    const subject = await prisma.subject.findUnique({
-        where: {
-            name_groupId: { name: subjectName, groupId: group?.id },
-        },
-    });
-    const slot = await prisma.slot.findUnique({
-        where: {
-            day_number_timetableId: {
-                day: Number(day),
-                number: Number(slotNumber),
-                timetableId,
-            },
-        },
-    });
-    const subdivision = await prisma.subdivision.findUnique({
-        where: {
-            name_timetableId: { name: joinedSubdivisionName, timetableId },
-        },
-    });
-    const classroom = await prisma.classroom.findUnique({
-        where: { name_timetableId: { name: classroomName, timetableId } },
-    });
+    const teacher = teacherMap.get(`${teacherEmail}_${timetableId}`);
+    const group = groupMap.get(`${groupName}_${timetableId}`);
+    const subject = group
+        ? subjectMap.get(`${subjectName}_${group.id}`)
+        : undefined;
+    const slot = slotMap.get(`${day}_${slotNumber}_${timetableId}`);
+    const subdivision = subdivisionMap.get(
+        `${joinedSubdivisionName}_${timetableId}`,
+    );
+    const classroom = classroomMap.get(`${classroomName}_${timetableId}`);
 
     if (!teacher || !subject || !slot || !subdivision || !classroom || !group) {
         if (!teacher)
