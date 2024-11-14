@@ -1,4 +1,4 @@
-model SubjectToTeacher {
+model Teach {
   teacherId Int
   subjectId Int
   teacher   Teacher @relation(fields: [teacherId], references: [id])

@@ -1,7 +1,7 @@
 model Group {
   id                Int       @id @default(autoincrement())
   name              String
-  allowSimultaneous Int
+  allowSimultaneous Boolean
   timetableId       Int
   timetable         Timetable @relation(fields: [timetableId], references: [id])
   subjects          Subject[]
@@ -10,15 +10,15 @@ model Group {
 }
 
 model Subject {
-  id                Int                @id @default(autoincrement())
+  id                Int                    @id @default(autoincrement())
   name              String
   duration          Int
   groupId           Int
-  group             Group              @relation(fields: [groupId], references: [id])
+  group             Group                  @relation(fields: [groupId], references: [id])
   tags              SubjectTag[]
   classroomTypes    SubjectClassroomType[]
   lectures          Lecture[]
-  subjectToTeachers SubjectToTeacher[]
+  teaches           Teach[]
   subjectClassrooms SubjectClassroom[]
 
   @@unique([name, groupId])

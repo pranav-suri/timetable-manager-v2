@@ -2,6 +2,7 @@ import "source-map-support/register";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import "./express";
+import sampleDataUpload from "./controllers/sampleData";
 
 export const prisma = new PrismaClient({
     log: ["query", "info", "warn", "error"],
@@ -21,7 +22,7 @@ async function main() {
     });
 
     // Inner Join,
-    const a = await prisma.timetable.findFirst({
+    await prisma.timetable.findFirst({
         where: {
             classrooms: {
                 some: {},
@@ -29,10 +30,10 @@ async function main() {
         },
     });
 
-    const b = await prisma.timetable.findFirst();
-
-    console.log(a);
-    console.log(b);
+    await prisma.timetable.findFirst();
+    console.time(": Time taken for data upload");
+    // await sampleDataUpload();
+    console.timeEnd(": Time taken for data upload");
 }
 
 main()
