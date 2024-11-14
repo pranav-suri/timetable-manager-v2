@@ -32,9 +32,15 @@ async function main() {
 
     await prisma.timetable.findFirst();
     console.time(": Time taken for data upload");
-    await sampleDataUpload("ODD");
-    await sampleDataUpload("EVEN");
-    console.timeEnd(": Time taken for data upload");
+    try {
+        // await sampleDataUpload("ODD");
+        // await sampleDataUpload("EVEN");
+        return;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        console.timeEnd(": Time taken for data upload");
+    }
 }
 
 main()
