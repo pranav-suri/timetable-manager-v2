@@ -10,6 +10,8 @@ model Timetable {
   types        Type[]
   teachers     Teacher[]
   classrooms   Classroom[]
+
+  @@unique([name])
 }
 
 model Slot {
@@ -23,6 +25,8 @@ model Slot {
   subdivisionUnavailables SubdivisionUnavailable[]
   classroomUnavailables   ClassroomUnavailable[]
   slotDatas               SlotData[]
+
+  @@unique([day, number, timetableId])
 }
 
 model Tag {
@@ -34,6 +38,8 @@ model Tag {
   subjectTags  SubjectTag[]
   subdivisions SubdivisionTag[]
   teacherTags  TeacherTag[]
+
+  @@unique([name, timetableId])
 }
 
 model Type {
@@ -42,6 +48,8 @@ model Type {
   timetableId    Int
   createAt       DateTime        @default(now())
   timetable      Timetable       @relation(fields: [timetableId], references: [id])
-  subjectTypes   SubjectType[]
+  subjectTypes   SubjectClassroomType[]
   slassroomTypes ClassroomType[]
+
+  @@unique([name, timetableId])
 }

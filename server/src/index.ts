@@ -2,20 +2,27 @@ import "source-map-support/register";
 import "dotenv/config";
 import { PrismaClient } from "@prisma/client";
 import "./express";
+import sampleDataUpload from "./controllers/sampleData";
 
 export const prisma = new PrismaClient({
-    log: ["query", "info", "warn", "error"],
+    // log: ["info", "warn", "error", "query"],
 });
 
 async function main() {
-    await prisma.timetable.create({
-        data: {
+    // Create a new timetable if it doesn't exist
+    await prisma.timetable.upsert({
+        create: {
+            id: 1,
             name: "Timetable 1",
+        },
+        update: {},
+        where: {
+            id: 1,
         },
     });
 
     // Inner Join,
-    const a = await prisma.timetable.findFirst({
+    await prisma.timetable.findFirst({
         where: {
             classrooms: {
                 some: {},
@@ -23,10 +30,17 @@ async function main() {
         },
     });
 
-    const b = await prisma.timetable.findFirst();
-
-    console.log(a);
-    console.log(b);
+    await prisma.timetable.findFirst();
+    console.time(": Time taken for data upload");
+    try {
+        // await sampleDataUpload("ODD");
+        // await sampleDataUpload("EVEN");
+        return;
+    } catch (e) {
+        console.error(e);
+    } finally {
+        console.timeEnd(": Time taken for data upload");
+    }
 }
 
 main()

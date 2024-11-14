@@ -6,6 +6,8 @@ model Subdivision {
   subdivionTags          SubdivisionTag[]
   subdivsionUnavailables SubdivisionUnavailable[]
   lectureSubdivisions    LectureSubdivision[]
+
+  @@unique([name, timetableId])
 }
 
 model SubdivisionUnavailable {

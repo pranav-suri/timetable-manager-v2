@@ -1,22 +1,27 @@
 model Group {
   id                Int       @id @default(autoincrement())
   name              String
-  allowSimultaneous Int
+  allowSimultaneous Boolean
   timetableId       Int
   timetable         Timetable @relation(fields: [timetableId], references: [id])
   subjects          Subject[]
+
+  @@unique([name, timetableId])
 }
 
 model Subject {
-  id                Int                @id @default(autoincrement())
+  id                Int                    @id @default(autoincrement())
   name              String
   duration          Int
   groupId           Int
-  group             Group              @relation(fields: [groupId], references: [id])
+  group             Group                  @relation(fields: [groupId], references: [id])
   tags              SubjectTag[]
-  classroomTypes    SubjectType[]
+  classroomTypes    SubjectClassroomType[]
   lectures          Lecture[]
-  subjectToTeachers SubjectToTeacher[]
+  teaches           Teach[]
+  subjectClassrooms SubjectClassroom[]
+
+  @@unique([name, groupId])
 }
 
 model SubjectTag {
@@ -28,11 +33,20 @@ model SubjectTag {
   @@id([tagId, subjectId])
 }
 
-model SubjectType {
+model SubjectClassroomType {
   typeId    Int
   subjectId Int
   type      Type    @relation(fields: [typeId], references: [id])
   subject   Subject @relation(fields: [subjectId], references: [id])
 
   @@id([typeId, subjectId])
+}
+
+model SubjectClassroom {
+  classroomId Int
+  subjectId   Int
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+
+  @@id([classroomId, subjectId])
 }
