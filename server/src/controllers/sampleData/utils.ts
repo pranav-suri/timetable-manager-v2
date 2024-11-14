@@ -129,7 +129,7 @@ export function validateCsvData(
     return true;
 }
 
-type SubdivisionNameArguments = {
+type SubdivisionNameArgs = {
     batchName: string;
     departmentName: string;
     subdivisionName: string;
@@ -138,6 +138,6 @@ export function joinSubdivisionName({
     batchName,
     departmentName,
     subdivisionName,
-}: SubdivisionNameArguments) {
+}: SubdivisionNameArgs) {
     return `${batchName.toUpperCase()} ${departmentName.toUpperCase()} ${subdivisionName.toUpperCase()}`;
 }

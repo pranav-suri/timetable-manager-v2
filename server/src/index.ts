@@ -5,7 +5,7 @@ import "./express";
 import sampleDataUpload from "./controllers/sampleData";
 
 export const prisma = new PrismaClient({
-    log: ["query", "info", "warn", "error"],
+    // log: ["info", "warn", "error", "query"],
 });
 
 async function main() {
@@ -32,7 +32,8 @@ async function main() {
 
     await prisma.timetable.findFirst();
     console.time(": Time taken for data upload");
-    // await sampleDataUpload();
+    await sampleDataUpload("ODD");
+    await sampleDataUpload("EVEN");
     console.timeEnd(": Time taken for data upload");
 }
 

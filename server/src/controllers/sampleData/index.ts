@@ -6,24 +6,14 @@ import { uploadSubdivsionData } from "./subdivisions";
 import { uploadSubjectAndTeacherData } from "./subjectAndTeacher";
 import path from "path";
 
-async function sampleDataUpload() {
-    const timetable1 = await prisma.timetable.upsert({
+async function sampleDataUpload(timetableName: string) {
+    const timetable = await prisma.timetable.upsert({
         create: {
-            name: "ODD",
+            name: timetableName,
         },
         update: {},
         where: {
-            name: "ODD",
-        },
-    });
-
-    const timetable2 = await prisma.timetable.upsert({
-        create: {
-            name: "EVEN",
-        },
-        update: {},
-        where: {
-            name: "EVEN",
+            name: timetableName,
         },
     });
 
@@ -33,9 +23,7 @@ async function sampleDataUpload() {
     const batchAndSubData = await Bun.file(
         path.join(__dirname, "./SAMPLE_DATA/batch_and_subdivision.csv"),
     ).text();
-    await uploadSubdivsionData(batchAndSubData, timetable1.id);
-    await uploadSubdivsionData(batchAndSubData, timetable2.id);
-    console.log("Subdivision data uploaded successfully");
+    await uploadSubdivsionData(batchAndSubData, timetable.id);
 
     /**
      * Slot data
@@ -43,9 +31,7 @@ async function sampleDataUpload() {
     const slotData = await Bun.file(
         path.join(__dirname, "./SAMPLE_DATA/slot.csv"),
     ).text();
-    await uploadSlotsData(slotData, timetable1.id);
-    await uploadSlotsData(slotData, timetable2.id);
-    console.log("Slot data uploaded successfully");
+    await uploadSlotsData(slotData, timetable.id);
 
     /**
      * Classroom data
@@ -53,9 +39,7 @@ async function sampleDataUpload() {
     const classroomData = await Bun.file(
         path.join(__dirname, "./SAMPLE_DATA/classroom.csv"),
     ).text();
-    await uploadClassroomData(classroomData, timetable1.id);
-    await uploadClassroomData(classroomData, timetable2.id);
-    console.log("Classroom data uploaded successfully");
+    await uploadClassroomData(classroomData, timetable.id);
 
     /**
      * Subject and teacher data
@@ -63,9 +47,7 @@ async function sampleDataUpload() {
     const subAndTeacherData = await Bun.file(
         path.join(__dirname, "./SAMPLE_DATA/subject_and_teacher.csv"),
     ).text();
-    await uploadSubjectAndTeacherData(subAndTeacherData, timetable1.id);
-    await uploadSubjectAndTeacherData(subAndTeacherData, timetable2.id);
-    console.log("Subject and teacher data uploaded successfully");
+    await uploadSubjectAndTeacherData(subAndTeacherData, timetable.id);
 
     /**
      * Timetable data
@@ -73,10 +55,8 @@ async function sampleDataUpload() {
     const timetableData = await Bun.file(
         path.join(__dirname, "./SAMPLE_DATA/timetable.csv"),
     ).text();
-    await uploadTimetableData(timetableData, timetable1.id);
-    await uploadTimetableData(timetableData, timetable2.id);
-    console.log("Timetable data uploaded successfully");
-    console.log("All data uploaded");
+    await uploadTimetableData(timetableData, timetable.id);
+    console.log(`All data for ${timetableName} uploaded successfully`);
 }
 
 export default sampleDataUpload;
